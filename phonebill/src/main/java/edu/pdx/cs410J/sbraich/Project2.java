@@ -4,7 +4,7 @@ import edu.pdx.cs410J.AbstractPhoneBill;
 
 
 /// The main class for the CS410J Phone Bill Project
-public class Project1
+public class Project2
 {
     static final String README = "This is a PhoneBill app. Blah Blah.";
 
