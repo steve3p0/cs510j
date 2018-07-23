@@ -13,7 +13,6 @@ public class TextDumperTest
     @Test
     public void TestTextDumper_Basic() throws IOException
     {
-        //assert(false);
         PhoneBill bill = new PhoneBill("Steve", "text.txt");
         PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234", "1/15/2018 19:39","1/15/2018 20:39");
 

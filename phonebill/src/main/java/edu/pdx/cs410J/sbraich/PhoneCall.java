@@ -2,6 +2,10 @@ package edu.pdx.cs410J.sbraich;
 
 import edu.pdx.cs410J.AbstractPhoneCall;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 /// The Class that manages a phone call
 public class PhoneCall extends AbstractPhoneCall
 {
@@ -40,5 +44,37 @@ public class PhoneCall extends AbstractPhoneCall
     public String getEndTimeString()
     {
         return this.endTime;
+    }
+
+    public Date getStartTime() //throws PhoneBillException
+    {
+        try
+        {
+            Date date = new SimpleDateFormat("d/M/yyyy H:mm").parse(this.startTime);
+
+            return date;
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.getMessage());
+            return null;
+            //throw new PhoneBillException(e.getMessage());
+        }
+    }
+
+    public Date getEndTime() //throws PhoneBillException
+    {
+        try
+        {
+            Date date = new SimpleDateFormat("d/M/yyyy H:mm").parse(this.endTime);
+
+            return date;
+        }
+        catch (Exception e)
+        {
+            System.err.println(e.getMessage());
+            return null;
+            //throw new PhoneBillException(e.getMessage());
+        }
     }
 }
