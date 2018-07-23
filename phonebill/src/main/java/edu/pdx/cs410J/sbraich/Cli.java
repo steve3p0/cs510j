@@ -4,10 +4,13 @@ package edu.pdx.cs410J.sbraich;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.io.*;
+import java.time.DateTimeException;
+import java.time.format.*;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.nio.file.*;
+import java.util.zip.DataFormatException;
 
 /// The class that manages the command line interface
 public class Cli
@@ -102,10 +105,10 @@ public class Cli
         //1/15/2018 19:39
         try
         {
-            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("M/d/yyyy H:mm");
             format.parse(date);
         }
-        catch (ParseException e)
+        catch (DateTimeException e)
         {
             throw new PhoneBillException("'" + date +"' is not a valid date/time.");
         }
