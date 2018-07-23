@@ -4,11 +4,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TextDumperTest
+public class TextParserTest
 {
 
     @Test
-    public void TestTextDumperTest()
+    public void TestParser()
     {
         assert(false);
     }
