@@ -1,10 +1,13 @@
 package edu.pdx.cs410J.sbraich;
 
+
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.io.*;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.nio.file.*;
 
 /// The class that manages the command line interface
 public class Cli
@@ -16,15 +19,45 @@ public class Cli
     public String calleeNumber;
     public String startTime;
     public String endTime;
+
+    // Optional Arguments
     public Boolean print;
     public Boolean readme;
+    public Boolean textFile;
+    public Path filePath;
 
-    public Cli(String[] args) throws Exception
+    public void validatePath() throws PhoneBillException
+    {
+        File file = new File(this.filePath.toString());
+        if (!file.isDirectory())
+        {
+            throw new PhoneBillException("Filepath is invalid: " + this.filePath.toString());
+        }
+    }
+
+    public Cli(String[] args) throws PhoneBillException
     {
         this.readme = Arrays.stream(args).anyMatch(s -> s.equals("-README"));
         this.print = Arrays.stream(args).anyMatch(s -> s.equals("-print"));
+        this.textFile = Arrays.stream(args).anyMatch(s -> s.equals("-textFile"));
 
         arguments = new ArrayList<String>(Arrays.asList(args));
+
+        if (this.textFile)
+        {
+            int i = arguments.indexOf("-textFile");
+
+            if (i + 1 > arguments.size() - 1)
+            {
+                throw new PhoneBillException("Missing Text filepath argument");
+            }
+
+            this.filePath = Paths.get(arguments.get(i + 1));
+            arguments.remove(this.filePath.toString());
+        }
+
+        arguments.remove("Project2");
+        arguments.remove("-textFile");
         arguments.remove("-print");
         arguments.remove("-README");
 
@@ -37,9 +70,9 @@ public class Cli
             return;
         }
 
-        if (arguments.size() == 0)
+        if (arguments.size() < 7)
         {
-            throw new PhoneBillException("Missing command line arguments");
+            throw new PhoneBillException("Missing command line argments");
         }
 
         if (arguments.size() > 7)
@@ -56,7 +89,7 @@ public class Cli
         this.Validate();
     }
 
-    private Boolean Validate() throws Exception
+    private Boolean Validate() throws PhoneBillException
     {
         if (this.customer == null || this.customer.isEmpty())
         {
@@ -71,7 +104,7 @@ public class Cli
         return true;
     }
 
-    private void ValidateDate(String date) throws Exception
+    private void ValidateDate(String date) throws PhoneBillException
     {
         //1/15/2018 19:39
         try
@@ -85,7 +118,7 @@ public class Cli
         }
     }
 
-    private void ValidatePhoneNumber(String phoneNumber) throws Exception
+    private void ValidatePhoneNumber(String phoneNumber) throws PhoneBillException
     {
         //nnn-nnn-nnnn
         //(?:\d{3}-){2}\d{4}
@@ -97,8 +130,6 @@ public class Cli
             throw new PhoneBillException("'" + phoneNumber +"' is not a valid phone number.");
         }
     }
-
-
 
     public void Iterate()
     {

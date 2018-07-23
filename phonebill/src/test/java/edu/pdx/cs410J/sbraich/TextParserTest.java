@@ -10,6 +10,9 @@ public class TextParserTest
     @Test
     public void TestParser()
     {
-        assert(false);
+        //assert(false);
+        fail("Not impelemented yet");
     }
+
+
 }
