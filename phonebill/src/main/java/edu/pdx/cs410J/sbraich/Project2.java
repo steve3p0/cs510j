@@ -2,6 +2,8 @@ package edu.pdx.cs410J.sbraich;
 
 import edu.pdx.cs410J.AbstractPhoneBill;
 
+import java.io.IOException;
+
 
 /// The main class for the CS410J Phone Bill Project
 public class Project2
@@ -27,6 +29,12 @@ public class Project2
             PhoneBill bill = new PhoneBill(cli.customer);
             bill.addPhoneCall(call);
 
+            if (cli.textFile)
+            {
+                TextDumper dumper = new TextDumper();
+                dumper.dump(bill);
+            }
+
             if (cli.print)
             {
                 System.out.println(call.toString());
@@ -36,6 +44,11 @@ public class Project2
             System.exit(0);
         }
         catch (PhoneBillException e)
+        {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+        catch (IOException e)
         {
             System.err.println(e.getMessage());
             System.exit(1);

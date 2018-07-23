@@ -26,15 +26,6 @@ public class Cli
     public Boolean textFile;
     public Path filePath;
 
-    public void validatePath() throws PhoneBillException
-    {
-        File file = new File(this.filePath.toString());
-        if (!file.isDirectory())
-        {
-            throw new PhoneBillException("Filepath is invalid: " + this.filePath.toString());
-        }
-    }
-
     public Cli(String[] args) throws PhoneBillException
     {
         this.readme = Arrays.stream(args).anyMatch(s -> s.equals("-README"));
@@ -86,25 +77,27 @@ public class Cli
         this.startTime = arguments.get(3) + " " + arguments.get(4);
         this.endTime = arguments.get(5) + " " + arguments.get(6);
 
-        this.Validate();
+        this.validate();
     }
 
-    private Boolean Validate() throws PhoneBillException
+    private Boolean validate() throws PhoneBillException
     {
         if (this.customer == null || this.customer.isEmpty())
         {
             throw new PhoneBillException("Missing customer name");
         }
 
-        this.ValidatePhoneNumber(this.callerNumber);
-        this.ValidatePhoneNumber(this.calleeNumber);
+        this.validatePath();
 
-        this.ValidateDate(this.startTime);
-        this.ValidateDate(this.endTime);
+        this.validatePhoneNumber(this.callerNumber);
+        this.validatePhoneNumber(this.calleeNumber);
+
+        this.validateDate(this.startTime);
+        this.validateDate(this.endTime);
         return true;
     }
 
-    private void ValidateDate(String date) throws PhoneBillException
+    private void validateDate(String date) throws PhoneBillException
     {
         //1/15/2018 19:39
         try
@@ -118,7 +111,7 @@ public class Cli
         }
     }
 
-    private void ValidatePhoneNumber(String phoneNumber) throws PhoneBillException
+    private void validatePhoneNumber(String phoneNumber) throws PhoneBillException
     {
         //nnn-nnn-nnnn
         //(?:\d{3}-){2}\d{4}
@@ -128,6 +121,33 @@ public class Cli
         if (!phoneNumber.matches(pattern))
         {
             throw new PhoneBillException("'" + phoneNumber +"' is not a valid phone number.");
+        }
+    }
+
+    private void validatePath() throws PhoneBillException
+    {
+        // Check if directory path exists
+//        Path dir = bill.getFilePath().getParent();
+//        if (!Files.isDirectory(dir)) throw new PhoneBillException("textFile directory path not found: " + dir.toString());
+//        Files.isDirectory(dir);
+//        Files.exists(dir);
+//        Files.isWritable(dir);
+
+        if (this.textFile)
+        {
+            Path dir = this.filePath.getParent();
+            if (dir == null)
+            {
+                dir = Paths.get(System.getProperty("user.dir"));
+            }
+            if (!Files.isDirectory(dir)) throw new PhoneBillException("Filepath is invalid: " + dir.toString());
+            if (!Files.exists(dir)) throw new PhoneBillException("Directory doesn't exist: " + dir.toString());
+            if (!Files.isWritable(dir)) throw new PhoneBillException("Directory does have write permissions: " + dir.toString());
+
+            if (Files.exists(this.filePath) && !Files.isWritable(this.filePath))
+            {
+                throw new PhoneBillException("File does have write permissions: " + dir.toString());
+            }
         }
     }
 

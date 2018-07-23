@@ -15,10 +15,18 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
 {
     public void dump(PhoneBill bill) throws IOException
     {
-//        PrintWriter writer = new PrintWriter("the-file-name.txt", "UTF-8");
-//        writer.println("The first line");
-//        writer.println("The second line");
-//        writer.close();
+        // Check if directory path exists
+//        Path dir = bill.getFilePath().getParent();
+//        if (!Files.isDirectory(dir)) throw new PhoneBillException("textFile directory path not found: " + dir.toString());
+//        Files.isDirectory(dir);
+//        Files.exists(dir);
+//        Files.isWritable(dir);
+
+        // If file exists - file should be writable
+        //Files.exists(bill.getFilePath());
+        // Check if directory path is writable
+        // check if disk full
+        //if (file.length() == 0)
 
         Collection<PhoneCall> calls = bill.getPhoneCalls();
 
