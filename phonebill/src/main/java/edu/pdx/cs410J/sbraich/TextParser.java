@@ -21,8 +21,15 @@ public class TextParser implements PhoneBillParser<PhoneBill>
     public TextParser(Path path, String customerName) throws ParserException
     {
         this.filePath = path;
-        this.customer = customerName;
         this.validateFile();
+
+        if (customerName == null || customerName.isEmpty()) throw new ParserException("Customer name is empty");
+        this.customer = customerName;
+    }
+
+    public Boolean fileExists()
+    {
+        return Files.exists(this.filePath);
     }
 
     @Override
@@ -39,36 +46,46 @@ public class TextParser implements PhoneBillParser<PhoneBill>
                     + customerFromFile + "'";
             throw new ParserException(msg);
         }
+
+        if (this.customer == null || this.customer.isEmpty()) throw new ParserException("Customer name is empty");
+
         PhoneBill bill = new PhoneBill(this.customer);
 
-        // Get the Phone call string
-        String strCall = lines.get(1);
+        try
+        {
+            // Get the Phone call string
+            String strCall = lines.get(1);
 
-        // Match Phone Numbers
-        Pattern pattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}");
-        Matcher matcher = pattern.matcher(strCall);
+            // Match Phone Numbers
+            Pattern pattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}");
+            Matcher matcher = pattern.matcher(strCall);
 
-        matcher.find();
-        String callerNumber = matcher.group();
-        matcher.find();
-        String calleeNumber = matcher.group();
+            matcher.find();
+            String callerNumber = matcher.group();
+            matcher.find();
+            String calleeNumber = matcher.group();
 
-        // Match Datetimes
-        String reDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
-        String reTime = "\\d{1,2}:\\d{2}";
+            // Match Datetimes
+            String reDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
+            String reTime = "\\d{1,2}:\\d{2}";
 
-        Pattern p = Pattern.compile(reDate + " " + reTime);
-        Matcher m = p.matcher(strCall);
+            Pattern p = Pattern.compile(reDate + " " + reTime);
+            Matcher m = p.matcher(strCall);
 
-        m.find();
-        String startTime = m.group();
-        m.find();
-        String endTime = m.group();
+            m.find();
+            String startTime = m.group();
+            m.find();
+            String endTime = m.group();
 
-        PhoneCall call = new PhoneCall(callerNumber, calleeNumber, startTime, endTime);
-        bill.addPhoneCall(call);
+            PhoneCall call = new PhoneCall(callerNumber, calleeNumber, startTime, endTime);
+            bill.addPhoneCall(call);
 
-        return bill;
+            return bill;
+        }
+        catch (Exception e)
+        {
+            throw new ParserException("Command Line Arguments are not in the correct format");
+        }
     }
 
     private void validateFile() throws ParserException
@@ -78,14 +95,34 @@ public class TextParser implements PhoneBillParser<PhoneBill>
             throw new ParserException("File path missing");
         }
 
-        if (!Files.isRegularFile(this.filePath)) throw new ParserException("File path is not a file: " + this.filePath.toString());
-        if (!Files.exists(this.filePath)) throw new ParserException("File path doesn't exist: " + this.filePath.toString());
-        if (!Files.isWritable(this.filePath)) throw new ParserException("File path does have write permissions: " + this.filePath.toString());
-
-        File file = new File(this.filePath.toString());
-        if (file.length() == 0)
+        // If the file exists - validate the file
+        if (Files.exists(this.filePath))
         {
-            throw new ParserException("File is empty: " + this.filePath.toString());
+            if (!Files.isRegularFile(this.filePath))
+                throw new ParserException("File path is not a file: " + this.filePath.toString());
+            if (!Files.exists(this.filePath))
+                throw new ParserException("File path doesn't exist: " + this.filePath.toString());
+            if (!Files.isWritable(this.filePath))
+                throw new ParserException("File path does have write permissions: " + this.filePath.toString());
+
+            File file = new File(this.filePath.toString());
+            if (file.length() == 0)
+            {
+                throw new ParserException("File is empty: " + this.filePath.toString());
+            }
+        }
+        // Else validate the file path
+        else
+        {
+            Path dir = this.filePath.getParent();
+            if (dir == null)
+            {
+                dir = Paths.get(System.getProperty("user.dir"));
+            }
+
+            if (!Files.isDirectory(dir)) throw new ParserException("Filepath is invalid: " + dir.toString());
+            if (!Files.exists(dir)) throw new ParserException("Directory doesn't exist: " + dir.toString());
+            if (!Files.isWritable(dir)) throw new ParserException("Directory does have write permissions: " + dir.toString());
         }
     }
 
@@ -95,8 +132,6 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         try
         {
             ArrayList<String> lines = new ArrayList<String>();
-
-
             Files.lines(this.filePath).forEach(s -> lines.add(s));
 
             return lines;

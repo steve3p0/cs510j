@@ -26,13 +26,25 @@ public class Project2
             }
 
             PhoneCall call = new PhoneCall(cli.callerNumber, cli.calleeNumber, cli.startTime, cli.endTime);
-            PhoneBill bill = new PhoneBill(cli.customer);
-            bill.addPhoneCall(call);
 
             if (cli.textFile)
             {
+                PhoneBill bill = new PhoneBill(cli.customer, cli.filePath.toString());
+                bill.addPhoneCall(call);
+
+                TextParser parser = new TextParser(cli.filePath, bill.getCustomer());
+                if (parser.fileExists())
+                {
+                    bill = parser.parse();
+                }
+
                 TextDumper dumper = new TextDumper();
                 dumper.dump(bill);
+            }
+            else
+            {
+                PhoneBill bill = new PhoneBill(cli.customer);
+                bill.addPhoneCall(call);
             }
 
             if (cli.print)

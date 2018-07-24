@@ -5,8 +5,11 @@ import edu.pdx.cs410J.PhoneBillParser;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.*;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,6 +59,101 @@ public class TextParserTest
     }
 
     @Test(expected = ParserException.class)
+    public void TestParser_MalformattedFile1() throws ParserException, IOException
+    {
+        String callStr = "[Phone call from to from 1/15/2018 19:39 to 1/15/2018 20:39]";
+        String filePath = "malformatted.txt";
+        String customer = "Steve";
+
+        File file = new File(filePath);
+
+        List<String> lines = Arrays.asList("Steve", callStr);
+
+        Files.write(Paths.get(filePath), lines, Charset.forName("UTF-8"));
+
+        try
+        {
+            TextParser tp = new TextParser(Paths.get(filePath), customer);
+            PhoneBill bill = tp.parse();
+        }
+        finally
+        {
+            file.delete();
+        }
+    }
+
+    @Test(expected = ParserException.class)
+    public void TestParser_MalformattedFile2() throws ParserException, IOException
+    {
+        String callStr = "[Phone call from to from 1/15/2018 19:39 to 1/15/2018 20:39]";
+        String filePath = "malformatted.txt";
+        String customer = "";
+
+        File file = new File(filePath);
+
+        List<String> lines = Arrays.asList(customer, callStr);
+
+        Files.write(Paths.get(filePath), lines, Charset.forName("UTF-8"));
+
+        try
+        {
+            TextParser tp = new TextParser(Paths.get(filePath), customer);
+            PhoneBill bill = tp.parse();
+        }
+        finally
+        {
+            file.delete();
+        }
+    }
+
+    @Test(expected = ParserException.class)
+    public void TestParser_MalformattedFile3() throws ParserException, IOException
+    {
+        String filePath = "malformatted.txt";
+        String customer = "Steve";
+
+        File file = new File(filePath);
+
+        List<String> lines = Arrays.asList(customer);
+
+        Files.write(Paths.get(filePath), lines, Charset.forName("UTF-8"));
+
+        try
+        {
+            TextParser tp = new TextParser(Paths.get(filePath), "Steve");
+            PhoneBill bill = tp.parse();
+        }
+        finally
+        {
+            file.delete();
+        }
+    }
+
+    @Test(expected = ParserException.class)
+    public void TestParser_MalformattedFile4() throws ParserException, IOException
+    {
+        String callStr = "fsthdf435ydfghdf";
+        String filePath = "malformatted.txt";
+        String customer = "Steve";
+
+        File file = new File(filePath);
+
+        List<String> lines = Arrays.asList(customer, callStr);
+
+        Files.write(Paths.get(filePath), lines, Charset.forName("UTF-8"));
+
+        try
+        {
+            TextParser tp = new TextParser(Paths.get(filePath), customer);
+            PhoneBill bill = tp.parse();
+        }
+        finally
+        {
+            file.delete();
+        }
+    }
+
+    @Test(expected = ParserException.class)
     public void TestParser_DiffCustomers() throws ParserException, IOException
     {
         //Steve
@@ -86,13 +184,13 @@ public class TextParserTest
         }
     }
 
-    @Test(expected = ParserException.class)
-    public void TestParser_Constructor_FileNotFound() throws ParserException
-    {
-        Path path = Paths.get("filenotfound.txt");
-        String customer = "Steve";
-        TextParser parser = new TextParser(path, customer);
-    }
+//    @Test(expected = ParserException.class)
+//    public void TestParser_Constructor_FileNotFound() throws ParserException
+//    {
+//        Path path = Paths.get("filenotfound.txt");
+//        String customer = "Steve";
+//        TextParser parser = new TextParser(path, customer);
+//    }
 
     @Test(expected = ParserException.class)
     public void TestParser_EmptyFile() throws ParserException, IOException

@@ -129,13 +129,6 @@ public class Cli
 
     private void validatePath() throws PhoneBillException
     {
-        // Check if directory path exists
-//        Path dir = bill.getFilePath().getParent();
-//        if (!Files.isDirectory(dir)) throw new PhoneBillException("textFile directory path not found: " + dir.toString());
-//        Files.isDirectory(dir);
-//        Files.exists(dir);
-//        Files.isWritable(dir);
-
         if (this.textFile)
         {
             Path dir = this.filePath.getParent();

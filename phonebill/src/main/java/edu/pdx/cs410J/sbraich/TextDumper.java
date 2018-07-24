@@ -17,10 +17,13 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
     {
         Collection<PhoneCall> calls = bill.getPhoneCalls();
 
-        calls.toString();
-        List<String> lines = Arrays.asList(bill.getCustomer(), calls.toString());
+        Path path = bill.getFilePath();
+        String callStr = calls.toString();
+        String customer = bill.getCustomer();
 
-        Files.write(bill.getFilePath(), lines, Charset.forName("UTF-8"));
+        List<String> lines = Arrays.asList(customer, callStr);
+
+        Files.write(path, lines, Charset.forName("UTF-8"));
     }
 }
 
