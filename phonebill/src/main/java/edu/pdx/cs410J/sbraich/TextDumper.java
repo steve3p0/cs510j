@@ -7,12 +7,12 @@ import java.nio.file.*;
 import java.nio.charset.Charset;
 import java.io.IOException;
 
-import edu.pdx.cs410J.AbstractPhoneBill;
 import edu.pdx.cs410J.PhoneBillDumper;
 
-//public class TextDumper implements PhoneBillDumper<T extends AbstractPhoneBill>
+/// public class TextDumper implements PhoneBillDumper<T extends AbstractPhoneBill>
 public class TextDumper implements PhoneBillDumper<PhoneBill>
 {
+    /// Impelements dump method of PhoneBillDumper method
     public void dump(PhoneBill bill) throws IOException
     {
         Collection<PhoneCall> calls = bill.getPhoneCalls();

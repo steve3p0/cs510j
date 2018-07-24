@@ -1,16 +1,10 @@
 package edu.pdx.cs410J.sbraich;
 
-
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import java.io.*;
 import java.time.DateTimeException;
 import java.time.format.*;
-import java.util.Date;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.nio.file.*;
-import java.util.zip.DataFormatException;
 
 /// The class that manages the command line interface
 public class Cli
@@ -29,6 +23,7 @@ public class Cli
     public Boolean textFile;
     public Path filePath;
 
+    /// Constructor for CLI - Processes Command Line Arguments
     public Cli(String[] args) throws PhoneBillException
     {
         this.readme = Arrays.stream(args).anyMatch(s -> s.equals("-README"));
@@ -83,6 +78,7 @@ public class Cli
         this.validate();
     }
 
+    /// Validate Method for CLI - Calls all private validate methods
     private Boolean validate() throws PhoneBillException
     {
         if (this.customer == null || this.customer.isEmpty())
@@ -100,6 +96,7 @@ public class Cli
         return true;
     }
 
+    /// Validate Date
     private void validateDate(String date) throws PhoneBillException
     {
         //1/15/2018 19:39
@@ -114,6 +111,7 @@ public class Cli
         }
     }
 
+    /// Validate Phone Number
     private void validatePhoneNumber(String phoneNumber) throws PhoneBillException
     {
         //nnn-nnn-nnnn
@@ -127,6 +125,7 @@ public class Cli
         }
     }
 
+    /// Validate File Path
     private void validatePath() throws PhoneBillException
     {
         if (this.textFile)
@@ -145,28 +144,5 @@ public class Cli
                 throw new PhoneBillException("File does have write permissions: " + dir.toString());
             }
         }
-    }
-
-    public void Iterate()
-    {
-        //Project1 customer callerNumber calleeNumber startTime endTime -print -README
-
-        for (String arg : arguments)
-        {
-            System.out.println(arg);
-        }
-
-    }
-
-    public String ToString()
-    {
-        //Project1 customer callerNumber calleeNumber startTime endTime -print -README
-
-        String show = "customer: " + customer +
-                      "\ncallerNumber: " + callerNumber +
-                      "\ncalleeNumber: " + calleeNumber +
-                      "\nstartTime: " + startTime +
-                      "\nendTime: " + endTime;
-        return show;
     }
 }

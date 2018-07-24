@@ -1,9 +1,6 @@
 package edu.pdx.cs410J.sbraich;
 
-import edu.pdx.cs410J.AbstractPhoneBill;
-
 import java.io.IOException;
-
 
 /// The main class for the CS410J Phone Bill Project
 public class Project2
@@ -11,10 +8,10 @@ public class Project2
     static final String README = "This is a PhoneBill app. Blah Blah.";
 
     /// Expecting command line arguments
+    /// We have moved most of the command line arg logic into its own class
     public static void main(String[] args) throws Exception
     {
         // Refer to one of Dave's classes so that we can be sure it is on the classpath
-
         try
         {
             Cli cli = new Cli(args);
@@ -66,6 +63,4 @@ public class Project2
             System.exit(1);
         }
     }
-
-
 }

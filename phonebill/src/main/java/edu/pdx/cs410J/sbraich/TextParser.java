@@ -1,23 +1,21 @@
 package edu.pdx.cs410J.sbraich;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.*;
-import java.util.Arrays;
-import java.io.*;
-import java.nio.file.*;
-import java.nio.charset.Charset;
-
 import edu.pdx.cs410J.PhoneBillParser;
 import edu.pdx.cs410J.ParserException;
-import edu.pdx.cs410J.PhoneBillParser;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.*;
+import java.io.*;
+import java.nio.file.*;
+
+/// TextParser concrete class that reads in Phonebill from a file
 public class TextParser implements PhoneBillParser<PhoneBill>
 {
     public final Path filePath;
     public final String customer;
 
+    /// Constructor for Text Parser - Path and customerName as args
     public TextParser(Path path, String customerName) throws ParserException
     {
         this.filePath = path;
@@ -27,11 +25,13 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         this.customer = customerName;
     }
 
+    /// FileExists method called in main
     public Boolean fileExists()
     {
         return Files.exists(this.filePath);
     }
 
+    /// Overrides parse method of PhoneBillParser method
     @Override
     public PhoneBill parse() throws ParserException
     {
@@ -88,6 +88,7 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         }
     }
 
+    /// Validates a File Path passed to the TextParser
     private void validateFile() throws ParserException
     {
         if (this.filePath == null)
@@ -126,7 +127,8 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         }
     }
 
-    // inspired by http://www.avajava.com/tutorials/lessons/how-do-i-read-a-string-from-a-file-line-by-line.html
+    /// Does the read file i/o heavy lifting
+    /// inspired by http://www.avajava.com/tutorials/lessons/how-do-i-read-a-string-from-a-file-line-by-line.html
     private List<String> ReadFile() throws ParserException
     {
         try
