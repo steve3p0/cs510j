@@ -71,7 +71,10 @@ public class Project2IT extends InvokeMainTestCase
     public void TestMain_ParserNoFile_Dumper() throws IOException
     {
         String customer = "My Customer";
+
+        String filePathOption = "-textFile";
         String filePath = "main_parsedump.txt";
+        String printOption = "-print";
 
         String caller = "123-456-7890";
         String callee = "234-567-8901";
@@ -86,7 +89,7 @@ public class Project2IT extends InvokeMainTestCase
 
         try
         {
-            MainMethodResult result = invokeMain("-print", "-textFile", filePath, customer, caller, callee, startDate, startTime, endDate, endTime);
+            MainMethodResult result = invokeMain(printOption, filePathOption, filePath, customer, caller, callee, startDate, startTime, endDate, endTime);
             assertThat(result.getExitCode(), equalTo(0));
             assert(f.exists());
             assert(f.length() > 0);
@@ -108,12 +111,15 @@ public class Project2IT extends InvokeMainTestCase
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test //(expected = IllegalArgumentException.class)
     public void TestMain_ParserDumper_NameDifferent() throws IOException, ParserException
     {
+        String printOption = "-print";
+        String textFileOption = "-textFile";
+        String filePath = "diff_customer_names.txt";
+
         String customer1 = "My Customer 1";
         String customer2 = "My Customer 2";
-        String filePath = "diff_customer_names.txt";
 
         String caller = "123-456-7890";
         String callee = "234-567-8901";
@@ -129,7 +135,7 @@ public class Project2IT extends InvokeMainTestCase
         try
         {
             // Setup first textFile call with "My Customer 1"
-            MainMethodResult result1 = invokeMain("-textFile", filePath, customer1, caller, callee, startDate, startTime, endDate, endTime);
+            MainMethodResult result1 = invokeMain(textFileOption, filePath, printOption,  customer1, caller, callee, startDate, startTime, endDate, endTime);
             assertThat(result1.getExitCode(), equalTo(0));
             assert(f.exists());
             assert(f.length() > 0);
@@ -144,7 +150,7 @@ public class Project2IT extends InvokeMainTestCase
             assertEquals(expectedCallFromFile, callFile);
 
             // Setup second call with "My Customer 2"
-            MainMethodResult result2 = invokeMain("-textFile", filePath, customer2, caller, callee, startDate, startTime, endDate, endTime);
+            MainMethodResult result2 = invokeMain(textFileOption, filePath, printOption, customer2, caller, callee, startDate, startTime, endDate, endTime);
         }
         finally
         {

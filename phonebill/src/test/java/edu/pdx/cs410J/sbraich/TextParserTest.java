@@ -21,25 +21,27 @@ public class TextParserTest
 {
 
     @Test
-    public void TestParser_Basic() throws ParserException, IOException
+    public void TestParser_Basic() throws PhoneBillException, ParserException, IOException
     {
         //Steve
         // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 19:39 to 1/15/2018 20:39]
 
-        String filePath = "testparser.txt";
+
         String customer = "Steve";
-        PhoneBill bill1 = new PhoneBill(customer, filePath);
-        PhoneCall call1 = new PhoneCall("123-123-1234", "321-321-3210", "1/15/2018 19:39","12/5/2018 7:39");
-
-        bill1.addPhoneCall(call1);
-
-        TextDumper dumper = new TextDumper();
-        dumper.dump(bill1);
+        String filePath = "testparser.txt";
 
         File file = new File(filePath);
 
         try
         {
+            PhoneBill bill1 = new PhoneBill(customer, filePath);
+            PhoneCall call1 = new PhoneCall("123-123-1234", "321-321-3210", "1/15/2018 19:39","12/5/2018 7:39");
+
+            bill1.addPhoneCall(call1);
+
+            TextDumper dumper = new TextDumper();
+            dumper.dump(bill1);
+
             TextParser tp = new TextParser(Paths.get(filePath), customer);
             PhoneBill bill = tp.parse();
             Collection<PhoneCall> calls = bill.getPhoneCalls();
@@ -154,7 +156,7 @@ public class TextParserTest
     }
 
     @Test(expected = ParserException.class)
-    public void TestParser_DiffCustomers() throws ParserException, IOException
+    public void TestParser_DiffCustomers() throws PhoneBillException, ParserException, IOException
     {
         //Steve
         // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 19:39 to 1/15/2018 20:39]

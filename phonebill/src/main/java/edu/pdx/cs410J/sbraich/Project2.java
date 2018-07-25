@@ -36,10 +36,11 @@ public class Project2
                     readbill = parser.parse();
                 }
 
-                PhoneBill writebill = new PhoneBill(cli.customer, cli.filePath.toString());
+                PhoneBill writeBill = new PhoneBill(cli.customer, cli.filePath.toString());
+                writeBill.addPhoneCall(call);
                 TextDumper dumper = new TextDumper();
-                dumper.dump(writebill);
-                writebill.addPhoneCall(call);
+                dumper.dump(writeBill);
+
             }
             else
             {
@@ -70,13 +71,5 @@ public class Project2
             System.err.println(e.getMessage());
             System.exit(1);
         }
-//        catch (Exception e)
-//        {
-//            String msg = "FATAL ERROR: Unhandled Exception!!! Something bad happend and we don't know why. \n" + e.getMessage();
-//            System.err.println(msg);
-//
-//            // Exit Code is NEGATIVE - BECAUSE WE DON'T KNOW WTF happened.
-//            System.exit(-1);
-//        }
     }
 }

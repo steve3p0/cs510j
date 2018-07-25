@@ -141,8 +141,11 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test05_EndTimeIsMalformatted()
     {
+        // Input Argument Options
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich-x.txt";
+
+        // Input Argument Paramenters
         String customer = "Test5";
         String caller = "123-456-7890";
         String callee = "234-567-8901";
@@ -151,10 +154,11 @@ public class GraderIT extends InvokeMainTestCase
         String endDate = "01/04/20/1";
         String endTime = "16:00";
 
-        //String expectedStdOut = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
+        // Expected Output
         Integer expectedExitCode = 1;
         String expectedStdOut = "StdOut: ";
         String expectedStdErr = "StdErr: " + "'" + endDate + " " + endTime + "' is not a valid date/time" + "\n";
+
         File f = new File(filePath);
         MainMethodResult result = null;
 
@@ -165,8 +169,8 @@ public class GraderIT extends InvokeMainTestCase
         finally
         {
             Integer actualExitCode = result.getExitCode();
-            String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
             String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
+            String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
 
             assertThat(actualExitCode, equalTo(expectedExitCode));
             assertThat(actualStdOut, equalTo(expectedStdOut));
@@ -267,7 +271,6 @@ public class GraderIT extends InvokeMainTestCase
     {
         // Setup Variables
         String setupCustomer = "Project2";
-
         String setupCaller = "123-456-7890";
         String setupCallee = "234-567-8901";
         String setupStartDate = "01/07/2018";

@@ -26,16 +26,42 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
         List<String> lines = Arrays.asList(customer, callStr);
 
         this.CreateDirFromFilePath(path);
+        this.validateFilePath(path);
         Files.write(path, lines, Charset.forName("UTF-8"));
     }
 
     private void CreateDirFromFilePath(Path path) throws IOException
     {
         Path parentDir = path.getParent();
+
+        if (parentDir == null)
+        {
+            parentDir = Paths.get(System.getProperty("user.dir"));
+        }
+
         File dir = new File(parentDir.toString());
         if (!dir.exists())
         {
-            Files.createDirectories(path);
+            Files.createDirectories(parentDir);
+        }
+    }
+
+    /// Validate File Path
+    private void validateFilePath(Path path) throws IOException
+    {
+        Path dir = path.getParent();
+        if (dir == null)
+        {
+            dir = Paths.get(System.getProperty("user.dir"));
+        }
+
+        if (!Files.isDirectory(dir)) throw new IOException("Filepath is invalid: " + dir.toString());
+        if (!Files.exists(dir)) throw new IOException("Directory doesn't exist: " + dir.toString());
+        if (!Files.isWritable(dir)) throw new IOException("Directory does have write permissions: " + dir.toString());
+
+        if (Files.exists(path) && !Files.isWritable(path))
+        {
+            throw new IOException("File does have write permissions: " + path.toString());
         }
     }
 }

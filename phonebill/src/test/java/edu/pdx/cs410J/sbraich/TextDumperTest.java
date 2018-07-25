@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class TextDumperTest
 {
     @Test
-    public void TestTextDumper_Basic() throws IOException
+    public void TestTextDumper_Basic() throws PhoneBillException, IOException
     {
         PhoneBill bill = new PhoneBill("Steve", "text.txt");
         PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234", "1/15/2018 19:39","1/15/2018 20:39");
@@ -30,8 +30,8 @@ public class TextDumperTest
         file.delete();
     }
 
-    @Test(expected = AccessDeniedException.class)
-    public void TestTextDumper_ReadOnly() throws IOException
+    @Test(expected = IOException.class)
+    public void TestTextDumper_ReadOnly() throws PhoneBillException, IOException
     {
         File f = new File("readonly.txt");
         f.createNewFile();
@@ -55,9 +55,8 @@ public class TextDumperTest
         }
     }
 
-    // TODO: should not fail
-    @Test(expected = NoSuchFileException.class)
-    public void TestTextDumper_InvalidPath() throws IOException
+    @Test(expected = IOException.class)
+    public void TestTextDumper_InvalidPath() throws PhoneBillException, IOException
     {
         PhoneBill bill = new PhoneBill("Steve", "/nonexistant/readonly.txt");
         PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234", "1/15/2018 19:39", "1/15/2018 20:39");

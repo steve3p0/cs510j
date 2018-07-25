@@ -14,6 +14,7 @@ public class TextParser implements PhoneBillParser<PhoneBill>
 {
     public final Path filePath;
     public final String customerFromCli;
+
     private String callerNumber;
     private String calleeNumber;
     private String startTime;
@@ -23,10 +24,9 @@ public class TextParser implements PhoneBillParser<PhoneBill>
     public TextParser(Path path, String customerName) throws ParserException
     {
         this.filePath = path;
-        this.validateFile();
-
-        if (customerName == null || customerName.isEmpty()) throw new ParserException("Customer name is empty");
         this.customerFromCli = customerName;
+
+        this.validateFile();
     }
 
     /// FileExists method called in main
@@ -81,30 +81,23 @@ public class TextParser implements PhoneBillParser<PhoneBill>
     @Override
     public PhoneBill parse() throws ParserException
     {
-        List<String> lines = this.ReadFile();
-
-        // Get the Customer Name
-        String customerFromFile = lines.get(0);
-
-        PhoneBill bill = new PhoneBill(this.customerFromCli);
-
-        // Get the Phone call string
-        String strCall = lines.get(1);
-
-        this.extractPhoneNumbers(strCall);
-        this.extractDateTimes(strCall);
-
         try
         {
-            Cli cli = new Cli();
-            cli.validatePhoneNumber(this.callerNumber);
-            cli.validatePhoneNumber(this.calleeNumber);
-            cli.validateDate(this.startTime);
-            cli.validateDate(this.endTime);
+            List<String> lines = this.ReadFile();
 
-            this.validateCustomerName(customerFromFile, this.customerFromCli, this.filePath.toString());
+            // Get the Customer Name
+            String customerFromFile = lines.get(0);
+
+            // Get the Phone call string
+            String strCall = lines.get(1);
+
+            this.extractPhoneNumbers(strCall);
+            this.extractDateTimes(strCall);
+
+            //this.validateCustomerName(customerFromFile, this.customerFromCli, this.filePath.toString());
 
             PhoneCall call = new PhoneCall(this.callerNumber, this.calleeNumber, this.startTime, this.endTime);
+            PhoneBill bill = new PhoneBill(this.customerFromCli, customerFromFile, filePath.toString());
             bill.addPhoneCall(call);
 
             return bill;
@@ -113,26 +106,8 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         {
             throw new ParserException(e.getMessage());
         }
-//        catch (Exception e)
-//        {
-//            throw new ParserException(e.getMessage());
-//        }
     }
 
-    /// Validates a Customer Name in the PhoneBill text file.
-    private void validateCustomerName(String customerFromFile, String customerFromCli, String path) throws ParserException
-    {
-        if (customerFromFile == null || customerFromFile.isEmpty())
-        {
-            throw new ParserException("Customer name in phone bill file '" + path + "' is is empty");
-        }
-
-        if (!customerFromFile.equals(customerFromCli))
-        {
-            String msg = "Customer from command line '" + customerFromCli + "' does not match customer '" + customerFromFile + "' in file '" + path + "'";
-            throw new ParserException(msg);
-        }
-    }
     /// Validates a File Path passed to the TextParser
     private void validateFile() throws ParserException
     {
@@ -181,6 +156,10 @@ public class TextParser implements PhoneBillParser<PhoneBill>
             ArrayList<String> lines = new ArrayList<String>();
             Files.lines(this.filePath).forEach(s -> lines.add(s));
 
+            if (lines.size() < 2)
+            {
+                throw new ParserException("Invalid File Format: Missing PhoneCall line");
+            }
 
             return lines;
         }

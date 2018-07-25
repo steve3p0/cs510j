@@ -9,7 +9,7 @@ public class CliTest
     @Test
     public void CliTest_Basic() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39"};
         Cli cli = new Cli(args);
 
         assertEquals("customer", cli.customer);
@@ -26,7 +26,7 @@ public class CliTest
     @Test(expected = PhoneBillException.class)
     public void CliTest_TooMany() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "EXTRA"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "EXTRA"};
         Cli cli = new Cli(args);
     }
 
@@ -40,126 +40,23 @@ public class CliTest
     @Test(expected = PhoneBillException.class)
     public void CliTest_TooFew2() throws Exception
     {
-        String[] args = {"Project2", "customer"};
+        String[] args = {"customer"};
         Cli cli = new Cli(args);
     }
 
     @Test(expected = PhoneBillException.class)
     public void CliTest_TooFew7() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018"};
         Cli cli = new Cli(args);
     }
-
-    // Dand and Time Tests
-
-    // Invalid Year
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidYear1() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/201", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidYear2() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/20", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidYear3() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/1", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidYear4() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/20180", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidYear5() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    // Invalid Month
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidMonth1() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "15/15/2018", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidMonth2() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "115/15/2018", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidMonth3() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "/15/2018", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    // Invalid Day Tests
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidDay1() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/40/2018", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidDay2() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/140/2018", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidDay3() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "2/30/2018", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidDay4() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/0/2018", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_InvalidDay5() throws Exception
-    {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1//2018", "19:39", "12/1/2018", "19:39"};
-        Cli cli = new Cli(args);
-    }
-
-
 
     // Print Tests
 
     @Test
     public void CliTest_PrintFirst() throws Exception
     {
-        String[] args = {"Project2", "-print", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39"};
+        String[] args = {"-print", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39"};
         Cli cli = new Cli(args);
 
         assertEquals("customer", cli.customer);
@@ -176,7 +73,7 @@ public class CliTest
     @Test
     public void CliTest_PrintLast() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print"};
         Cli cli = new Cli(args);
 
         assertEquals("customer", cli.customer);
@@ -193,7 +90,7 @@ public class CliTest
     @Test
     public void CliTest_PrintMiddle() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "-print", "1/15/2018", "19:39", "12/1/2018", "19:39"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "-print", "1/15/2018", "19:39", "12/1/2018", "19:39"};
         Cli cli = new Cli(args);
 
         assertEquals("customer", cli.customer);
@@ -212,7 +109,7 @@ public class CliTest
     @Test
     public void CliTest_ReadMeOnly() throws Exception
     {
-        String[] args = {"Project2", "-README"};
+        String[] args = {"-README"};
         Cli cli = new Cli(args);
 
         assertEquals(false, cli.textFile);
@@ -223,21 +120,21 @@ public class CliTest
     @Test(expected = PhoneBillException.class)
     public void CliTest_ReadMeFirst() throws Exception
     {
-        String[] args = {"Project2", "-README", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print"};
+        String[] args = {"-README", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print"};
         Cli cli = new Cli(args);
     }
 
     @Test(expected = PhoneBillException.class)
     public void CliTest_ReadMeLast() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print", "-README"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print", "-README"};
         Cli cli = new Cli(args);
     }
 
     @Test(expected = PhoneBillException.class)
     public void CliTest_ReadMeMiddle() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "-README", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "-README", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print"};
         Cli cli = new Cli(args);
     }
 
@@ -245,7 +142,7 @@ public class CliTest
     @Test
     public void CliTest_TextFile_First() throws Exception
     {
-        String[] args = {"Project2", "-textFile", "text.txt", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39"};
+        String[] args = {"-textFile", "text.txt", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39"};
         Cli cli = new Cli(args);
 
         assertEquals("customer", cli.customer);
@@ -264,7 +161,7 @@ public class CliTest
     @Test
     public void CliTest_TextFile_Last() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-textFile", "text.txt"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-textFile", "text.txt"};
         Cli cli = new Cli(args);
 
         assertEquals("customer", cli.customer);
@@ -283,7 +180,7 @@ public class CliTest
     @Test
     public void CliTest_TextFile_Middle() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "-textFile", "text.txt", "1/15/2018", "19:39", "12/1/2018", "19:39"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "-textFile", "text.txt", "1/15/2018", "19:39", "12/1/2018", "19:39"};
         Cli cli = new Cli(args);
 
         assertEquals("customer", cli.customer);
@@ -302,14 +199,14 @@ public class CliTest
     @Test(expected = PhoneBillException.class)
     public void CliTest_TextFileWithAllArgs() throws Exception
     {
-        String[] args = {"Project2", "-textFile", "text.txt", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print", "-README"};
+        String[] args = {"-textFile", "text.txt", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-print", "-README"};
         Cli cli = new Cli(args);
     }
 
     @Test(expected = PhoneBillException.class)
     public void CliTest_TextFile_NoPath() throws Exception
     {
-        String[] args = {"Project2", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-textFile"};
+        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018", "19:39", "12/1/2018", "19:39", "-textFile"};
         Cli cli = new Cli(args);
 
         fail("Not tested yet");
@@ -318,7 +215,7 @@ public class CliTest
 //    @Test
 //    public void IterateTest()
 //    {
-//        String[] args = {"Project2", "customer", "callerNumber", "calleeNumber", "startTime", "endTime", "-print", "-README"};
+//        String[] args = {"customer", "callerNumber", "calleeNumber", "startTime", "endTime", "-print", "-README"};
 //        Cli cli = new Cli(args);
 //
 //        cli.Iterate();
@@ -327,7 +224,7 @@ public class CliTest
 //    @Test
 //    public void ToString()
 //    {
-//        String[] args = {"Project2", "customer", "callerNumber", "calleeNumber", "startTime", "endTime", "-print", "-README"};
+//        String[] args = {"customer", "callerNumber", "calleeNumber", "startTime", "endTime", "-print", "-README"};
 //        Cli cli = new Cli(args);
 //
 //        String expect = "Executable: " + args[0] +
