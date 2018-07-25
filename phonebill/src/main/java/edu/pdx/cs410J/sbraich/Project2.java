@@ -1,5 +1,7 @@
 package edu.pdx.cs410J.sbraich;
 
+import edu.pdx.cs410J.ParserException;
+
 import java.io.IOException;
 
 /// The main class for the CS410J Phone Bill Project
@@ -26,17 +28,18 @@ public class Project2
 
             if (cli.textFile)
             {
-                PhoneBill bill = new PhoneBill(cli.customer, cli.filePath.toString());
-                bill.addPhoneCall(call);
+                PhoneBill readbill = new PhoneBill(cli.customer, cli.filePath.toString());
 
-                TextParser parser = new TextParser(cli.filePath, bill.getCustomer());
+                TextParser parser = new TextParser(cli.filePath, readbill.getCustomer());
                 if (parser.fileExists())
                 {
-                    bill = parser.parse();
+                    readbill = parser.parse();
                 }
 
+                PhoneBill writebill = new PhoneBill(cli.customer, cli.filePath.toString());
                 TextDumper dumper = new TextDumper();
-                dumper.dump(bill);
+                dumper.dump(writebill);
+                writebill.addPhoneCall(call);
             }
             else
             {
@@ -57,10 +60,23 @@ public class Project2
             System.err.println(e.getMessage());
             System.exit(1);
         }
+        catch (ParserException e)
+        {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         catch (IOException e)
         {
             System.err.println(e.getMessage());
             System.exit(1);
         }
+//        catch (Exception e)
+//        {
+//            String msg = "FATAL ERROR: Unhandled Exception!!! Something bad happend and we don't know why. \n" + e.getMessage();
+//            System.err.println(msg);
+//
+//            // Exit Code is NEGATIVE - BECAUSE WE DON'T KNOW WTF happened.
+//            System.exit(-1);
+//        }
     }
 }

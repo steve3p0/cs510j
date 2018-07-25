@@ -13,7 +13,11 @@ import java.nio.file.*;
 public class TextParser implements PhoneBillParser<PhoneBill>
 {
     public final Path filePath;
-    public final String customer;
+    public final String customerFromCli;
+    private String callerNumber;
+    private String calleeNumber;
+    private String startTime;
+    private String endTime;
 
     /// Constructor for Text Parser - Path and customerName as args
     public TextParser(Path path, String customerName) throws ParserException
@@ -22,13 +26,55 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         this.validateFile();
 
         if (customerName == null || customerName.isEmpty()) throw new ParserException("Customer name is empty");
-        this.customer = customerName;
+        this.customerFromCli = customerName;
     }
 
     /// FileExists method called in main
     public Boolean fileExists()
     {
         return Files.exists(this.filePath);
+    }
+
+    private void extractPhoneNumbers(String line) throws ParserException
+    {
+        try
+        {
+            // Match Phone Numbers
+            Pattern pattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}");
+            Matcher matcher = pattern.matcher(line);
+
+            matcher.find();
+            this.callerNumber = matcher.group();
+            matcher.find();
+            this.calleeNumber = matcher.group();
+        }
+        catch (IllegalStateException e)
+        {
+            throw new ParserException("Invalid Phone Number: " + line);
+        }
+    }
+
+    private void extractDateTimes(String line) throws ParserException
+    {
+        try
+        {
+            // Match Datetimes
+            String reDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
+            String reTime = "\\d{1,2}:\\d{2}";
+
+            Pattern p = Pattern.compile(reDate + " " + reTime);
+            Matcher m = p.matcher(line);
+
+            m.find();
+            this.startTime = m.group();
+            m.find();
+            this.endTime = m.group();
+        }
+        catch (IllegalStateException e)
+        {
+            throw new ParserException("Invalid DateTime: " + line);
+        }
+
     }
 
     /// Overrides parse method of PhoneBillParser method
@@ -40,54 +86,53 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         // Get the Customer Name
         String customerFromFile = lines.get(0);
 
-        if (!this.customer.equals(customerFromFile))
-        {
-            String msg = "Customer from command line '" + this.customer + "' does not match customer from file '"
-                    + customerFromFile + "'";
-            throw new ParserException(msg);
-        }
+        PhoneBill bill = new PhoneBill(this.customerFromCli);
 
-        if (this.customer == null || this.customer.isEmpty()) throw new ParserException("Customer name is empty");
+        // Get the Phone call string
+        String strCall = lines.get(1);
 
-        PhoneBill bill = new PhoneBill(this.customer);
+        this.extractPhoneNumbers(strCall);
+        this.extractDateTimes(strCall);
 
         try
         {
-            // Get the Phone call string
-            String strCall = lines.get(1);
+            Cli cli = new Cli();
+            cli.validatePhoneNumber(this.callerNumber);
+            cli.validatePhoneNumber(this.calleeNumber);
+            cli.validateDate(this.startTime);
+            cli.validateDate(this.endTime);
 
-            // Match Phone Numbers
-            Pattern pattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}");
-            Matcher matcher = pattern.matcher(strCall);
+            this.validateCustomerName(customerFromFile, this.customerFromCli, this.filePath.toString());
 
-            matcher.find();
-            String callerNumber = matcher.group();
-            matcher.find();
-            String calleeNumber = matcher.group();
-
-            // Match Datetimes
-            String reDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
-            String reTime = "\\d{1,2}:\\d{2}";
-
-            Pattern p = Pattern.compile(reDate + " " + reTime);
-            Matcher m = p.matcher(strCall);
-
-            m.find();
-            String startTime = m.group();
-            m.find();
-            String endTime = m.group();
-
-            PhoneCall call = new PhoneCall(callerNumber, calleeNumber, startTime, endTime);
+            PhoneCall call = new PhoneCall(this.callerNumber, this.calleeNumber, this.startTime, this.endTime);
             bill.addPhoneCall(call);
 
             return bill;
         }
-        catch (Exception e)
+        catch (PhoneBillException e)
         {
-            throw new ParserException("Command Line Arguments are not in the correct format");
+            throw new ParserException(e.getMessage());
         }
+//        catch (Exception e)
+//        {
+//            throw new ParserException(e.getMessage());
+//        }
     }
 
+    /// Validates a Customer Name in the PhoneBill text file.
+    private void validateCustomerName(String customerFromFile, String customerFromCli, String path) throws ParserException
+    {
+        if (customerFromFile == null || customerFromFile.isEmpty())
+        {
+            throw new ParserException("Customer name in phone bill file '" + path + "' is is empty");
+        }
+
+        if (!customerFromFile.equals(customerFromCli))
+        {
+            String msg = "Customer from command line '" + customerFromCli + "' does not match customer '" + customerFromFile + "' in file '" + path + "'";
+            throw new ParserException(msg);
+        }
+    }
     /// Validates a File Path passed to the TextParser
     private void validateFile() throws ParserException
     {
@@ -135,6 +180,7 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         {
             ArrayList<String> lines = new ArrayList<String>();
             Files.lines(this.filePath).forEach(s -> lines.add(s));
+
 
             return lines;
         }

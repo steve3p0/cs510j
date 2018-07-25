@@ -55,6 +55,7 @@ public class TextDumperTest
         }
     }
 
+    // TODO: should not fail
     @Test(expected = NoSuchFileException.class)
     public void TestTextDumper_InvalidPath() throws IOException
     {

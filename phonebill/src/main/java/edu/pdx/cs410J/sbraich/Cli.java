@@ -23,6 +23,9 @@ public class Cli
     public Boolean textFile;
     public Path filePath;
 
+    public Cli()
+    { }
+
     /// Constructor for CLI - Processes Command Line Arguments
     public Cli(String[] args) throws PhoneBillException
     {
@@ -45,7 +48,7 @@ public class Cli
             arguments.remove(this.filePath.toString());
         }
 
-        arguments.remove("Project2");
+        // Remove options if they are in the arguments - we already set are class members
         arguments.remove("-textFile");
         arguments.remove("-print");
         arguments.remove("-README");
@@ -61,7 +64,7 @@ public class Cli
 
         if (arguments.size() < 7)
         {
-            throw new PhoneBillException("Missing command line argments");
+            throw new PhoneBillException("Missing command line arguments");
         }
 
         if (arguments.size() > 7)
@@ -97,7 +100,7 @@ public class Cli
     }
 
     /// Validate Date
-    private void validateDate(String date) throws PhoneBillException
+    public void validateDate(String date) throws PhoneBillException
     {
         //1/15/2018 19:39
         try
@@ -107,12 +110,12 @@ public class Cli
         }
         catch (DateTimeException e)
         {
-            throw new PhoneBillException("'" + date +"' is not a valid date/time.");
+            throw new PhoneBillException("'" + date +"' is not a valid date/time");
         }
     }
 
     /// Validate Phone Number
-    private void validatePhoneNumber(String phoneNumber) throws PhoneBillException
+    public void validatePhoneNumber(String phoneNumber) throws PhoneBillException
     {
         //nnn-nnn-nnnn
         //(?:\d{3}-){2}\d{4}
@@ -121,7 +124,7 @@ public class Cli
 
         if (!phoneNumber.matches(pattern))
         {
-            throw new PhoneBillException("'" + phoneNumber +"' is not a valid phone number.");
+            throw new PhoneBillException("'" + phoneNumber +"' is not a valid phone number");
         }
     }
 
@@ -135,9 +138,10 @@ public class Cli
             {
                 dir = Paths.get(System.getProperty("user.dir"));
             }
-            if (!Files.isDirectory(dir)) throw new PhoneBillException("Filepath is invalid: " + dir.toString());
-            if (!Files.exists(dir)) throw new PhoneBillException("Directory doesn't exist: " + dir.toString());
-            if (!Files.isWritable(dir)) throw new PhoneBillException("Directory does have write permissions: " + dir.toString());
+
+            //if (!Files.isDirectory(dir)) throw new PhoneBillException("Filepath is invalid: " + dir.toString());
+            //if (!Files.exists(dir)) throw new PhoneBillException("Directory doesn't exist: " + dir.toString());
+            //if (!Files.isWritable(dir)) throw new PhoneBillException("Directory does have write permissions: " + dir.toString());
 
             if (Files.exists(this.filePath) && !Files.isWritable(this.filePath))
             {
