@@ -5,7 +5,7 @@ import edu.pdx.cs410J.ParserException;
 import java.io.IOException;
 
 /// The main class for the CS410J Phone Bill Project
-public class Project2
+public class Project3
 {
     static final String README = "This is a PhoneBill app. Blah Blah.";
 

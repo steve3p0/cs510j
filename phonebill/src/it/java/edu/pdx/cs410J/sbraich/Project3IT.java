@@ -2,12 +2,12 @@ package edu.pdx.cs410J.sbraich;
 
 import edu.pdx.cs410J.InvokeMainTestCase;
 import edu.pdx.cs410J.ParserException;
-
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -16,17 +16,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests the functionality in the {@link Project2} main class.
+ * Tests the functionality in the {@link Project3} main class.
  */
-public class Project2IT extends InvokeMainTestCase
+public class Project3IT extends InvokeMainTestCase
 {
 
     /**
-     * Invokes the main method of {@link Project2} with the given arguments.
+     * Invokes the main method of {@link Project3} with the given arguments.
      */
     private MainMethodResult invokeMain(String... args)
     {
-        return invokeMain( Project2.class, args );
+        return invokeMain( Project3.class, args );
     }
 
     /**
@@ -44,7 +44,7 @@ public class Project2IT extends InvokeMainTestCase
     {
         MainMethodResult result = invokeMain("-README");
         assertThat(result.getExitCode(), equalTo(0));
-        assertThat(result.getTextWrittenToStandardOut(), equalTo(Project2.README + "\n"));
+        assertThat(result.getTextWrittenToStandardOut(), equalTo(Project3.README + "\n"));
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
     }
 
@@ -54,9 +54,9 @@ public class Project2IT extends InvokeMainTestCase
         String caller = "123-456-7890";
         String callee = "234-567-8901";
         String startDate = "07/04/2018";
-        String startTime = "6:24";
+        String startTime = "6:24 AM";
         String endDate = "07/04/2018";
-        String endTime = "6:48";
+        String endTime = "6:48 PM";
 
         MainMethodResult result =
                 invokeMain("-print", "My Customer", caller, callee, startDate, startTime, endDate, endTime);
@@ -79,9 +79,9 @@ public class Project2IT extends InvokeMainTestCase
         String caller = "123-456-7890";
         String callee = "234-567-8901";
         String startDate = "07/04/2018";
-        String startTime = "6:24";
+        String startTime = "12:24 AM";
         String endDate = "07/04/2018";
-        String endTime = "6:48";
+        String endTime = "12:48 PM";
 
         String phoneCallToString = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
         String expectedCallFromFile = "[" + phoneCallToString + "]";
@@ -124,9 +124,9 @@ public class Project2IT extends InvokeMainTestCase
         String caller = "123-456-7890";
         String callee = "234-567-8901";
         String startDate = "07/04/2018";
-        String startTime = "6:24";
+        String startTime = "6:24 AM";
         String endDate = "07/04/2018";
-        String endTime = "6:48";
+        String endTime = "6:48 PM";
 
         String phoneCallToString = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
         String expectedCallFromFile = "[" + phoneCallToString + "]";
@@ -164,9 +164,9 @@ public class Project2IT extends InvokeMainTestCase
         String caller = "123-456-7890";
         String callee = "234-567-8901";
         String startDate = "07/04/2018";
-        String startTime = "6:24";
+        String startTime = "6:24 AM";
         String endDate = "07/04/2018";
-        String endTime = "6:48";
+        String endTime = "6:48 PM";
 
         MainMethodResult result =
                 invokeMain("My Customer", caller, callee, startDate, startTime, endDate, endTime);
@@ -182,9 +182,9 @@ public class Project2IT extends InvokeMainTestCase
         String caller = "123-456-7890";
         String callee = "234-567-8901";
         String startDate = "07/04/2018";
-        String startTime = "6:24";
+        String startTime = "6:24 AM";
         String endDate = "07/04/2018";
-        String endTime = "6:48";
+        String endTime = "6:48 PM";
 
         MainMethodResult result =
                 invokeMain("My Customer", caller, callee, startDate, startTime, endDate, endTime, "blah");

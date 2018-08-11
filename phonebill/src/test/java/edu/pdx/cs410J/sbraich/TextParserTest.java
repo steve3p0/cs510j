@@ -35,7 +35,8 @@ public class TextParserTest
         try
         {
             PhoneBill bill1 = new PhoneBill(customer, filePath);
-            PhoneCall call1 = new PhoneCall("123-123-1234", "321-321-3210", "1/15/2018 19:39","12/5/2018 7:39");
+            PhoneCall call1 = new PhoneCall("123-123-1234", "321-321-3210",
+                                                "1/15/2018 7:39 am","12/5/2018 11:05 pm");
 
             bill1.addPhoneCall(call1);
 
@@ -51,8 +52,8 @@ public class TextParserTest
             assertEquals("Steve", bill.getCustomer());
             assertEquals("123-123-1234", call.getCaller());
             assertEquals("321-321-3210", call.getCallee());
-            assertEquals("1/15/2018 19:39", call.getStartTimeString());
-            assertEquals("12/5/2018 7:39", call.getEndTimeString());
+            assertEquals("1/15/2018 7:39 AM", call.getStartTimeString());
+            assertEquals("12/5/2018 11:05 PM", call.getEndTimeString());
         }
         finally
         {
@@ -63,7 +64,7 @@ public class TextParserTest
     @Test(expected = ParserException.class)
     public void TestParser_MalformattedFile1() throws ParserException, IOException
     {
-        String callStr = "[Phone call from to from 1/15/2018 19:39 to 1/15/2018 20:39]";
+        String callStr = "[Phone call from to from 1/15/2018 7:39 AM to 1/15/2018 10:39 PM]";
         String filePath = "malformatted.txt";
         String customer = "Steve";
 
@@ -87,7 +88,7 @@ public class TextParserTest
     @Test(expected = ParserException.class)
     public void TestParser_MalformattedFile2() throws ParserException, IOException
     {
-        String callStr = "[Phone call from to from 1/15/2018 19:39 to 1/15/2018 20:39]";
+        String callStr = "[Phone call from to from 1/15/2018 11:39 AM to 1/15/2018 8:39 PM]";
         String filePath = "malformatted.txt";
         String customer = "";
 
@@ -159,14 +160,15 @@ public class TextParserTest
     public void TestParser_DiffCustomers() throws PhoneBillException, ParserException, IOException
     {
         //Steve
-        // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 19:39 to 1/15/2018 20:39]
+        // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 19:39 AM to 1/15/2018 8:39 PM]
 
         String filePath = "testparser.txt";
         String customer1 = "Steve";
         String customer2 = "Not Steve";
 
         PhoneBill bill1 = new PhoneBill(customer1, filePath);
-        PhoneCall call1 = new PhoneCall("123-123-1234", "321-321-3210", "1/15/2018 19:39","12/5/2018 7:39");
+        PhoneCall call1 = new PhoneCall("123-123-1234", "321-321-3210",
+                                            "1/15/2018 7:39 AM","12/5/2018 8:39 PM");
 
         bill1.addPhoneCall(call1);
 
@@ -198,7 +200,7 @@ public class TextParserTest
     public void TestParser_EmptyFile() throws ParserException, IOException
     {
         //Steve
-        // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 19:39 to 1/15/2018 20:39]
+        // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 19:39 AM to 1/15/2018 8:39 PM]
 
         String filePath = "empty.txt";
         String customer = "Steve";
@@ -222,7 +224,7 @@ public class TextParserTest
     public void TestDate_Matching()
     {
         // Match Datetimes
-        String strCall = "[Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 19:39 to 12/5/2018 7:39]";
+        String strCall = "[Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 7:39 AM to 12/5/2018 7:39 PM]";
 
         String reDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
 
@@ -242,7 +244,7 @@ public class TextParserTest
     public void TestDateTime_Matching()
     {
         // Match Datetimes
-        String strCall = "[Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 19:39 to 12/5/2018 7:39]";
+        String strCall = "[Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 7:39 AM to 12/5/2018 7:39 PM]";
 
         String reDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
         String reTime = "\\d{1,2}:\\d{2}";
@@ -255,7 +257,7 @@ public class TextParserTest
         m.find();
         String endTime = m.group();
 
-        assertEquals("1/15/2018 19:39", startTime);
-        assertEquals("12/5/2018 7:39", endTime);
+        assertEquals("1/15/2018 7:39 AM", startTime);
+        assertEquals("12/5/2018 7:39 PM", endTime);
     }
 }

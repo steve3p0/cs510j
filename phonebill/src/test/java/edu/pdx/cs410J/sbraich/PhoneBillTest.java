@@ -7,7 +7,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class PhoneBillTest  {
+public class PhoneBillTest
+{
 
 //    @Before
 //    public void setUp() throws Exception {
@@ -18,14 +19,20 @@ public class PhoneBillTest  {
 //    }
 
     @Test
-    public void getCustomer() {
+    public void getCustomer()
+    {
+        fail("Not tested");
     }
 
     @Test
-    public void addPhoneCall() {
+    public void addPhoneCall()
+    {
+        fail("Not tested");
     }
 
     @Test
-    public void getPhoneCalls() {
+    public void getPhoneCalls()
+    {
+        fail("Not tested");
     }
 }

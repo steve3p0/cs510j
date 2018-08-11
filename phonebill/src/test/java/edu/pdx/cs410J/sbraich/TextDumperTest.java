@@ -14,7 +14,8 @@ public class TextDumperTest
     public void TestTextDumper_Basic() throws PhoneBillException, IOException
     {
         PhoneBill bill = new PhoneBill("Steve", "text.txt");
-        PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234", "1/15/2018 19:39","1/15/2018 20:39");
+        PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234",
+                                           "1/15/2018 07:39 am","1/15/2018 08:39 pm");
 
         bill.addPhoneCall(call);
 
@@ -41,7 +42,8 @@ public class TextDumperTest
             f.setReadOnly();
 
             PhoneBill bill = new PhoneBill("Steve", "readonly.txt");
-            PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234", "1/15/2018 19:39", "1/15/2018 20:39");
+            PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234",
+                                               "1/15/2018 7:39 AM", "1/15/2018 8:39 PM");
 
             bill.addPhoneCall(call);
 
@@ -59,7 +61,8 @@ public class TextDumperTest
     public void TestTextDumper_InvalidPath() throws PhoneBillException, IOException
     {
         PhoneBill bill = new PhoneBill("Steve", "/nonexistant/readonly.txt");
-        PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234", "1/15/2018 19:39", "1/15/2018 20:39");
+        PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234",
+                                           "1/15/2018 11:39 AM", "1/15/2018 10:39 pm");
 
         bill.addPhoneCall(call);
 

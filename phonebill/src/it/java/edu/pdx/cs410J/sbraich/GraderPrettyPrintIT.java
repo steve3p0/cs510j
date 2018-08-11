@@ -1,8 +1,6 @@
 package edu.pdx.cs410J.sbraich;
 
 import edu.pdx.cs410J.InvokeMainTestCase;
-import edu.pdx.cs410J.ParserException;
-
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -10,18 +8,21 @@ import org.junit.runners.MethodSorters;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 
 /// Tests the functionality in the {@link Project3} main class.
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class GraderIT extends InvokeMainTestCase
+public class GraderPrettyPrintIT extends InvokeMainTestCase
 {
     /// Invokes the main method of {@link Project3} with the given arguments.
     private MainMethodResult invokeMain(String... args)
@@ -32,6 +33,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test  //(expected = PhoneBillException.class)
     public void Test01_NoArguments()
     {
+        fail("Not tested");
+
         Integer expectedExitCode = 1;
         String expectedStdOut = "";
         String expectedStdErr = "Missing command line arguments";
@@ -46,6 +49,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test  //(expected = PhoneBillException.class)
     public void Test02_YourReadme()
     {
+        fail("Not tested");
+
         String readmeOption = "-README";
 
         Integer expectedExitCode = 0;
@@ -63,6 +68,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test03_CallerPhoneNumberContainsNonIntegers()
     {
+        fail("Not tested");
+
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich-x.txt";
         String customer = "Test3";
@@ -102,6 +109,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test04_StartTimeIsMalformatted()
     {
+        fail("Not tested");
+
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich-x.txt";
         String customer = "Test4";
@@ -141,6 +150,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test05_EndTimeIsMalformatted()
     {
+        fail("Not tested");
+
         // Input Argument Options
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich-x.txt";
@@ -184,6 +195,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test06_UnknownCommandLineArgument()
     {
+        fail("Not tested");
+
         // Arguments
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich-x.txt";
@@ -230,6 +243,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test07_StartingNewPhoneBillFile()
     {
+        fail("Not tested");
+
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich.txt";
         String printOption = "-print";
@@ -269,6 +284,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test08_UsingAnExistingPhoneBillFile() throws IOException, NoSuchFileException
     {
+        fail("Not tested");
+
         // Setup Variables
         String setupCustomer = "Project3";
         String setupCaller = "123-456-7890";
@@ -333,6 +350,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test09_DifferentCustomerName() throws IOException, NoSuchFileException
     {
+        fail("Not tested");
+
         // Setup Variables
         String setupCustomer = "Project3";
         String setupCaller = "123-456-7890";
@@ -396,6 +415,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test10_MalformattedTextFile() throws IOException, NoSuchFileException
     {
+        fail("Not tested");
+
         // Setup Variables
         String setupCustomer = "asdfsadfa";
         String setupCall = "2r9sadvas";
@@ -458,6 +479,8 @@ public class GraderIT extends InvokeMainTestCase
     @Test //(expected = PhoneBillException.class)
     public void Test11_FileWithInvalidYear() throws IOException
     {
+        fail("Not tested");
+
         // Setup Variables
         String setupCustomer = "DIFFERENT";
         String setupCaller = "123-456-7890";
