@@ -24,7 +24,7 @@ public class TextParserTest
     public void TestParser_Basic() throws PhoneBillException, ParserException, IOException
     {
         //Steve
-        // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 19:39 to 1/15/2018 20:39]
+        // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 7:39 am to 12/5/2018 11:05 pm]
 
 
         String customer = "Steve";
@@ -227,8 +227,9 @@ public class TextParserTest
         String strCall = "[Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 7:39 AM to 12/5/2018 7:39 PM]";
 
         String reDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
+        String reTime = "\\d{1,2}:\\d{2}\\s+(AM|PM)";
 
-        Pattern p = Pattern.compile(reDate);
+        Pattern p = Pattern.compile(reDate + " " + reTime);
         Matcher m = p.matcher(strCall);
 
         m.find();
@@ -236,8 +237,8 @@ public class TextParserTest
         m.find();
         String endTime = m.group();
 
-        assertEquals("1/15/2018", startTime);
-        assertEquals("12/5/2018", endTime);
+        assertEquals("1/15/2018 7:39 AM", startTime);
+        assertEquals("12/5/2018 7:39 PM", endTime);
     }
 
     @Test
@@ -247,7 +248,7 @@ public class TextParserTest
         String strCall = "[Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 7:39 AM to 12/5/2018 7:39 PM]";
 
         String reDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
-        String reTime = "\\d{1,2}:\\d{2}";
+        String reTime = "\\d{1,2}:\\d{2}\\s+(AM|PM)";
 
         Pattern p = Pattern.compile(reDate + " " + reTime);
         Matcher m = p.matcher(strCall);

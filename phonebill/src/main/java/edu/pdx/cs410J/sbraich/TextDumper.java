@@ -22,7 +22,7 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
 
         Path path = bill.getFilePath();
         String callStr = calls.toString();
-        String customer = bill.getCustomer();
+        String customer = "Customer: " + bill.getCustomer();
         List<String> lines = Arrays.asList(customer, callStr);
 
         this.CreateDirFromFilePath(path);

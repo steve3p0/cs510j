@@ -60,7 +60,7 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         {
             // Match Datetimes
             String reDate = "\\d{1,2}/\\d{1,2}/\\d{4}";
-            String reTime = "\\d{1,2}:\\d{2}";
+            String reTime = "\\d{1,2}:\\d{2}\\s+(AM|PM)";
 
             Pattern p = Pattern.compile(reDate + " " + reTime);
             Matcher m = p.matcher(line);
