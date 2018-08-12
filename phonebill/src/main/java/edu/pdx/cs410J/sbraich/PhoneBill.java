@@ -3,8 +3,13 @@ package edu.pdx.cs410J.sbraich;
 import edu.pdx.cs410J.AbstractPhoneBill;
 
 import java.nio.file.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /// The class that manages a phone bill
 public class PhoneBill extends AbstractPhoneBill<PhoneCall>
@@ -56,6 +61,42 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
     public Collection<PhoneCall> getPhoneCalls()
     {
         return this.calls;
+    }
+
+    public int getTotalMinutes() throws ParseException
+    {
+        int total = 0;
+
+        for (PhoneCall call : this.calls)
+        {
+            total += GetDateDiffMinutes(call.getStartTimeString(), call.getEndTimeString());
+        }
+        return total;
+    }
+
+    private int GetDateDiffMinutes(String d1, String d2) throws ParseException
+    {
+        Date startDate = parseDate(d1);; // Set start date
+        Date endDate   = parseDate(d2); // Set end date
+
+        long duration  = endDate.getTime() - startDate.getTime();
+
+        //long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);
+        int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
+        //long diffInHours = TimeUnit.MILLISECONDS.toHours(duration);
+
+        return diffInMinutes;
+    }
+
+    private Date parseDate(String s)  throws ParseException
+    {
+        String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
+
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
+        sdf.setLenient(false);
+        Date date = sdf.parse(s);
+
+        return date;
     }
 
     /// Gets the Customer Name from the Phone Bill

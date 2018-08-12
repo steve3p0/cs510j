@@ -26,7 +26,6 @@ public class TextParserTest
         //Steve
         // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 7:39 am to 12/5/2018 11:05 pm]
 
-
         String customer = "Steve";
         String filePath = "testparser.txt";
 

@@ -11,8 +11,10 @@ import static org.junit.Assert.*;
 public class TextDumperTest
 {
     @Test
-    public void TestTextDumper_Basic() throws PhoneBillException, IOException
+    public void TestTextDumper_Basic() throws PhoneBillException, IOException //, edu.pdx.cs410J.ParserException
     {
+        // TODO: USE MOCKING!!!
+
         PhoneBill bill = new PhoneBill("Steve", "text.txt");
         PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234",
                                            "1/15/2018 07:39 am","1/15/2018 08:39 pm");
@@ -23,10 +25,13 @@ public class TextDumperTest
         dumper.dump(bill);
         File file = new File(bill.getFilePath().toString());
 
-        //new File("path/to/file.txt").isFile();
-
         assertTrue(file.exists());
         assertTrue(!file.isDirectory());
+
+        TextParserTest tp = new TextParserTest();
+
+        // MOCK THIS!!!
+        //tp.TestParser_Basic();
 
         file.delete();
     }

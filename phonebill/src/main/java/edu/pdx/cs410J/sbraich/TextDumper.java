@@ -12,6 +12,8 @@ import java.io.File;
 
 import edu.pdx.cs410J.PhoneBillDumper;
 
+/// PRETTY PRINTER
+
 /// public class TextDumper implements PhoneBillDumper<T extends AbstractPhoneBill>
 public class TextDumper implements PhoneBillDumper<PhoneBill>
 {
@@ -22,7 +24,7 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
 
         Path path = bill.getFilePath();
         String callStr = calls.toString();
-        String customer = "Customer: " + bill.getCustomer();
+        String customer = bill.getCustomer();
         List<String> lines = Arrays.asList(customer, callStr);
 
         this.CreateDirFromFilePath(path);
