@@ -2,8 +2,7 @@ package edu.pdx.cs410J.sbraich;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class CliTestPrettyPrint
 {
@@ -52,8 +51,8 @@ public class CliTestPrettyPrint
         assertEquals("customer", cli.customer);
         assertEquals("503-123-1234", cli.callerNumber);
         assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:16 am", cli.startTime);
-        assertEquals("12/1/2018 10:16 pm", cli.endTime);
+        assertEquals("1/15/2018 9:39 AM", cli.startTime);
+        assertEquals("12/1/2018 9:39 PM", cli.endTime);
 
         assertEquals(false, cli.textFile);
         assertEquals(false, cli.print);
@@ -72,8 +71,15 @@ public class CliTestPrettyPrint
         assertEquals("customer", cli.customer);
         assertEquals("503-123-1234", cli.callerNumber);
         assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:16 AM", cli.startTime);
-        assertEquals("12/1/2018 10:16 PM", cli.endTime);
+        assertEquals("1/15/2018 1:39 AM", cli.startTime);
+        assertEquals("12/1/2018 11:39 PM", cli.endTime);
+        assertEquals("12/1/2018 11:39 PM", cli.endTime);
+        assertEquals("pretty.txt", cli.prettyPath.toString());
+        assertNull(cli.filePath);
+
+        assertEquals(true, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(true, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(false, cli.print);
@@ -88,14 +94,17 @@ public class CliTestPrettyPrint
                          "-pretty", "-"};
         Cli cli = new Cli(args);
 
-        //TODO:  PRETTY
-        //
-
         assertEquals("customer", cli.customer);
         assertEquals("503-123-1234", cli.callerNumber);
         assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:39 AM", cli.startTime);
-        assertEquals("12/1/2018 9:39 PM", cli.endTime);
+        assertEquals("1/15/2018 9:39 am", cli.startTime);
+        assertEquals("12/1/2018 9:39 pm", cli.endTime);
+        assertNull(cli.prettyPath);
+        assertNull(cli.filePath);
+
+        assertEquals(true, cli.pretty);
+        assertEquals(true, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(false, cli.print);
@@ -117,6 +126,12 @@ public class CliTestPrettyPrint
         assertEquals("503-123-1234", cli.calleeNumber);
         assertEquals("1/15/2018 1:39 AM", cli.startTime);
         assertEquals("12/1/2018 10:16 PM", cli.endTime);
+        assertEquals("pretty.txt", cli.prettyPath.toString());
+        assertNull(cli.filePath);
+
+        assertEquals(true, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(true, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(false, cli.print);
@@ -131,14 +146,17 @@ public class CliTestPrettyPrint
                          "-pretty", "-"};
         Cli cli = new Cli(args);
 
-        //TODO:  PRETTY
-        //
-
         assertEquals("customer", cli.customer);
         assertEquals("503-123-1234", cli.callerNumber);
         assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:39 AM", cli.startTime);
-        assertEquals("12/1/2018 9:39 PM", cli.endTime);
+        assertEquals("1/15/2018 9:39 am", cli.startTime);
+        assertEquals("12/1/2018 9:39 pm", cli.endTime);
+        assertNull(cli.prettyPath);
+        assertNull(cli.filePath);
+
+        assertEquals(true, cli.pretty);
+        assertEquals(true, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(false, cli.print);
@@ -160,6 +178,12 @@ public class CliTestPrettyPrint
         assertEquals("503-123-1234", cli.calleeNumber);
         assertEquals("1/15/2018 1:39 AM", cli.startTime);
         assertEquals("12/1/2018 10:16 PM", cli.endTime);
+        assertEquals("pretty.txt", cli.prettyPath.toString());
+        assertNull(cli.filePath);
+
+        assertEquals(true, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(true, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(false, cli.print);
@@ -171,247 +195,7 @@ public class CliTestPrettyPrint
     // All the other CLI tests with Pretty Print Sprinkled In: TODO
 
     /// Positive Tests ///////////////////////////////////////////////////////////////
-    @Test
-    public void CliTest_Basic() throws Exception
-    {
-        fail("Not tested");
-        String[] args = {"customer", "503-123-1234", "503-123-1234",
-                "1/15/2018", "9:16", "AM", "12/1/2018", "10:16", "PM"};
-        Cli cli = new Cli(args);
 
-        assertEquals("customer", cli.customer);
-        assertEquals("503-123-1234", cli.callerNumber);
-        assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:16 AM", cli.startTime);
-        assertEquals("12/1/2018 10:16 PM", cli.endTime);
-
-        assertEquals(false, cli.textFile);
-        assertEquals(false, cli.print);
-        assertEquals(false, cli.readme);
-    }
-
-    /// Edge Cases
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_TooMany() throws Exception
-    {
-        fail("Not tested");
-        String[] args = {"customer", "503-123-1234", "503-123-1234", "01/02/2018", "9:16", "AM", "12/1/2018", "11:16", "PM", "EXTRA"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_TooFew1() throws Exception
-    {
-        fail("Not tested");
-        String[] args = {"Project3"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_TooFew2() throws Exception
-    {
-        fail("Not tested");
-        String[] args = {"customer"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_TooFew7() throws Exception
-    {
-        fail("Not tested");
-        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018", "9:16", "pm", "12/1/2018"};
-        Cli cli = new Cli(args);
-    }
-
-    // Print Tests
-
-    @Test
-    public void CliTest_PrintFirst() throws Exception
-    {
-        fail("Not tested");
-        String[] args = {"-print", "customer", "503-123-1234", "503-123-1234", "1/15/2018", "9:16", "AM", "12/1/2018", "12:16", "PM"};
-        Cli cli = new Cli(args);
-
-        assertEquals("customer", cli.customer);
-        assertEquals("503-123-1234", cli.callerNumber);
-        assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:16 AM", cli.startTime);
-        assertEquals("12/1/2018 12:16 PM", cli.endTime);
-
-        assertEquals(false, cli.textFile);
-        assertEquals(true, cli.print);
-        assertEquals(false, cli.readme);
-    }
-
-    @Test
-    public void CliTest_PrintLast() throws Exception
-    {
-        fail("Not tested");
-        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018", "9:16", "pm", "12/1/2018", "1:16", "am", "-print"};
-        Cli cli = new Cli(args);
-
-        assertEquals("customer", cli.customer);
-        assertEquals("503-123-1234", cli.callerNumber);
-        assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:16 AM", cli.startTime);
-        assertEquals("12/1/2018 1:16 PM", cli.endTime);
-
-        assertEquals(false, cli.textFile);
-        assertEquals(true, cli.print);
-        assertEquals(false, cli.readme);
-    }
-
-    @Test
-    public void CliTest_PrintMiddle() throws Exception
-    {
-        fail("Not tested");
-        String[] args = {"customer", "503-123-1234", "503-123-1234", "-print", "01/15/2018", "07:16", "pm", "12/1/2018", "09:16", "pm"};
-        Cli cli = new Cli(args);
-
-        assertEquals("customer", cli.customer);
-        assertEquals("503-123-1234", cli.callerNumber);
-        assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 7:16 PM", cli.startTime);
-        assertEquals("12/1/2018 9:16 PM", cli.endTime);
-
-        assertEquals(false, cli.textFile);
-        assertEquals(true, cli.print);
-        assertEquals(false, cli.readme);
-    }
-
-    // ReadMe Tests ///////////////////////////////////////////////////////////////
-
-    @Test
-    public void CliTest_ReadMeOnly() throws Exception
-    {
-        fail("Not tested");
-
-        String[] args = {"-README"};
-        Cli cli = new Cli(args);
-
-        assertEquals(false, cli.textFile);
-        assertEquals(false, cli.print);
-        assertEquals(true, cli.readme);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_ReadMeFirst() throws Exception
-    {
-        fail("Not tested");
-
-        String[] args = {"-README", "customer", "503-123-1234", "503-123-1234",
-                "01/15/2018", "9:16", "pm", "12/1/2018", "03:16", "pm", "-print"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_ReadMeLast() throws Exception
-    {
-        fail("Not tested");
-
-        String[] args = {"customer", "503-123-1234", "503-123-1234",
-                "1/15/2018", "09:16", "AM", "12/1/2018", "9:16", "pm", "-print", "-README"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_ReadMeMiddle() throws Exception
-    {
-        fail("Not tested");
-
-        String[] args = {"customer", "503-123-1234", "503-123-1234", "-README",
-                "1/15/2018", "9:16", "pm", "12/1/2018", "9:16", "pm", "-print"};
-        Cli cli = new Cli(args);
-    }
-
-    // Text File Tests ///////////////////////////////////////////////////////////////
-    @Test
-    public void CliTest_TextFile_First() throws Exception
-    {
-        fail("Not tested");
-
-        String[] args = {"-textFile", "text.txt", "customer", "503-123-1234", "503-123-1234",
-                "1/15/2018", "9:16", "pm", "12/1/2018", "9:16", "pm"};
-        Cli cli = new Cli(args);
-
-        assertEquals("customer", cli.customer);
-        assertEquals("503-123-1234", cli.callerNumber);
-        assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:16 PM", cli.startTime);
-        assertEquals("12/1/2018 9:16 PM", cli.endTime);
-
-        assertEquals(false, cli.print);
-        assertEquals(false, cli.readme);
-
-        assertEquals(true, cli.textFile);
-        assertEquals("text.txt", cli.filePath.toString());
-    }
-
-    @Test
-    public void CliTest_TextFile_Last() throws Exception
-    {
-        fail("Not tested");
-
-        String[] args = {"customer", "503-123-1234", "503-123-1234",
-                "1/15/2018", "9:39", "AM", "12/1/2018", "9:39", "PM", "-textFile", "text.txt"};
-        Cli cli = new Cli(args);
-
-        assertEquals("customer", cli.customer);
-        assertEquals("503-123-1234", cli.callerNumber);
-        assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:39 AM", cli.startTime);
-        assertEquals("12/1/2018 9:39 PM", cli.endTime);
-
-        assertEquals(false, cli.print);
-        assertEquals(false, cli.readme);
-
-        assertEquals(true, cli.textFile);
-        assertEquals("text.txt", cli.filePath.toString());
-    }
-
-    @Test
-    public void CliTest_TextFile_Middle() throws Exception
-    {
-        fail("Not tested");
-
-        String[] args = {"customer", "503-123-1234", "503-123-1234", "-textFile", "text.txt",
-                "1/15/2018", "09:39", "am", "12/1/2018", "09:39", "pm"};
-        Cli cli = new Cli(args);
-
-        assertEquals("customer", cli.customer);
-        assertEquals("503-123-1234", cli.callerNumber);
-        assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:39 AM", cli.startTime);
-        assertEquals("12/1/2018 9:39 PM", cli.endTime);
-
-        assertEquals(false, cli.print);
-        assertEquals(false, cli.readme);
-
-        assertEquals(true, cli.textFile);
-        assertEquals("text.txt", cli.filePath.toString());
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_TextFileWithAllArgs() throws Exception
-    {
-        fail("Not tested");
-
-        String[] args = {"-textFile", "text.txt", "customer", "503-123-1234", "503-123-1234",
-                "1/15/2018", "11:16", "am", "12/1/2018", "9:16", "pm", "-print", "-README"};
-        Cli cli = new Cli(args);
-    }
-
-    @Test(expected = PhoneBillException.class)
-    public void CliTest_TextFile_NoPath() throws Exception
-    {
-        fail("Not tested");
-
-        String[] args = {"customer", "503-123-1234", "503-123-1234", "1/15/2018",
-                "3:16", "am", "12/1/2018", "12:16", "pm", "-textFile"};
-        Cli cli = new Cli(args);
-
-        fail("Not tested yet");
-    }
 
 
 }

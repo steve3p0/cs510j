@@ -19,6 +19,11 @@ public class CliTest
         assertEquals("503-123-1234", cli.calleeNumber);
         assertEquals("1/15/2018 9:16 AM", cli.startTime);
         assertEquals("12/1/2018 10:16 PM", cli.endTime);
+        assertNull(cli.prettyPath);
+
+        assertEquals(false, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(false, cli.print);
@@ -67,6 +72,12 @@ public class CliTest
         assertEquals("503-123-1234", cli.calleeNumber);
         assertEquals("1/15/2018 9:16 AM", cli.startTime);
         assertEquals("12/1/2018 12:16 PM", cli.endTime);
+        assertNull(cli.prettyPath);
+        assertNull(cli.filePath);
+
+        assertEquals(false, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(true, cli.print);
@@ -82,8 +93,14 @@ public class CliTest
         assertEquals("customer", cli.customer);
         assertEquals("503-123-1234", cli.callerNumber);
         assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:16 AM", cli.startTime);
-        assertEquals("12/1/2018 1:16 PM", cli.endTime);
+        assertEquals("1/15/2018 9:16 pm", cli.startTime);
+        assertEquals("12/1/2018 1:16 am", cli.endTime);
+        assertNull(cli.prettyPath);
+        assertNull(cli.filePath);
+
+        assertEquals(false, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(true, cli.print);
@@ -99,8 +116,14 @@ public class CliTest
         assertEquals("customer", cli.customer);
         assertEquals("503-123-1234", cli.callerNumber);
         assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 7:16 PM", cli.startTime);
-        assertEquals("12/1/2018 9:16 PM", cli.endTime);
+        assertEquals("01/15/2018 07:16 pm", cli.startTime);
+        assertEquals("12/1/2018 09:16 pm", cli.endTime);
+        assertNull(cli.prettyPath);
+        assertNull(cli.filePath);
+
+        assertEquals(false, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(true, cli.print);
@@ -114,6 +137,18 @@ public class CliTest
     {
         String[] args = {"-README"};
         Cli cli = new Cli(args);
+
+        assertEquals(null, cli.customer);
+        assertEquals(null, cli.callerNumber);
+        assertEquals(null, cli.calleeNumber);
+        assertEquals(null, cli.startTime);
+        assertEquals(null, cli.endTime);
+        assertNull(cli.prettyPath);
+        assertNull(cli.filePath);
+
+        assertEquals(false, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
 
         assertEquals(false, cli.textFile);
         assertEquals(false, cli.print);
@@ -155,14 +190,18 @@ public class CliTest
         assertEquals("customer", cli.customer);
         assertEquals("503-123-1234", cli.callerNumber);
         assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:16 PM", cli.startTime);
-        assertEquals("12/1/2018 9:16 PM", cli.endTime);
+        assertEquals("1/15/2018 9:16 pm", cli.startTime);
+        assertEquals("12/1/2018 9:16 pm", cli.endTime);
+        assertNull(cli.prettyPath);
+        assertEquals("text.txt", cli.filePath.toString());
 
+        assertEquals(false, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
+
+        assertEquals(true, cli.textFile);
         assertEquals(false, cli.print);
         assertEquals(false, cli.readme);
-        
-        assertEquals(true, cli.textFile);
-        assertEquals("text.txt", cli.filePath.toString());
     }
 
     @Test
@@ -177,12 +216,17 @@ public class CliTest
         assertEquals("503-123-1234", cli.calleeNumber);
         assertEquals("1/15/2018 9:39 AM", cli.startTime);
         assertEquals("12/1/2018 9:39 PM", cli.endTime);
+        assertNull(cli.prettyPath);
+        assertEquals("text.txt", cli.filePath.toString());
 
+        assertEquals(false, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
+
+        assertEquals(true, cli.textFile);
         assertEquals(false, cli.print);
         assertEquals(false, cli.readme);
 
-        assertEquals(true, cli.textFile);
-        assertEquals("text.txt", cli.filePath.toString());
     }
 
     @Test
@@ -195,14 +239,18 @@ public class CliTest
         assertEquals("customer", cli.customer);
         assertEquals("503-123-1234", cli.callerNumber);
         assertEquals("503-123-1234", cli.calleeNumber);
-        assertEquals("1/15/2018 9:39 AM", cli.startTime);
-        assertEquals("12/1/2018 9:39 PM", cli.endTime);
+        assertEquals("1/15/2018 09:39 am", cli.startTime);
+        assertEquals("12/1/2018 09:39 pm", cli.endTime);
+        assertNull(cli.prettyPath);
+        assertEquals("text.txt", cli.filePath.toString());
 
-        assertEquals(false, cli.print);
-        assertEquals(false, cli.readme);
+        assertEquals(false, cli.pretty);
+        assertEquals(false, cli.prettyStdout);
+        assertEquals(false, cli.prettyFile);
 
         assertEquals(true, cli.textFile);
-        assertEquals("text.txt", cli.filePath.toString());
+        assertEquals(false, cli.print);
+        assertEquals(false, cli.readme);
     }
 
     @Test(expected = PhoneBillException.class)

@@ -53,17 +53,22 @@ public class Project3IT extends InvokeMainTestCase
     {
         String caller = "123-456-7890";
         String callee = "234-567-8901";
-        String startDate = "07/04/2018";
-        String startTime = "6:24 AM";
-        String endDate = "07/04/2018";
-        String endTime = "6:48 PM";
 
-        MainMethodResult result =
-                invokeMain("-print", "My Customer", caller, callee, startDate, startTime, endDate, endTime);
+        String startDate = "7/4/2018";
+        String startTime = "6:24";
+        String startAMPM = "AM";
+        String endDate = "7/4/2018";
+        String endTime = "6:48";
+        String endAMPM = "PM";
+
+        MainMethodResult result = invokeMain("-print", "My Customer", caller, callee,
+                        startDate, startTime, startAMPM, endDate, endTime, endAMPM);
 
         assertThat(result.getExitCode(), equalTo(0));
-        String phoneCallToString = String.format("Phone call from %s to %s from %s %s to %s %s",
-                caller, callee, startDate, startTime, endDate, endTime);
+
+        String phoneCallToString = String.format("Phone call from %s to %s from %s %s %s to %s %s %s",
+                caller, callee, startDate, startTime, startAMPM, endDate, endTime, endAMPM);
+
         assertThat(result.getTextWrittenToStandardOut(), equalTo(phoneCallToString + "\n"));
     }
 
@@ -78,18 +83,23 @@ public class Project3IT extends InvokeMainTestCase
 
         String caller = "123-456-7890";
         String callee = "234-567-8901";
-        String startDate = "07/04/2018";
-        String startTime = "12:24 AM";
-        String endDate = "07/04/2018";
-        String endTime = "12:48 PM";
+        String startDate = "7/4/2018";
+        String startTime = "12:24";
+        String startAMPM = "AM";
+        String endDate = "7/4/2018";
+        String endTime = "12:48";
+        String endAMPM = "PM";
 
-        String phoneCallToString = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
+        String phoneCallToString = String.format("Phone call from %s to %s from %s %s %s to %s %s %s",
+                caller, callee, startDate, startTime, startAMPM, endDate, endTime, endAMPM);
+
         String expectedCallFromFile = "[" + phoneCallToString + "]";
         File f = new File(filePath);
 
         try
         {
-            MainMethodResult result = invokeMain(printOption, filePathOption, filePath, customer, caller, callee, startDate, startTime, endDate, endTime);
+            MainMethodResult result = invokeMain(printOption, filePathOption, filePath, customer, caller, callee,
+                    startDate, startTime, startAMPM, endDate, endTime, endAMPM);
             assertThat(result.getExitCode(), equalTo(0));
             assert(f.exists());
             assert(f.length() > 0);
@@ -123,19 +133,28 @@ public class Project3IT extends InvokeMainTestCase
 
         String caller = "123-456-7890";
         String callee = "234-567-8901";
-        String startDate = "07/04/2018";
-        String startTime = "6:24 AM";
-        String endDate = "07/04/2018";
-        String endTime = "6:48 PM";
+        String startDate = "7/4/2018";
+        String startTime = "6:24";
+        String startAMPM = "AM";
+        String endDate = "7/4/2018";
+        String endTime = "6:48";
+        String endAMPM = "PM";
 
-        String phoneCallToString = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
+        String phoneCallToString = String.format("Phone call from %s to %s from %s %s %s to %s %s %s",
+                caller, callee, startDate, startTime, startAMPM, endDate, endTime, endAMPM);
+
         String expectedCallFromFile = "[" + phoneCallToString + "]";
+
+
         File f = new File(filePath);
 
         try
         {
             // Setup first textFile call with "My Customer 1"
-            MainMethodResult result1 = invokeMain(textFileOption, filePath, printOption,  customer1, caller, callee, startDate, startTime, endDate, endTime);
+            MainMethodResult result1 = invokeMain(
+                    textFileOption, filePath, printOption,  customer1, caller, callee,
+                    startDate, startTime, startAMPM, endDate, endTime, endAMPM);
+
             assertThat(result1.getExitCode(), equalTo(0));
             assert(f.exists());
             assert(f.length() > 0);
@@ -150,7 +169,9 @@ public class Project3IT extends InvokeMainTestCase
             assertEquals(expectedCallFromFile, callFile);
 
             // Setup second call with "My Customer 2"
-            MainMethodResult result2 = invokeMain(textFileOption, filePath, printOption, customer2, caller, callee, startDate, startTime, endDate, endTime);
+            MainMethodResult result2 = invokeMain(
+                    textFileOption, filePath, printOption, customer2, caller, callee,
+                    startDate, startTime, startAMPM, endDate, endTime, endAMPM);
         }
         finally
         {
@@ -163,13 +184,17 @@ public class Project3IT extends InvokeMainTestCase
     {
         String caller = "123-456-7890";
         String callee = "234-567-8901";
+
         String startDate = "07/04/2018";
-        String startTime = "6:24 AM";
+        String startTime = "6:24";
+        String startAMPM = "AM";
         String endDate = "07/04/2018";
-        String endTime = "6:48 PM";
+        String endTime = "6:48";
+        String endAMPM = "PM";
 
         MainMethodResult result =
-                invokeMain("My Customer", caller, callee, startDate, startTime, endDate, endTime);
+                invokeMain("My Customer", caller, callee,
+                        startDate, startTime, startAMPM, endDate, endTime, endAMPM);
 
         assertThat(result.getExitCode(), equalTo(0));
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
@@ -181,17 +206,20 @@ public class Project3IT extends InvokeMainTestCase
     {
         String caller = "123-456-7890";
         String callee = "234-567-8901";
+
         String startDate = "07/04/2018";
-        String startTime = "6:24 AM";
+        String startTime = "6:24";
+        String startAMPM = "AM";
         String endDate = "07/04/2018";
-        String endTime = "6:48 PM";
+        String endTime = "6:48";
+        String endAMPM = "PM";
 
         MainMethodResult result =
-                invokeMain("My Customer", caller, callee, startDate, startTime, endDate, endTime, "blah");
+                invokeMain("My Customer", caller, callee,
+                        startDate, startTime, startAMPM, endDate, endTime, endAMPM, "blah");
 
         assertThat(result.getExitCode(), equalTo(1));
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
         assertThat(result.getTextWrittenToStandardError(), equalTo("Too many command line arguments\n"));
     }
-
 }

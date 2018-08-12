@@ -17,8 +17,8 @@ public class Cli
 
     // Optional Arguments
     protected Boolean pretty;
-    protected Boolean prettyStdout;
     protected Boolean prettyFile;
+    protected Boolean prettyStdout;
     protected Boolean print;
     protected Boolean readme;
     protected Boolean textFile;
@@ -30,17 +30,22 @@ public class Cli
     {
         this.pretty = Arrays.stream(args).anyMatch(s -> s.equals("-pretty"));
         this.prettyStdout = Arrays.stream(args).anyMatch(s -> s.equals("-"));
-        this.prettyFile = Arrays.stream(args).anyMatch(s -> s.equals("-prettyFile"));
+        this.prettyFile = (this.pretty && !this.prettyStdout);
 
         this.readme = Arrays.stream(args).anyMatch(s -> s.equals("-README"));
         this.print = Arrays.stream(args).anyMatch(s -> s.equals("-print"));
         this.textFile = Arrays.stream(args).anyMatch(s -> s.equals("-textFile"));
 
         arguments = new ArrayList<String>(Arrays.asList(args));
-        int count = 0;
+
+        int options = 0;
+
 
         if (this.pretty)
         {
+            options++;
+            options++;
+
             int i = arguments.indexOf("-pretty");
 
             if (i + 1 > arguments.size() - 1)
@@ -48,16 +53,25 @@ public class Cli
                 throw new PhoneBillException("Missing Pretty filepath argument");
             }
 
-            count++;
-            if (this.prettyFile) count++;
-            if (this.prettyStdout) count++;
+            if (this.prettyFile)
+            {
+                options++;
+                this.prettyPath = Paths.get(arguments.get(i + 1));
+                arguments.remove(this.prettyPath.toString());
+            }
 
-            this.prettyPath = Paths.get(arguments.get(i + 1));
-            arguments.remove(this.filePath.toString());
+            if (this.prettyStdout)
+            {
+                options++;
+                arguments.remove("-");
+            }
         }
 
         if (this.textFile)
         {
+            options++;
+            options++;
+
             int i = arguments.indexOf("-textFile");
 
             if (i + 1 > arguments.size() - 1)
@@ -69,19 +83,19 @@ public class Cli
             arguments.remove(this.filePath.toString());
         }
 
+
         if (this.print)
         {
-            count++;
+            options++;
         }
 
         if (this.readme)
         {
-            count++;
-
-            if (arguments.size() != 0)
+            if (arguments.size() != 1)
             {
-                throw new PhoneBillException("Too many command line arguments");
+                throw new PhoneBillException("Missing command line arguments");
             }
+
             return;
         }
 
@@ -94,22 +108,22 @@ public class Cli
         arguments.remove("-print");
         arguments.remove("-README");
 
-
-
-        if (arguments.size() < 7)
+        if (arguments.size() == 9)
+        {
+            this.customer = arguments.get(0);
+            this.callerNumber = arguments.get(1);
+            this.calleeNumber = arguments.get(2);
+            this.startTime = arguments.get(3) + " " + arguments.get(4) + " " + arguments.get(5);
+            this.endTime = arguments.get(6) + " " + arguments.get(7) + " " + arguments.get(8);
+        }
+        else if (arguments.size() < 9)
         {
             throw new PhoneBillException("Missing command line arguments");
         }
 
-        if (arguments.size() > 7)
+        if (arguments.size() > 9)
         {
             throw new PhoneBillException("Too many command line arguments");
         }
-
-        this.customer = arguments.get(0);
-        this.callerNumber = arguments.get(1);
-        this.calleeNumber = arguments.get(2);
-        this.startTime = arguments.get(3) + " " + arguments.get(4);
-        this.endTime = arguments.get(5) + " " + arguments.get(6);
     }
 }
