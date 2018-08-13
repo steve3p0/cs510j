@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven 3.5.4
+Built-By: steve
+Build-Jdk: 10.0.1
+Implementation-Title: Phone Bill Web/REST Project
+Implementation-Version: Summer2018
+Implementation-Vendor-Id: edu.pdx.cs410J.sbraich
+Implementation-Vendor: Portland State University
+Implementation-URL: http://maven.apache.org
+Built-From-Branch: master
+Built-From-Revision: 7c6774b772aa364baab3275af7d7e6d9b7fee5b0
+Built-On: 2018-08-13T05:18:33.362-0700
+
