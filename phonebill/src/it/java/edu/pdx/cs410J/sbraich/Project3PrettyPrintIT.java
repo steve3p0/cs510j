@@ -8,8 +8,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -23,27 +28,46 @@ import static org.junit.Assert.fail;
 public class Project3PrettyPrintIT extends InvokeMainTestCase
 {
 
-    /**
-     * Invokes the main method of {@link Project3} with the given arguments.
-     */
+     /// Invokes the main method of {@link Project3} with the given arguments.
     private MainMethodResult invokeMain(String... args)
     {
         return invokeMain( Project3.class, args );
     }
 
-    @Test
-    public void TestMain_PrettyPrintOption()
+    private Date parseDate(String s)  throws ParseException
     {
-        String customer = "My Customer";
+        String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
+
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
+        sdf.setLenient(false);
+        Date date = sdf.parse(s);
+
+        return date;
+    }
+
+    @Test
+    public void TestMain_PrettyPrintOption_STDOUT() throws ParseException
+    {
+        String customer = "Acme Corp";
         String caller = "123-456-7890";
         String callee = "234-567-8901";
 
-        String startDate = "7/4/2018";
-        String startTime = "6:24";
+        String startDate = "07/04/2018";
+        String startTime = "06:24";
         String startAMPM = "AM";
-        String endDate = "7/4/2018";
-        String endTime = "6:48";
+
+        String endDate = "07/04/2018";
+        String endTime = "06:48";
         String endAMPM = "PM";
+
+        String start = startDate + " " + startTime + " " + startAMPM;
+        String end = endDate + " " + endTime + " " + endAMPM;
+
+        Date d1 = parseDate(start); // Set start date
+        Date d2   = parseDate(end); // Set end date
+
+        long duration  = d2.getTime() - d1.getTime();
+        int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
 
         MainMethodResult result =
                 invokeMain("-pretty", "-", customer, caller, callee,
@@ -52,13 +76,15 @@ public class Project3PrettyPrintIT extends InvokeMainTestCase
         assertThat(result.getExitCode(), equalTo(0));
 
         String stdout = "Customer: " + customer + "\n"
-                      + "Total Minutes: 15980\n"
+                      + "Total Minutes: 744\n"
                       + "\n"
                       + "    Caller         Callee      Minutes      Call Start            Call End\n"
                       + "---------------------------------------------------------------------------------\n"
-                      + " 123-123-1234   111-111-1111       5   01/15/2018 07:30 AM   01/15/2018 07:35 AM\n";
+                      + " " + caller + "   " + callee  + "     " + diffInMinutes + "   " + start + "   " + end + "\n";
 
-        assertThat(result.getTextWrittenToStandardOut(), equalTo(stdout));
+        String prettyPrint = result.getTextWrittenToStandardOut();
+
+        assertThat(prettyPrint, equalTo(stdout));
     }
 
 

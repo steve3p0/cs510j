@@ -76,19 +76,16 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
 
     private int GetDateDiffMinutes(String d1, String d2) throws ParseException
     {
-        Date startDate = parseDate(d1);; // Set start date
-        Date endDate   = parseDate(d2); // Set end date
+        Date startDate = parseDate(d1);
+        Date endDate   = parseDate(d2);
 
         long duration  = endDate.getTime() - startDate.getTime();
-
-        //long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);
         int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
-        //long diffInHours = TimeUnit.MILLISECONDS.toHours(duration);
 
         return diffInMinutes;
     }
 
-    private Date parseDate(String s)  throws ParseException
+    private Date parseDate(String s) throws ParseException
     {
         String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
 

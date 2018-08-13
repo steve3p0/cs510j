@@ -117,9 +117,56 @@ public class PrettyPrinterTest
     }
 
     @Test
-    public void PrettyPrinter_Basic() throws PhoneBillException, IOException, ParseException //, edu.pdx.cs410J.ParserException
+    public void getPrettyPrint_Basic() throws PhoneBillException, IOException, ParseException
     {
-        // TODO: USE MOCKING!!!
+        String customer = "Steve";
+        String caller = "123-123-1234";
+
+        PhoneBill bill = new PhoneBill(customer);
+
+        List<String> expectedLines = new ArrayList<String>();
+
+        expectedLines.add("Customer: " + customer);
+        expectedLines.add("");
+        expectedLines.add("    Caller         Callee      Minutes      Call Start            Call End");
+        expectedLines.add("---------------------------------------------------------------------------------");
+
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "111-111-1111", "01/15/2018 07:30 am", 5);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "222-222-2222", "08/01/2018 03:10 pm", 10);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "333-333-3333", "09/15/2018 09:30 am", 125);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "444-444-4444", "10/01/2018 12:01 pm", 1440);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "555-555-5555", "12/15/2018 11:05 am", 14400);
+
+        // Array of String of what Pretty Print file should look like
+        List<String> hardcodedLines = new ArrayList<String>();
+        hardcodedLines.add("Customer: " + customer);
+        hardcodedLines.add("Total Minutes: 15980");
+        hardcodedLines.add("");
+        hardcodedLines.add("    Caller         Callee      Minutes      Call Start            Call End");
+        hardcodedLines.add("---------------------------------------------------------------------------------");
+        hardcodedLines.add(" 123-123-1234   111-111-1111       5   01/15/2018 07:30 AM   01/15/2018 07:35 AM");
+        hardcodedLines.add(" 123-123-1234   222-222-2222      10   08/01/2018 03:10 PM   08/01/2018 03:20 PM");
+        hardcodedLines.add(" 123-123-1234   333-333-3333     125   09/15/2018 09:30 AM   09/15/2018 11:35 AM");
+        hardcodedLines.add(" 123-123-1234   444-444-4444    1440   10/01/2018 12:01 PM   10/02/2018 12:01 PM");
+        hardcodedLines.add(" 123-123-1234   555-555-5555   14400   12/15/2018 11:05 AM   12/25/2018 11:05 AM");
+
+        String totalMinutes = "Total Minutes: " + bill.getTotalMinutes();
+        expectedLines.add(1, totalMinutes);
+
+        PrettyPrinter pretty = new PrettyPrinter();
+        String prettyOutput = pretty.getPrettyPrint(bill);
+
+        String expectedOutput = String.join("\n", expectedLines);
+        String hardcodedOutput = String.join("\n", hardcodedLines);
+
+        assertEquals(expectedOutput, prettyOutput);
+        assertEquals(hardcodedOutput, prettyOutput);
+    }
+
+    @Test
+    public void PrettyPrintedDump_Basic() throws PhoneBillException, IOException, ParseException
+    {
+        // TODO: USE FILE MOCKING!!!
         String customer = "Steve";
         String filePath = "prettyprint_test.txt";
         String caller = "123-123-1234";
@@ -144,7 +191,6 @@ public class PrettyPrinterTest
             bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "555-555-5555", "12/15/2018 11:05 am", 14400);
 
             // Array of String of what Pretty Print file should look like
-            // TODO: USE MOCKING!!!
             List<String> hardcodedLines = new ArrayList<String>();
             hardcodedLines.add("Customer: " + customer);
             hardcodedLines.add("Total Minutes: 15980");
@@ -160,6 +206,9 @@ public class PrettyPrinterTest
             String totalMinutes = "Total Minutes: " + bill.getTotalMinutes();
             expectedLines.add(1, totalMinutes);
 
+            String expectedOutput = String.join("\n", expectedLines);
+            String hardcodedOutput = String.join("\n", hardcodedLines);
+
             PrettyPrinter pretty = new PrettyPrinter();
             pretty.dump(bill);
 
@@ -168,11 +217,10 @@ public class PrettyPrinterTest
 
             List<String> outputLines = Files.readAllLines(file.toPath(), Charset.defaultCharset() );
 
-            assertEquals(outputLines.size(), expectedLines.size());
-            assertTrue(outputLines.equals(expectedLines));
+            String prettyOutput = String.join("\n", outputLines);
 
-            assertEquals(outputLines.size(), hardcodedLines.size());
-            assertTrue(outputLines.equals(hardcodedLines));
+            assertEquals(expectedOutput, prettyOutput);
+            assertEquals(hardcodedOutput, prettyOutput);
         }
         finally
         {

@@ -23,29 +23,9 @@ public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
     {
         try
         {
-            Collection<PhoneCall> calls = bill.getPhoneCalls();
+            List<String> lines = this.formatPrettyPrint(bill);
 
             Path path = bill.getFilePath();
-            String callStr = calls.toString();
-            String customer = "Customer: " + bill.getCustomer();
-            String totalMinutes = "Total Minutes: " + bill.getTotalMinutes();
-
-            String header = "    Caller         Callee      Minutes      Call Start            Call End";
-            String divider = "---------------------------------------------------------------------------------";
-
-            List<String> lines = new ArrayList<String>();
-            lines.add(customer);
-            lines.add(totalMinutes);
-            lines.add("");
-            lines.add(header);
-            lines.add(divider);
-
-            for (PhoneCall call : calls)
-            {
-                String line = FormatPrettyPrintedLine(call.getCaller(), call.getCallee(), call.getStartTimeString(), call.getEndTimeString());
-                lines.add(line);
-            }
-
             this.CreateDirFromFilePath(path);
             this.validateFilePath(path);
             Files.write(path, lines, Charset.forName("UTF-8"));
@@ -54,6 +34,43 @@ public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
         {
             throw new IOException(e.getMessage());
         }
+    }
+
+    /// Impelements dump method of PhoneBillDumper method
+    public String getPrettyPrint(PhoneBill bill) throws ParseException
+    {
+        List<String> lines = this.formatPrettyPrint(bill);
+
+        String s = String.join("\n", lines);
+
+        return s;
+    }
+
+    public List<String> formatPrettyPrint(PhoneBill bill) throws ParseException
+    {
+        Collection<PhoneCall> calls = bill.getPhoneCalls();
+
+        String customer = "Customer: " + bill.getCustomer();
+        String totalMinutes = "Total Minutes: " + bill.getTotalMinutes();
+
+        String header = "    Caller         Callee      Minutes      Call Start            Call End";
+        String divider = "---------------------------------------------------------------------------------";
+
+        List<String> lines = new ArrayList<String>();
+        lines.add(customer);
+        lines.add(totalMinutes);
+        lines.add("");
+        lines.add(header);
+        lines.add(divider);
+
+        for (PhoneCall call : calls)
+        {
+            String line = FormatPrettyPrintedLine(call.getCaller(), call.getCallee(), call.getStartTimeString(), call.getEndTimeString());
+            lines.add(line);
+        }
+
+        return lines;
+
     }
 
     private String PrettyDate(String d)  throws ParseException
