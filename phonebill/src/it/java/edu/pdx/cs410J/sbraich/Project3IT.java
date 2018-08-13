@@ -20,19 +20,14 @@ import static org.junit.Assert.assertEquals;
  */
 public class Project3IT extends InvokeMainTestCase
 {
-
-    /**
-     * Invokes the main method of {@link Project3} with the given arguments.
-     */
+    ///Invokes the main method of {@link Project3} with the given arguments.
     private MainMethodResult invokeMain(String... args)
     {
         return invokeMain( Project3.class, args );
     }
 
-    /**
-     * Tests that invoking the main method with no arguments issues an error
-     */
-    @Test  //(expected = PhoneBillException.class)
+    /// Tests that invoking the main method with no arguments issues an error
+    @Test
     public void TestMain_NoCommandLineArguments()
     {
         MainMethodResult result = invokeMain();
@@ -121,7 +116,7 @@ public class Project3IT extends InvokeMainTestCase
         }
     }
 
-    @Test //(expected = IllegalArgumentException.class)
+    @Test
     public void TestMain_ParserDumper_NameDifferent() throws IOException, ParserException
     {
         String printOption = "-print";

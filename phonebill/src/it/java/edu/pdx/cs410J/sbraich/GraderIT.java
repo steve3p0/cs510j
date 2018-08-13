@@ -29,7 +29,7 @@ public class GraderIT extends InvokeMainTestCase
         return invokeMain( Project3.class, args );
     }
 
-    @Test  //(expected = PhoneBillException.class)
+    @Test
     public void Test01_NoArguments()
     {
         Integer expectedExitCode = 1;
@@ -43,7 +43,7 @@ public class GraderIT extends InvokeMainTestCase
         assertThat(result.getTextWrittenToStandardError(), containsString(expectedStdErr));
     }
 
-    @Test  //(expected = PhoneBillException.class)
+    @Test
     public void Test02_YourReadme()
     {
         String readmeOption = "-README";
@@ -60,7 +60,7 @@ public class GraderIT extends InvokeMainTestCase
     }
 
     // -textFile sbraich/sbraich-x.txt Test3 ABC-123-4567 123-456-7890 03/03/2018 12:00 03/03/2018 16:00
-    @Test //(expected = PhoneBillException.class)
+    @Test
     public void Test03_CallerPhoneNumberContainsNonIntegers()
     {
         String fileOption = "-textFile";
@@ -102,7 +102,7 @@ public class GraderIT extends InvokeMainTestCase
     }
 
     // -textFile sbraich/sbraich-x.txt Test4 123-456-7890 234-567-8901 03/03/2018 12:XX 03/03/2018 16:00
-    @Test //(expected = PhoneBillException.class)
+    @Test
     public void Test04_StartTimeIsMalformatted()
     {
         String fileOption = "-textFile";
@@ -144,7 +144,7 @@ public class GraderIT extends InvokeMainTestCase
     }
 
     // $ -textFile sbraich/sbraich-x.txt Test5 123-456-7890 234-567-8901 03/03/2018 12:00 01/04/20/1 16:00
-    @Test //(expected = PhoneBillException.class)
+    @Test
     public void Test05_EndTimeIsMalformatted()
     {
         // Input Argument Options
@@ -244,6 +244,7 @@ public class GraderIT extends InvokeMainTestCase
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich.txt";
         String printOption = "-print";
+
         String customer = "Project3";
         String caller = "123-456-7890";
         String callee = "234-567-8901";
@@ -258,6 +259,7 @@ public class GraderIT extends InvokeMainTestCase
         String expectedStdOut = "StdOut: " + String.format("Phone call from %s to %s from %s %s %s to %s %s %s\n",
                 caller, callee,  startDate, startTime, startAMPM, endDate, endTime, endAMPM);
         String expectedStdErr = "StdErr: " + "";
+
         File f = new File(filePath);
         MainMethodResult result = null;
 
@@ -281,7 +283,7 @@ public class GraderIT extends InvokeMainTestCase
     }
 
     // $ -textFile sbraich/sbraich.txt -print Project3 123-456-7890 456-789-0123 01/08/2018 08:00 01/08/2018 18:00
-    @Test //(expected = PhoneBillException.class)
+    @Test
     public void Test08_UsingAnExistingPhoneBillFile() throws IOException, NoSuchFileException
     {
         // Setup Variables
@@ -424,11 +426,12 @@ public class GraderIT extends InvokeMainTestCase
     }
 
     // $ -textFile sbraich/bogus.txt Project3 123-456-7890 385-284-2342 01/10/2018 10:00 01/20/2018 20:00
-    @Test //(expected = PhoneBillException.class)
+    @Test
     public void Test10_MalformattedTextFile() throws IOException, NoSuchFileException
     {
         // Setup Variables
-        String setupCustomer = "asdfsadfa";
+        String setupCustomer = "Acme Corp";
+
         String setupCall = "2r9sadvas";
         String setupExtraLine1 = "lcv913r";
         String setupExtraLine2 = "2r7o9av";
@@ -436,9 +439,11 @@ public class GraderIT extends InvokeMainTestCase
         List<String> setupLines = Arrays.asList(setupCustomer, setupCall, setupExtraLine1, setupExtraLine2);
 
         // Input Arguments
+        String customer = "Acme Corp";
+
         String fileOption = "-textFile";
         String filePath = "sbraich/bogus.txt";
-        String customer = "Project3";
+
         String caller = "123-456-7890";
         String callee = "385-284-2342";
         String startDate = "1/7/2018";
@@ -487,11 +492,12 @@ public class GraderIT extends InvokeMainTestCase
     // $ -textFile sbraich/sbraich-bad-year.txt Project3 123-456-7890 385-284-2342 01/11/2018 11:00 01/11/2018 11:30
     // DIFFERENT
     // [Phone call from 123-456-7890 to 789-012-3456 from 01/09/XXXX 09:00 to 02/04/XXXX 16:00]
-    @Test //(expected = PhoneBillException.class)
+    @Test
     public void Test11_FileWithInvalidYear() throws IOException
     {
         // Setup Variables
-        String setupCustomer = "DIFFERENT";
+        String setupCustomer = "Acme Corp";
+
         String setupCaller = "123-456-7890";
         String setupCallee = "789-012-3456";
         String setupStartDate = "01/09/XXXX";
@@ -508,9 +514,11 @@ public class GraderIT extends InvokeMainTestCase
         List<String> setupLines = Arrays.asList(setupCustomer, setupCall);
 
         // Input Arguments
+        String customer = "Acme Corp";
+
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich-bad-year.txt";
-        String customer = "Project3";
+
         String caller = "123-456-7890";
         String callee = "385-284-2342";
         String startDate = "1/7/2018";

@@ -57,7 +57,7 @@ public class Project3
                 // Option B: Pretty Print to a FILE
                 else if (cli.prettyFile)
                 {
-                    PhoneBill bill = new PhoneBill(cli.customer, cli.filePath.toString());
+                    PhoneBill bill = new PhoneBill(cli.customer, cli.prettyPath.toString());
                     bill.addPhoneCall(call);
 
                     PrettyPrinter pretty = new PrettyPrinter();

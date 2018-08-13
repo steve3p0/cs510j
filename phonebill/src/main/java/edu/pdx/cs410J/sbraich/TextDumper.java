@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.sbraich;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,13 +24,29 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
         Collection<PhoneCall> calls = bill.getPhoneCalls();
 
         Path path = bill.getFilePath();
-        String callStr = calls.toString();
+        String callStr = this.toCallsString(bill);
         String customer = bill.getCustomer();
         List<String> lines = Arrays.asList(customer, callStr);
 
         this.CreateDirFromFilePath(path);
         this.validateFilePath(path);
         Files.write(path, lines, Charset.forName("UTF-8"));
+    }
+
+    private String toCallsString(PhoneBill bill)
+    {
+        List<String> callList = new ArrayList<String>();
+        String callFormat = "[Phone call from %s to %s from %s to %s]";
+
+        for (PhoneCall call : bill.getPhoneCalls())
+        {
+            String s = String.format(callFormat, call.getCaller(), call.getCallee(), call.getStartTimeString(), call.getEndTimeString());
+            callList.add(s);
+        }
+
+        String callString = String.join("\n", callList);
+
+        return callString;
     }
 
     private void CreateDirFromFilePath(Path path) throws IOException

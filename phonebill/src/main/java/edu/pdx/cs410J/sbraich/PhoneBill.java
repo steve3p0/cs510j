@@ -5,10 +5,7 @@ import edu.pdx.cs410J.AbstractPhoneBill;
 import java.nio.file.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /// The class that manages a phone bill
@@ -54,6 +51,7 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
     public void addPhoneCall(PhoneCall call)
     {
         this.calls.add(call);
+        Collections.sort((ArrayList)this.calls);
     }
 
     /// Overrides getPhoneCalls method of AbstractPhoneBill method
@@ -73,6 +71,20 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         }
         return total;
     }
+
+    /// Gets the Customer Name from the Phone Bill
+    public String getCustomer()
+    {
+        return this.customer;
+    }
+
+    /// Gets the File Path of the Phone Bill
+    public Path getFilePath()
+    {
+        return this.filePath;
+    }
+
+    //////  PRIVATE METHODS /////////////////////////////
 
     private int GetDateDiffMinutes(String d1, String d2) throws ParseException
     {
@@ -94,18 +106,6 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         Date date = sdf.parse(s);
 
         return date;
-    }
-
-    /// Gets the Customer Name from the Phone Bill
-    public String getCustomer()
-    {
-        return this.customer;
-    }
-
-    /// Gets the File Path of the Phone Bill
-    public Path getFilePath()
-    {
-        return this.filePath;
     }
 
     /// Validate File Path

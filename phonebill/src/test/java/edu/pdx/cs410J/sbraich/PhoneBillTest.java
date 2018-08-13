@@ -49,6 +49,35 @@ public class PhoneBillTest
     }
 
     @Test
+    public void Test_addPhoneCall_Sort() throws PhoneBillException
+    {
+        PhoneBill bill = new PhoneBill("Steve");
+        PhoneCall call;
+
+        call = new PhoneCall("333-333-3333", "123-123-1234", "3/1/2018 12:01 AM","3/1/2018 12:05 AM");
+        bill.addPhoneCall(call);
+        call = new PhoneCall("444-444-4444", "123-123-1234", "4/1/2018 12:01 AM","4/1/2018 12:05 AM");
+        bill.addPhoneCall(call);
+        call = new PhoneCall("111-111-1111", "123-123-1234", "1/1/2018 12:01 AM","1/1/2018 12:05 AM");
+        bill.addPhoneCall(call);
+        call = new PhoneCall("222-222-2222", "123-123-1234", "2/1/2018 12:01 AM","2/1/2018 12:05 AM");
+        bill.addPhoneCall(call);
+
+        Collection<PhoneCall> calls = bill.getPhoneCalls();
+
+        String actual = "";
+
+        for (PhoneCall ph : calls)
+        {
+            actual += ph.getCaller() + ",";
+        }
+
+        String expected = "111-111-1111,222-222-2222,333-333-3333,444-444-4444,";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void getPhoneCalls() throws PhoneBillException
     {
         PhoneCall call = new PhoneCall("555-555-5555", "123-123-1234",

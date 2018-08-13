@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
@@ -20,6 +21,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -48,6 +50,9 @@ public class Project3PrettyPrintIT extends InvokeMainTestCase
     @Test
     public void TestMain_PrettyPrintOption_STDOUT() throws ParseException
     {
+        String pretty = "-pretty";
+        String prettyStdout = "-";
+
         String customer = "Acme Corp";
         String caller = "123-456-7890";
         String callee = "234-567-8901";
@@ -70,21 +75,84 @@ public class Project3PrettyPrintIT extends InvokeMainTestCase
         int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
 
         MainMethodResult result =
-                invokeMain("-pretty", "-", customer, caller, callee,
-                startDate, startTime, startAMPM, endDate, endTime, endAMPM);
+                invokeMain(pretty, prettyStdout, customer, caller, callee,
+                        startDate, startTime, startAMPM, endDate, endTime, endAMPM);
 
-        assertThat(result.getExitCode(), equalTo(0));
+        Integer expectedExitCode = 0;
+        String expectedStdOut = "Customer: " + customer + "\n"
+                + "Total Minutes: 744\n"
+                + "\n"
+                + "    Caller         Callee      Minutes      Call Start            Call End\n"
+                + "---------------------------------------------------------------------------------\n"
+                + " " + caller + "   " + callee  + "     " + diffInMinutes + "   " + start + "   " + end + "\n";
+        String expectedStdErr = "";
 
-        String stdout = "Customer: " + customer + "\n"
-                      + "Total Minutes: 744\n"
-                      + "\n"
-                      + "    Caller         Callee      Minutes      Call Start            Call End\n"
-                      + "---------------------------------------------------------------------------------\n"
-                      + " " + caller + "   " + callee  + "     " + diffInMinutes + "   " + start + "   " + end + "\n";
+        int actualExitCode = result.getExitCode();
+        String actualStdOut = result.getTextWrittenToStandardOut();
+        String actualStdErr = result.getTextWrittenToStandardError();
 
-        String prettyPrint = result.getTextWrittenToStandardOut();
+        assertThat(actualExitCode, equalTo(expectedExitCode));
+        assertEquals(actualStdOut, expectedStdOut);
+        assertEquals(actualStdErr, expectedStdErr);
+    }
 
-        assertThat(prettyPrint, equalTo(stdout));
+    @Test
+    public void TestMain_PrettyPrintOption_FILE() throws  IOException, ParseException
+    {
+        String pretty = "-pretty";
+        String prettyFile = "pretty_IT.txt";
+
+        String customer = "Acme Corp";
+        String caller = "123-456-7890";
+        String callee = "234-567-8901";
+
+        String startDate = "07/04/2018";
+        String startTime = "06:24";
+        String startAMPM = "AM";
+
+        String endDate = "07/04/2018";
+        String endTime = "06:48";
+        String endAMPM = "PM";
+
+        String start = startDate + " " + startTime + " " + startAMPM;
+        String end = endDate + " " + endTime + " " + endAMPM;
+
+        Date d1 = parseDate(start); // Set start date
+        Date d2   = parseDate(end); // Set end date
+
+        long duration  = d2.getTime() - d1.getTime();
+        int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
+        File file = new File(prettyFile);
+
+        MainMethodResult result = null;
+
+        try
+        {
+            result = invokeMain(pretty, prettyFile, customer, caller, callee,
+                    startDate, startTime, startAMPM, endDate, endTime, endAMPM);
+
+            assertThat(result.getExitCode(), equalTo(0));
+
+            String expectedOutput = "Customer: " + customer + "\n"
+                    + "Total Minutes: 744\n"
+                    + "\n"
+                    + "    Caller         Callee      Minutes      Call Start            Call End\n"
+                    + "---------------------------------------------------------------------------------\n"
+                    + " " + caller + "   " + callee + "     " + diffInMinutes + "   " + start + "   " + end;
+
+            List<String> outputLines = Files.readAllLines(file.toPath(), Charset.defaultCharset() );
+            String prettyOutput = String.join("\n", outputLines);
+
+            assertThat(result.getExitCode(), equalTo(0));
+
+            assertTrue(file.exists());
+            assertTrue(!file.isDirectory());
+            assertEquals(expectedOutput, prettyOutput);
+        }
+        finally
+        {
+            file.delete();
+        }
     }
 
 
@@ -111,5 +179,7 @@ public class Project3PrettyPrintIT extends InvokeMainTestCase
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
         assertThat(result.getTextWrittenToStandardError(), equalTo("Too many command line arguments\n"));
     }
+
+
 
 }

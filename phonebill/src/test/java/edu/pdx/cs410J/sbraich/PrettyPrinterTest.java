@@ -164,6 +164,100 @@ public class PrettyPrinterTest
     }
 
     @Test
+    public void getPrettyPrint_SortTest_Uniq() throws PhoneBillException, IOException, ParseException
+    {
+        String customer = "Steve";
+        String caller = "123-123-1234";
+
+        PhoneBill bill = new PhoneBill(customer);
+
+        List<String> expectedLines = new ArrayList<String>();
+
+        expectedLines.add("Customer: " + customer);
+        expectedLines.add("");
+        expectedLines.add("    Caller         Callee      Minutes      Call Start            Call End");
+        expectedLines.add("---------------------------------------------------------------------------------");
+
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "444-444-4444", "04/01/2018 12:01 pm", 1440);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "333-333-3333", "03/01/2018 09:30 am", 125);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "555-555-5555", "05/01/2018 11:05 am", 14400);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "111-111-1111", "01/01/2018 07:30 am", 5);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "222-222-2222", "02/01/2018 03:10 pm", 10);
+
+        // Array of String of what Pretty Print file should look like
+        List<String> hardcodedLines = new ArrayList<String>();
+        hardcodedLines.add("Customer: " + customer);
+        hardcodedLines.add("Total Minutes: 15980");
+        hardcodedLines.add("");
+        hardcodedLines.add("    Caller         Callee      Minutes      Call Start            Call End");
+        hardcodedLines.add("---------------------------------------------------------------------------------");
+        hardcodedLines.add(" 123-123-1234   111-111-1111       5   01/01/2018 07:30 AM   01/01/2018 07:35 AM");
+        hardcodedLines.add(" 123-123-1234   222-222-2222      10   02/01/2018 03:10 PM   02/01/2018 03:20 PM");
+        hardcodedLines.add(" 123-123-1234   333-333-3333     125   03/01/2018 09:30 AM   03/01/2018 11:35 AM");
+        hardcodedLines.add(" 123-123-1234   444-444-4444    1440   04/01/2018 12:01 PM   04/02/2018 12:01 PM");
+        hardcodedLines.add(" 123-123-1234   555-555-5555   14400   05/01/2018 11:05 AM   05/11/2018 11:05 AM");
+
+        String totalMinutes = "Total Minutes: " + bill.getTotalMinutes();
+        expectedLines.add(1, totalMinutes);
+
+        PrettyPrinter pretty = new PrettyPrinter();
+        String prettyOutput = pretty.getPrettyPrint(bill);
+
+        String expectedOutput = String.join("\n", expectedLines);
+        String hardcodedOutput = String.join("\n", hardcodedLines);
+
+        assertNotEquals(expectedOutput, prettyOutput);
+        assertEquals(hardcodedOutput, prettyOutput);
+    }
+
+    @Test
+    public void getPrettyPrint_SortTest_Dupes() throws PhoneBillException, IOException, ParseException
+    {
+        String customer = "Steve";
+        String caller = "123-123-1234";
+
+        PhoneBill bill = new PhoneBill(customer);
+
+        List<String> expectedLines = new ArrayList<String>();
+
+        expectedLines.add("Customer: " + customer);
+        expectedLines.add("");
+        expectedLines.add("    Caller         Callee      Minutes      Call Start            Call End");
+        expectedLines.add("---------------------------------------------------------------------------------");
+
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "444-444-4444", "04/01/2018 12:01 pm", 1440);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "555-555-5555", "05/01/2018 11:05 am", 14400);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "222-222-2222", "01/01/2018 03:10 pm", 10);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "111-111-1111", "01/01/2018 07:30 am", 5);
+        bill = BuildPrettyPrintedTestLine(expectedLines, bill, caller, "333-333-3333", "03/01/2018 09:30 am", 125);
+
+        // Array of String of what Pretty Print file should look like
+        List<String> hardcodedLines = new ArrayList<String>();
+        hardcodedLines.add("Customer: " + customer);
+        hardcodedLines.add("Total Minutes: 15980");
+        hardcodedLines.add("");
+        hardcodedLines.add("    Caller         Callee      Minutes      Call Start            Call End");
+        hardcodedLines.add("---------------------------------------------------------------------------------");
+        hardcodedLines.add(" 123-123-1234   111-111-1111       5   01/01/2018 07:30 AM   01/01/2018 07:35 AM");
+        hardcodedLines.add(" 123-123-1234   222-222-2222      10   01/01/2018 03:10 PM   01/01/2018 03:20 PM");
+        hardcodedLines.add(" 123-123-1234   333-333-3333     125   03/01/2018 09:30 AM   03/01/2018 11:35 AM");
+        hardcodedLines.add(" 123-123-1234   444-444-4444    1440   04/01/2018 12:01 PM   04/02/2018 12:01 PM");
+        hardcodedLines.add(" 123-123-1234   555-555-5555   14400   05/01/2018 11:05 AM   05/11/2018 11:05 AM");
+
+        String totalMinutes = "Total Minutes: " + bill.getTotalMinutes();
+        expectedLines.add(1, totalMinutes);
+
+        PrettyPrinter pretty = new PrettyPrinter();
+        String prettyOutput = pretty.getPrettyPrint(bill);
+
+        String expectedOutput = String.join("\n", expectedLines);
+        String hardcodedOutput = String.join("\n", hardcodedLines);
+
+        assertNotEquals(expectedOutput, prettyOutput);
+        assertEquals(hardcodedOutput, prettyOutput);
+    }
+
+    @Test
     public void PrettyPrintedDump_Basic() throws PhoneBillException, IOException, ParseException
     {
         // TODO: USE FILE MOCKING!!!
@@ -282,28 +376,4 @@ public class PrettyPrinterTest
         PrettyPrinter pretty = new PrettyPrinter();
         pretty.dump(bill);
     }
-
-//    @Test  (expected = PhoneBillException.class)
-//    public void TestTextDumper_Empty() throws IOException
-//    {
-//        File f = new File("empty.txt");
-//        f.createNewFile();
-//
-//        try
-//        {
-//            PhoneBill bill = new PhoneBill("Steve", "empty.txt");
-//            PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234", "1/15/2018 19:39","1/15/2018 20:39");
-//
-//            bill.addPhoneCall(call);
-//
-//            TextDumper dumper = new TextDumper();
-//            dumper.dump(bill);
-//        }
-//        finally
-//        {
-//            f.setWritable(true);
-//            f.delete();
-//        }
-//    }
-
 }

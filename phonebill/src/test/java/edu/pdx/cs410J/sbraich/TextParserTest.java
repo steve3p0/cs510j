@@ -21,6 +21,51 @@ public class TextParserTest
 {
 
     @Test
+    public void TestParser_Multiple() throws PhoneBillException, ParserException, IOException
+    {
+        // [Phone call from 123-123-1234 to 123-123-1234 from 1/15/2018 7:39 am to 12/5/2018 11:05 pm]
+        String customer = "Steve";
+        String filePath = "testparser.txt";
+
+        File file = new File(filePath);
+
+        try
+        {
+            PhoneCall call1 = new PhoneCall("111-111-1111", "123-123-1234", "1/1/2018 12:01 AM", "1/1/2018 12:05 AM");
+            PhoneCall call2 = new PhoneCall("222-222-2222", "123-123-1234", "2/1/2018 12:01 AM", "2/1/2018 12:05 AM");
+            PhoneCall call3 = new PhoneCall("333-333-3333", "123-123-1234", "3/1/2018 12:01 AM", "3/1/2018 12:05 AM");
+            PhoneCall call4 = new PhoneCall("444-444-4444", "123-123-1234", "4/1/2018 12:01 AM", "4/1/2018 12:05 AM");
+
+            PhoneBill billDumper = new PhoneBill(customer, filePath);
+            billDumper.addPhoneCall(call3);
+            billDumper.addPhoneCall(call1);
+            billDumper.addPhoneCall(call4);
+            billDumper.addPhoneCall(call2);
+
+            TextDumper dumper = new TextDumper();
+            dumper.dump(billDumper);
+
+            TextParser tp = new TextParser(Paths.get(filePath), customer);
+            PhoneBill billParser = tp.parse();
+
+            String actual = "";
+            for (PhoneCall ph : billParser.getPhoneCalls())
+            {
+                actual += ph.getCaller() + ",";
+            }
+
+            String expected = "111-111-1111,222-222-2222,333-333-3333,444-444-4444,";
+
+            assertEquals(expected, actual);
+        }
+        finally
+        {
+            file.delete();
+        }
+    }
+
+
+    @Test
     public void TestParser_Basic() throws PhoneBillException, ParserException, IOException
     {
         //Steve

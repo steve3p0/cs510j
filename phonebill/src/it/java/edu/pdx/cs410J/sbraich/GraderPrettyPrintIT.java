@@ -11,8 +11,13 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -30,241 +35,92 @@ public class GraderPrettyPrintIT extends InvokeMainTestCase
         return invokeMain( Project3.class, args );
     }
 
-    @Test  //(expected = PhoneBillException.class)
-    public void Test01_NoArguments()
+    private Date parseDate(String s) throws ParseException
     {
-        fail("Not tested");
+        String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
 
-        Integer expectedExitCode = 1;
-        String expectedStdOut = "";
-        String expectedStdErr = "Missing command line arguments";
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
+        sdf.setLenient(false);
+        Date date = sdf.parse(s);
 
-        MainMethodResult result = invokeMain();
-
-        assertThat(result.getExitCode(), equalTo(expectedExitCode));
-        assertThat(result.getTextWrittenToStandardOut(), equalTo(expectedStdOut));
-        assertThat(result.getTextWrittenToStandardError(), containsString(expectedStdErr));
+        return date;
     }
 
-    @Test  //(expected = PhoneBillException.class)
-    public void Test02_YourReadme()
-    {
-        fail("Not tested");
+    // What can you do from main?
+    //
+    //  Either:
+    //    1. Show README
+    //          OR...
+    //    2. Add Phone Call
+    //
+    //  If you chose #2, there are options:
+    //    A. Pretty Print to STDOUT
+    //    B. Pretty Print to a FILE
+    //    C. Write output to a FILE
+    //    D. Print a description of the new phone call to STDOUT
 
-        String readmeOption = "-README";
 
-        Integer expectedExitCode = 0;
-        String expectedStdOut = Project3.README + "\n";
-        String expectedStdErr = "";
-
-        MainMethodResult result = invokeMain(readmeOption);
-
-        assertThat(result.getExitCode(), equalTo(expectedExitCode));
-        assertThat(result.getTextWrittenToStandardOut(), equalTo(expectedStdOut));
-        assertThat(result.getTextWrittenToStandardError(), equalTo(expectedStdErr));
-    }
-
-    // -textFile sbraich/sbraich-x.txt Test3 ABC-123-4567 123-456-7890 03/03/2018 12:00 03/03/2018 16:00
-    @Test //(expected = PhoneBillException.class)
-    public void Test03_CallerPhoneNumberContainsNonIntegers()
-    {
-        fail("Not tested");
-
-        String fileOption = "-textFile";
-        String filePath = "sbraich/sbraich-x.txt";
-        String customer = "Test3";
-        String caller = "ABC-123-4567";
-        String callee = "123-456-7890";
-        String startDate = "03/03/2018";
-        String startTime = "12:00 AM";
-        String endDate = "03/03/2018";
-        String endTime = "4:00 PM";
-
-        //String expectedStdOut = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
-        Integer expectedExitCode = 1;
-        String expectedStdOut = "StdOut: " + "";
-        String expectedStdErr = "StdErr: '" + caller + "' is not a valid phone number" + "\n";
-        File f = new File(filePath);
-        MainMethodResult result = null;
-
-        try
-        {
-            result = invokeMain(fileOption, filePath, customer, caller, callee, startDate, startTime, endDate, endTime);
-        }
-        finally
-        {
-            Integer actualExitCode = result.getExitCode();
-            String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
-            String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
-
-            assertThat(actualExitCode, equalTo(expectedExitCode));
-            assertThat(actualStdOut, equalTo(expectedStdOut));
-            assertThat(actualStdErr, equalTo(expectedStdErr));
-
-            f.delete();
-        }
-    }
-
-    // -textFile sbraich/sbraich-x.txt Test4 123-456-7890 234-567-8901 03/03/2018 12:XX 03/03/2018 16:00
-    @Test //(expected = PhoneBillException.class)
-    public void Test04_StartTimeIsMalformatted()
-    {
-        fail("Not tested");
-
-        String fileOption = "-textFile";
-        String filePath = "sbraich/sbraich-x.txt";
-        String customer = "Test4";
-        String caller = "123-456-7890";
-        String callee = "234-567-8901";
-        String startDate = "03/03/2018";
-        String startTime = "12:XX AM";
-        String endDate = "03/03/2018";
-        String endTime = "4:00 PM";
-
-        //String expectedStdOut = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
-        Integer expectedExitCode = 1;
-        String expectedStdOut = "StdOut: ";
-        String expectedStdErr = "StdErr: " + "'" + startDate + " " + startTime + "' is not a valid date/time" + "\n";
-        File f = new File(filePath);
-        MainMethodResult result = null;
-
-        try
-        {
-            result = invokeMain(fileOption, filePath, customer, caller, callee, startDate, startTime, endDate, endTime);
-        }
-        finally
-        {
-            Integer actualExitCode = result.getExitCode();
-            String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
-            String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
-
-            assertThat(actualExitCode, equalTo(expectedExitCode));
-            assertThat(actualStdOut, equalTo(expectedStdOut));
-            assertThat(actualStdErr, equalTo(expectedStdErr));
-
-            f.delete();
-        }
-    }
-
-    // $ -textFile sbraich/sbraich-x.txt Test5 123-456-7890 234-567-8901 03/03/2018 12:00 01/04/20/1 16:00
-    @Test //(expected = PhoneBillException.class)
-    public void Test05_EndTimeIsMalformatted()
-    {
-        fail("Not tested");
-
-        // Input Argument Options
-        String fileOption = "-textFile";
-        String filePath = "sbraich/sbraich-x.txt";
-
-        // Input Argument Paramenters
-        String customer = "Test5";
-        String caller = "123-456-7890";
-        String callee = "234-567-8901";
-        String startDate = "03/03/2018";
-        String startTime = "12:00 AM";
-        String endDate = "01/04/20/1";
-        String endTime = "4:00 PM";
-
-        // Expected Output
-        Integer expectedExitCode = 1;
-        String expectedStdOut = "StdOut: ";
-        String expectedStdErr = "StdErr: " + "'" + endDate + " " + endTime + "' is not a valid date/time" + "\n";
-
-        File f = new File(filePath);
-        MainMethodResult result = null;
-
-        try
-        {
-            result = invokeMain(fileOption, filePath, customer, caller, callee, startDate, startTime, endDate, endTime);
-        }
-        finally
-        {
-            Integer actualExitCode = result.getExitCode();
-            String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
-            String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
-
-            assertThat(actualExitCode, equalTo(expectedExitCode));
-            assertThat(actualStdOut, equalTo(expectedStdOut));
-            assertThat(actualStdErr, equalTo(expectedStdErr));
-
-            f.delete();
-        }
-    }
-
-    // $ -textFile sbraich/sbraich-x.txt Test6 123-456-7890 234-567-8901 03/03/2018 12:00 04/04/2018 16:00 fred
-    @Test //(expected = PhoneBillException.class)
-    public void Test06_UnknownCommandLineArgument()
-    {
-        fail("Not tested");
-
-        // Arguments
-        String fileOption = "-textFile";
-        String filePath = "sbraich/sbraich-x.txt";
-        String customer = "Test6";
-        String caller = "123-456-7890";
-        String callee = "234-567-8901";
-        String startDate = "03/03/2018";
-        String startTime = "12:00 AM";
-        String endDate = "04/04/2018";
-        String endTime = "4:00 PM";
-
-        // Extra Arguments
-        String extraArg = "fred";
-
-        // Expected Arguments
-        //String expectedStdOut = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
-        Integer expectedExitCode = 1;
-        String expectedStdOut = "StdOut: " + "";
-        String expectedStdErr = "StdErr: " + "Too many command line arguments" + "\n";
-
-        // File and Result Object
-        File f = new File(filePath);
-        MainMethodResult result = null;
-
-        try
-        {
-            result = invokeMain(fileOption, filePath, customer, caller, callee, startDate, startTime, endDate, endTime, extraArg);
-        }
-        finally
-        {
-            Integer actualExitCode = result.getExitCode();
-            String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
-            String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
-
-            assertThat(actualExitCode, equalTo(expectedExitCode));
-            assertThat(actualStdOut, equalTo(expectedStdOut));
-            assertThat(actualStdErr, equalTo(expectedStdErr));
-
-            f.delete();
-        }
-    }
 
     // $ -textFile sbraich/sbraich.txt -print Project3 123-456-7890 234-567-9081 01/07/2018 07:00 01/17/2018 17:00
-    @Test //(expected = PhoneBillException.class)
-    public void Test07_StartingNewPhoneBillFile()
+    @Test
+    public void Test07_NewPhoneBillFile_withFilePretty() throws ParseException
     {
-        fail("Not tested");
+        String pretty = "-pretty";
+        String prettyStdout = "-";
 
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich.txt";
+
         String printOption = "-print";
+
         String customer = "Project3";
         String caller = "123-456-7890";
         String callee = "234-567-8901";
         String startDate = "01/07/2018";
-        String startTime = "07:00 AM";
+        String startTime = "07:00";
+        String startAMPM = "AM";;
         String endDate = "01/17/2018";
-        String endTime = "5:00 PM";
+        String endTime = "05:00";
+        String endAMPM = "PM";
 
-        Integer expectedExitCode = 0;
-        String expectedStdOut = "StdOut: " + String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime) + "\n";
+        // Get Duration
+        String start = startDate + " " + startTime + " " + startAMPM;
+        String end = endDate + " " + endTime + " " + endAMPM;
+        Date d1 = parseDate(start); // Set start date
+        Date d2   = parseDate(end); // Set end date
+        long duration  = d2.getTime() - d1.getTime();
+        int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
+
+        // Expected Output
+
+        String stdoutPretty =
+                  "Customer: " + customer + "\n"
+                + "Total Minutes: 15000\n"
+                + "\n"
+                + "    Caller         Callee      Minutes      Call Start            Call End\n"
+                + "---------------------------------------------------------------------------------\n"
+                + " " + caller + "   " + callee  + "   " + diffInMinutes + "   " + start + "   " + end + "\n";
+
+        String stdoutCall = "Phone call from 123-456-7890 to 234-567-8901 from 1/7/2018 7:00 AM to 1/17/2018 5:00 PM\n";
+
+        String expectedStdOut = "StdOut: " + stdoutPretty + stdoutCall;
         String expectedStdErr = "StdErr: " + "";
+        Integer expectedExitCode = 0;
+
+
         File f = new File(filePath);
         MainMethodResult result = null;
 
         try
         {
-            result = invokeMain(fileOption, filePath, printOption, customer, caller, callee, startDate, startTime, endDate, endTime);
+            result = invokeMain
+            (
+                pretty, prettyStdout,
+                fileOption, filePath,
+                printOption,
+                customer, caller, callee,
+                startDate, startTime, startAMPM, endDate, endTime, endAMPM
+            );
         }
         finally
         {
@@ -281,21 +137,23 @@ public class GraderPrettyPrintIT extends InvokeMainTestCase
     }
 
     // $ -textFile sbraich/sbraich.txt -print Project3 123-456-7890 456-789-0123 01/08/2018 08:00 01/08/2018 18:00
-    @Test //(expected = PhoneBillException.class)
+    @Test
     public void Test08_UsingAnExistingPhoneBillFile() throws IOException, NoSuchFileException
     {
-        fail("Not tested");
-
         // Setup Variables
         String setupCustomer = "Project3";
         String setupCaller = "123-456-7890";
         String setupCallee = "234-567-8901";
-        String setupStartDate = "01/07/2018 am";
+        String setupStartDate = "1/7/2018";
         String setupStartTime = "07:00";
-        String setupEndDate = "01/17/2018 pm";
+        String setupStartAMPM = "AM";;
+        String setupEndDate = "1/17/2018";
         String setupEndTime = "5:00";
+        String setupEndAMPM = "PM";
 
-        String setupLine = String.format("Phone call from %s to %s from %s %s to %s %s", setupCaller, setupCallee, setupStartDate, setupStartTime, setupEndDate, setupEndTime);
+        String setupLine = String.format("Phone call from %s to %s from %s %s %s to %s %s %s",
+                setupCaller, setupCallee,
+                setupStartDate, setupStartTime, setupStartAMPM, setupEndDate, setupEndTime, setupEndAMPM);
         List<String> setupLines = Arrays.asList(setupCustomer, "[" + setupLine + "]");
 
         // Input Arguments
@@ -305,13 +163,17 @@ public class GraderPrettyPrintIT extends InvokeMainTestCase
         String customer = "Project3";
         String caller = "123-456-7890";
         String callee = "456-789-0123";
-        String startDate = "01/08/2018";
-        String startTime = "08:00 am";
-        String endDate = "01/08/2018";
-        String endTime = "06:00 pm";
+        String startDate = "1/7/2018";
+        String startTime = "7:00";
+        String startAMPM = "AM";;
+        String endDate = "1/17/2018";
+        String endTime = "5:00";
+        String endAMPM = "PM";
 
         // Expected Outputs
-        String expectedStdOut = "StdOut: " + String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime) + "\n";
+        String expectedStdOut = "StdOut: " + String.format("Phone call from %s to %s from %s %s %s to %s %s %s\n",
+                caller, callee,
+                startDate, startTime, startAMPM, endDate, endTime, endAMPM);
         String expectedStdErr = "StdErr: " + "";
         Integer expectedExitCode = 0;
 
@@ -330,7 +192,8 @@ public class GraderPrettyPrintIT extends InvokeMainTestCase
         try
         {
             //Test08_Setup();
-            result = invokeMain(fileOption, filePath, printOption, customer, caller, callee, startDate, startTime, endDate, endTime);
+            result = invokeMain(fileOption, filePath, printOption, customer, caller, callee,
+                    startDate, startTime, startAMPM, endDate, endTime, endAMPM);
         }
         finally
         {
@@ -347,21 +210,23 @@ public class GraderPrettyPrintIT extends InvokeMainTestCase
     }
 
     // $ -textFile sbraich/sbraich.txt DIFFERENT 123-456-7890 789-012-3456 01/09/2018 09:00 02/04/2018 16:00
-    @Test //(expected = PhoneBillException.class)
+    @Test
     public void Test09_DifferentCustomerName() throws IOException, NoSuchFileException
     {
-        fail("Not tested");
-
         // Setup Variables
         String setupCustomer = "Project3";
         String setupCaller = "123-456-7890";
         String setupCallee = "456-789-0123";
-        String setupStartDate = "01/08/2018";
-        String setupStartTime = "08:00 am";
-        String setupEndDate = "01/08/2018";
-        String setupEndTime = "6:00 pm";
+        String setupStartDate = "1/7/2018";
+        String setupStartTime = "7:00";
+        String setupStartAMPM = "AM";
+        String setupEndDate = "1/17/2018";
+        String setupEndTime = "5:00";
+        String setupEndAMPM = "PM";
 
-        String setupLine = String.format("Phone call from %s to %s from %s %s to %s %s", setupCaller, setupCallee, setupStartDate, setupStartTime, setupEndDate, setupEndTime);
+        String setupLine = String.format("Phone call from %s to %s from %s %s %s to %s %s %s",
+                setupCaller, setupCallee,
+                setupStartDate, setupStartTime, setupStartAMPM, setupEndDate, setupEndTime, setupEndAMPM);
         List<String> setupLines = Arrays.asList(setupCustomer, "[" + setupLine + "]");
 
         // Input Arguments
@@ -370,16 +235,17 @@ public class GraderPrettyPrintIT extends InvokeMainTestCase
         String customer = "DIFFERENT";
         String caller = "123-456-7890";
         String callee = "789-012-3456";
-        String startDate = "01/09/2018";
-        String startTime = "09:00 am";
-        String endDate = "02/04/2018";
-        String endTime = "4:00 pm";
+        String startDate = "1/7/2018";
+        String startTime = "7:00";
+        String startAMPM = "AM";
+        String endDate = "1/17/2018";
+        String endTime = "5:00";
+        String endAMPM = "PM";
 
         // Expected Output
         Integer expectedExitCode = 1;
-        //String expectedStdOut = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
         String expectedStdOut = "StdOut: " + "";
-        String expectedStdErr = "StdErr: " + "Customer from command line '" + customer + "' does not match customer '" + setupCustomer + "' in file '" + filePath.toString() + "'" + "\n";
+        String expectedStdErr = "StdErr: " + "Customer from command line '" + customer + "' does not match customer '" + setupCustomer + "' in file '" + filePath.toString() + "'\n";
 
         // Create the 'EXISTING' FILE
         File dir = new File(Paths.get(filePath).getParent().toString());
@@ -395,144 +261,9 @@ public class GraderPrettyPrintIT extends InvokeMainTestCase
 
         try
         {
-            result = invokeMain(fileOption, filePath, customer, caller, callee, startDate, startTime, endDate, endTime);
-        }
-        finally
-        {
-            Integer actualExitCode = result.getExitCode();
-            String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
-            String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
+            result = invokeMain(fileOption, filePath, customer, caller, callee,
+                    startDate, startTime, startAMPM, endDate, endTime, endAMPM);
 
-            assertThat(actualExitCode, equalTo(expectedExitCode));
-            assertThat(actualStdOut, equalTo(expectedStdOut));
-            assertThat(actualStdErr, equalTo(expectedStdErr));
-
-            f.delete();
-        }
-    }
-
-    // $ -textFile sbraich/bogus.txt Project3 123-456-7890 385-284-2342 01/10/2018 10:00 01/20/2018 20:00
-    @Test //(expected = PhoneBillException.class)
-    public void Test10_MalformattedTextFile() throws IOException, NoSuchFileException
-    {
-        fail("Not tested");
-
-        // Setup Variables
-        String setupCustomer = "asdfsadfa";
-        String setupCall = "2r9sadvas";
-        String setupExtraLine1 = "lcv913r";
-        String setupExtraLine2 = "2r7o9av";
-
-        List<String> setupLines = Arrays.asList(setupCustomer, setupCall, setupExtraLine1, setupExtraLine2);
-
-        // Input Arguments
-        String fileOption = "-textFile";
-        String filePath = "sbraich/bogus.txt";
-        String customer = "Project3";
-        String caller = "123-456-7890";
-        String callee = "385-284-2342";
-        String startDate = "01/10/2018";
-        String startTime = "10:00 am";
-        String endDate = "01/20/2018";
-        String endTime = "8:00 pm";
-
-        // Expected Return Output
-        Integer expectedExitCode = 1;
-        //String expectedStdOut = String.format("Phone call from %s to %s from %s %s to %s %s", caller, callee, startDate, startTime, endDate, endTime);
-        String expectedStdOut = "StdOut: " + "";
-        //String expectedStdErr = "StdErr: " + "Customer from command line '" + customer + "' does not match customer '" + setupCustomer + "' in file '" + filePath.toString() + "'" + "\n";
-        String expectedStdErr = "StdErr: " + "Invalid Phone Number: " + setupCall + "\n";
-
-        // Make sure the directory path exists
-        File dir = new File(Paths.get(filePath).getParent().toString());
-        if (!dir.exists())
-        {
-            Files.createDirectories(Paths.get(filePath).getParent());
-        }
-        Files.write(Paths.get(filePath), setupLines, Charset.forName("UTF-8"));
-
-        // Create the file and the Result Object
-        File f = new File(filePath);
-        MainMethodResult result = null;
-
-        try
-        {
-            result = invokeMain(fileOption, filePath, customer, caller, callee, startDate, startTime, endDate, endTime);
-        }
-        finally
-        {
-            Integer actualExitCode = result.getExitCode();
-            String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
-            String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
-
-            assertThat(actualExitCode, equalTo(expectedExitCode));
-            assertThat(actualStdOut, equalTo(expectedStdOut));
-            assertThat(actualStdErr, equalTo(expectedStdErr));
-
-            f.delete();
-        }
-    }
-
-    // $ -textFile sbraich/sbraich-bad-year.txt Project3 123-456-7890 385-284-2342 01/11/2018 11:00 01/11/2018 11:30
-    // DIFFERENT
-    // [Phone call from 123-456-7890 to 789-012-3456 from 01/09/XXXX 09:00 to 02/04/XXXX 16:00]
-    @Test //(expected = PhoneBillException.class)
-    public void Test11_FileWithInvalidYear() throws IOException
-    {
-        fail("Not tested");
-
-        // Setup Variables
-        String setupCustomer = "DIFFERENT";
-        String setupCaller = "123-456-7890";
-        String setupCallee = "789-012-3456";
-        String setupStartDate = "01/09/XXXX";
-        String setupStartTime = "09:00 am";
-        String setupEndDate = "02/04/XXXX";
-        String setupEndTime = "4:00 pm";
-
-        String setupCall = String.format("Phone call from %s to %s from %s %s to %s %s",
-                setupCaller, setupCallee, setupStartDate, setupStartTime, setupEndDate, setupEndTime);
-
-        List<String> setupLines = Arrays.asList(setupCustomer, setupCall);
-
-        // Input Arguments
-        String fileOption = "-textFile";
-        String filePath = "sbraich/sbraich-bad-year.txt";
-        String customer = "Project3";
-        String caller = "123-456-7890";
-        String callee = "385-284-2342";
-        String startDate = "01/11/2018";
-        String startTime = "11:00 am";
-        String endDate = "01/11/2018";
-        String endTime = "11:30 pm";
-
-        // Expected Return Output
-        Integer expectedExitCode = 1;
-        String expectedStdOut = "StdOut: " + "";
-        //String expectedStdErr = "StdErr: " + "'" + setupStartDate + " " + setupStartTime + "' is not a valid date/time" + "\n";
-
-        String expectedStdErr = "StdErr: " + "Invalid DateTime: " +
-                String.format("Phone call from %s to %s from %s %s to %s %s",
-                setupCaller, setupCallee, setupStartDate, setupStartTime, setupEndDate, setupEndTime) + "\n";
-
-        //String expectedStdErr = "StdErr: " + "'" + setupStartDate + " " + setupStartTime + "' is not a valid date/time" + "\n";
-        //Invalid DateTime: Phone call from 123-456-7890 to 789-012-3456 from 01/09/XXXX 09:00 to 02/04/XXXX 16:00
-
-        // Make sure the directory path exists
-        File dir = new File(Paths.get(filePath).getParent().toString());
-        if (!dir.exists())
-        {
-            Files.createDirectories(Paths.get(filePath).getParent());
-        }
-        Files.write(Paths.get(filePath), setupLines, Charset.forName("UTF-8"));
-
-        // Create the file and the Result Object
-        File f = new File(filePath);
-        MainMethodResult result = null;
-
-        try
-        {
-            result = invokeMain(fileOption, filePath, customer, caller, callee, startDate, startTime, endDate, endTime);
         }
         finally
         {

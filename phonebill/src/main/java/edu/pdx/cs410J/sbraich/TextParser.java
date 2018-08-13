@@ -87,18 +87,17 @@ public class TextParser implements PhoneBillParser<PhoneBill>
 
             // Get the Customer Name
             String customerFromFile = lines.get(0);
-
-            // Get the Phone call string
-            String strCall = lines.get(1);
-
-            this.extractPhoneNumbers(strCall);
-            this.extractDateTimes(strCall);
-
-            //this.validateCustomerName(customerFromFile, this.customerFromCli, this.filePath.toString());
-
-            PhoneCall call = new PhoneCall(this.callerNumber, this.calleeNumber, this.startTime, this.endTime);
+            lines.remove(0);
             PhoneBill bill = new PhoneBill(this.customerFromCli, customerFromFile, filePath.toString());
-            bill.addPhoneCall(call);
+
+            for (String line : lines)
+            {
+                this.extractPhoneNumbers(line);
+                this.extractDateTimes(line);
+
+                PhoneCall call = new PhoneCall(this.callerNumber, this.calleeNumber, this.startTime, this.endTime);
+                bill.addPhoneCall(call);
+            }
 
             return bill;
         }
