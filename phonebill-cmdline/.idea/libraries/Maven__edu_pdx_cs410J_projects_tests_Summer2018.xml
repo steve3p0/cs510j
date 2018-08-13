@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: edu.pdx.cs410J:projects:tests:Summer2018">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/edu/pdx/cs410J/projects/Summer2018/projects-Summer2018-tests.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/edu/pdx/cs410J/projects/Summer2018/projects-Summer2018-test-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/edu/pdx/cs410J/projects/Summer2018/projects-Summer2018-test-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
