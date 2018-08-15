@@ -34,88 +34,6 @@ public class PrettyPrinterTest
     {
     }
 
-    private Date parseDate(String s)  throws ParseException
-    {
-        String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
-
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
-        sdf.setLenient(false);
-        Date date = sdf.parse(s);
-
-        return date;
-    }
-
-    private String AddMinutesToDate(String s, int minutes) throws ParseException
-    {
-        String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
-
-        Date date = parseDate(s);
-
-        // Convert to localDateTime to add minutes
-        // LocalDateTime << Instant << Date
-        Instant startInstant = Instant.ofEpochMilli(date.getTime());
-        LocalDateTime startLdt = LocalDateTime.ofInstant(startInstant, ZoneOffset.UTC);
-        LocalDateTime endLdt = startLdt.plusMinutes(minutes);
-
-        // Now convert it to a Date type
-        Instant endInstant = endLdt.toInstant(ZoneOffset.UTC);
-        Date endDate = Date.from(endInstant);
-
-
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
-        String endDateString = sdf.format(endDate);
-
-        return endDateString;
-    }
-
-    private String PrettyDate(String d)  throws ParseException
-    {
-        String PARSE_DATETIME_PATTERN = "M/d/yyyy h:mm a";
-        String PRINT_DATETIME_PATTERN = "MM/dd/yyyy hh:mm a";
-
-        SimpleDateFormat sdf = new SimpleDateFormat(PARSE_DATETIME_PATTERN, Locale.US);
-        sdf.setLenient(false);
-        Date date = sdf.parse(d);
-
-        String formattedDate = new SimpleDateFormat(PRINT_DATETIME_PATTERN).format(date);
-
-        return formattedDate;
-    }
-
-    private int GetDateDiffMinutes(String d1, String d2) throws ParseException
-    {
-        Date startDate = parseDate(d1);; // Set start date
-        Date endDate   = parseDate(d2); // Set end date
-
-        long duration  = endDate.getTime() - startDate.getTime();
-        int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
-
-        return diffInMinutes;
-    }
-
-    private List<String> AddPrettyPrintedLine(List<String> lines, String caller, String callee, String start, String end) throws ParseException
-    {
-        int minutes = GetDateDiffMinutes(start, end);
-        String minFormatted = String.format("%5d", minutes);
-
-        String line = " " + caller + "   " + callee + "   " + minFormatted + "   " + PrettyDate(start) + "   " + PrettyDate(end);
-        lines.add(line);
-
-        return lines;
-    }
-
-    private PhoneBill BuildPrettyPrintedTestLine(List<String> lines, PhoneBill bill, String caller, String callee, String start, int minutes) throws PhoneBillException, ParseException
-    {
-        String end = AddMinutesToDate(start, minutes);
-
-        lines = AddPrettyPrintedLine(lines, caller, callee, start, end);
-
-        PhoneCall call = new PhoneCall(caller, callee, start, end);
-        bill.addPhoneCall(call);
-
-        return bill;
-    }
-
     @Test
     public void getPrettyPrint_Basic() throws PhoneBillException, IOException, ParseException
     {
@@ -324,21 +242,6 @@ public class PrettyPrinterTest
 
     }
 
-    public  boolean equalLists(List<String> a, List<String> b)
-    {
-        // Check for sizes and nulls
-
-        if (a == null && b == null) return true;
-
-
-        if ((a == null && b!= null) || (a != null && b== null) || (a.size() != b.size()))
-        {
-            return false;
-        }
-
-        return a.equals(b);
-    }
-
     @Test(expected = IOException.class)
     public void PrettyPrinter_ReadOnly() throws PhoneBillException, IOException
     {
@@ -378,5 +281,104 @@ public class PrettyPrinterTest
 
         PrettyPrinter pretty = new PrettyPrinter();
         pretty.dump(bill);
+    }
+
+    //// Helper methods: ///////////////////////////////////////////////////////////
+
+    private Date parseDate(String s)  throws ParseException
+    {
+        String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
+
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
+        sdf.setLenient(false);
+        Date date = sdf.parse(s);
+
+        return date;
+    }
+
+    private String AddMinutesToDate(String s, int minutes) throws ParseException
+    {
+        String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
+
+        Date date = parseDate(s);
+
+        // Convert to localDateTime to add minutes
+        // LocalDateTime << Instant << Date
+        Instant startInstant = Instant.ofEpochMilli(date.getTime());
+        LocalDateTime startLdt = LocalDateTime.ofInstant(startInstant, ZoneOffset.UTC);
+        LocalDateTime endLdt = startLdt.plusMinutes(minutes);
+
+        // Now convert it to a Date type
+        Instant endInstant = endLdt.toInstant(ZoneOffset.UTC);
+        Date endDate = Date.from(endInstant);
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
+        String endDateString = sdf.format(endDate);
+
+        return endDateString;
+    }
+
+    private String PrettyDate(String d)  throws ParseException
+    {
+        String PARSE_DATETIME_PATTERN = "M/d/yyyy h:mm a";
+        String PRINT_DATETIME_PATTERN = "MM/dd/yyyy hh:mm a";
+
+        SimpleDateFormat sdf = new SimpleDateFormat(PARSE_DATETIME_PATTERN, Locale.US);
+        sdf.setLenient(false);
+        Date date = sdf.parse(d);
+
+        String formattedDate = new SimpleDateFormat(PRINT_DATETIME_PATTERN).format(date);
+
+        return formattedDate;
+    }
+
+    private int GetDateDiffMinutes(String d1, String d2) throws ParseException
+    {
+        Date startDate = parseDate(d1);; // Set start date
+        Date endDate   = parseDate(d2); // Set end date
+
+        long duration  = endDate.getTime() - startDate.getTime();
+        int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
+
+        return diffInMinutes;
+    }
+
+    private List<String> AddPrettyPrintedLine(List<String> lines, String caller, String callee, String start, String end) throws ParseException
+    {
+        int minutes = GetDateDiffMinutes(start, end);
+        String minFormatted = String.format("%5d", minutes);
+
+        String line = " " + caller + "   " + callee + "   " + minFormatted + "   " + PrettyDate(start) + "   " + PrettyDate(end);
+        lines.add(line);
+
+        return lines;
+    }
+
+    private PhoneBill BuildPrettyPrintedTestLine(List<String> lines, PhoneBill bill, String caller, String callee, String start, int minutes) throws PhoneBillException, ParseException
+    {
+        String end = AddMinutesToDate(start, minutes);
+
+        lines = AddPrettyPrintedLine(lines, caller, callee, start, end);
+
+        PhoneCall call = new PhoneCall(caller, callee, start, end);
+        bill.addPhoneCall(call);
+
+        return bill;
+    }
+
+    public  boolean equalLists(List<String> a, List<String> b)
+    {
+        // Check for sizes and nulls
+
+        if (a == null && b == null) return true;
+
+
+        if ((a == null && b!= null) || (a != null && b== null) || (a.size() != b.size()))
+        {
+            return false;
+        }
+
+        return a.equals(b);
     }
 }

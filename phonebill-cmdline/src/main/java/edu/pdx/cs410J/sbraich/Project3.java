@@ -41,15 +41,13 @@ public class Project3
             // 2. Add Phone Call
             else
             {
-                PhoneCall call = new PhoneCall(cli.callerNumber, cli.calleeNumber, cli.startTime, cli.endTime);
-
                 PhoneBill bill = new PhoneBill(cli.customer);
 
                 // Check if this bill has a file that exists with it
                 // Load it into the PhoneBill object if it does
                 if (cli.textFile)
                 {
-                    bill.setFilePath( cli.filePath.toString());
+                    bill.setFilePath(cli.filePath.toString());
                     TextParser parser = new TextParser(cli.filePath, bill.getCustomer());
 
                     if (parser.fileExists())
@@ -59,9 +57,16 @@ public class Project3
                     }
                 }
 
-                // Add the new file to
+                // Add the new PhoneCall
+                PhoneCall call = new PhoneCall(cli.callerNumber, cli.calleeNumber, cli.startTime, cli.endTime);
                 bill.addPhoneCall(call);
 
+                // Option C: Write output to a FILE
+                if (cli.textFile)
+                {
+                    TextDumper dumper = new TextDumper();
+                    dumper.dump(bill);
+                }
 
                 // OPTIONS:
 
@@ -73,19 +78,13 @@ public class Project3
 
                     System.out.println(stdout);
                 }
+
                 // Option B: Pretty Print to a FILE
                 else if (cli.prettyFile)
                 {
-                    bill.setFilePath(cli.prettyPath.toString());
                     PrettyPrinter pretty = new PrettyPrinter();
+                    bill.setFilePath(cli.prettyPath.toString());
                     pretty.dump(bill);
-                }
-
-                // Option C: Write output to a FILE
-                if (cli.textFile)
-                {
-                    TextDumper dumper = new TextDumper();
-                    dumper.dump(bill);
                 }
 
                 // Option D. Print a description of the new phone call to STDOUT

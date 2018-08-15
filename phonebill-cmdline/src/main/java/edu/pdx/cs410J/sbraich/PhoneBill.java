@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 public class PhoneBill extends AbstractPhoneBill<PhoneCall>
 {
     private String customer;
-    //private String customerFromFile;
     private Path filePath = null;
     private Collection<PhoneCall> calls = new ArrayList<>();
 
@@ -20,34 +19,22 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
     public PhoneBill(String customerName) throws PhoneBillException
     {
         this.customer = customerName;
-        //this.customerFromFile = null;
         this.filePath = null;
 
         this.validateCustomerName();
     }
 
-//    /// Constructor for PhoneBill - Takes a Customer Name and FilePath
-//    public PhoneBill(String customerName, String filePath) throws PhoneBillException
+//    public void loadFromFile()
 //    {
-//        this.customer = customerName;
-//        //this.customerFromFile = null;
 //
-//        if (filePath != null)
+//        bill.setFilePath( cli.filePath.toString());
+//        TextParser parser = new TextParser(cli.filePath, bill.getCustomer());
+//
+//        if (parser.fileExists())
 //        {
-//            this.filePath = Paths.get(filePath);
+//            //System.out.println("parser.fileExists()");
+//            bill = parser.parse();
 //        }
-//
-//        this.validateCustomerName();
-//    }
-
-//    /// Constructor for PhoneBill - Takes a Customer Name and FilePath
-//    public PhoneBill(String customerFromCli, String customerFromFile, String filePath) throws PhoneBillException
-//    {
-//        this.customer = customerFromCli;
-//        this.customerFromFile = customerFromFile;
-//        this.filePath = Paths.get(filePath);
-//
-//        this.compareCustomerNames();
 //    }
 
     /// Overrides addPhoneCall method of AbstractPhoneBill method

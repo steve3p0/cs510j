@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 /// public class TextDumper implements PhoneBillDumper<T extends AbstractPhoneBill>
 public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
 {
+    private String filePath = null;
+
     /// Impelements dump method of PhoneBillDumper method
     public void dump(PhoneBill bill) throws IOException
     {
