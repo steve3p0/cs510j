@@ -6,20 +6,20 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.time.ZoneId;
 import java.time.LocalDate;
 
-/// The Class that manages a phone call
+/**
+ * The Class that manages a phone call
+ */
 public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall>
 {
     private static String PARSE_DATETIME_PATTERN = "M/d/yyyy h:mm a";
     private static String PRINT_DATETIME_PATTERN = "MM/dd/yyyy hh:mm a";
 
     private static String DATE_TIME_REGEX = "(\\d{1,2}/){1}(\\d{1,2}/){1}\\d{4}\\s+(\\d{1,2}:\\d{2}\\s+)(am|pm|AM|PM)";
-    //private static String DATE_TIME_REGEX = "(\\d{1,2}\\/){1}(\\d{1,2}\\/){1}\\d{4}\\s+(\\d{1,2}:\\d{2}\\s+)(am|pm|AM|PM)";
 
     private final String callerNumber;
     private final String calleeNumber;
@@ -27,27 +27,14 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
     private final Date startTime;
     private final Date endTime;
 
-    @Override
-    public int compareTo(PhoneCall o)
-    {
-        int time = startTime.compareTo(o.getStartTime());
-
-        if (time != 0)
-        {
-            return time;
-        }
-
-        int caller = callerNumber.compareTo(o.getCaller());
-
-        if (caller != 0)
-        {
-            return caller;
-        }
-
-        return 0;
-    }
-
-    /// Constructor for PhoneCall = Takes numbers and datetimes as args
+    /**
+     * Constructor for PhoneCall = Takes numbers and datetimes as args
+     * @param callerNum The caller phonenumber
+     * @param calleeNum The call-EE phonenumber
+     * @param start Start Date/Time of the Call
+     * @param end End Date/Time of the Call
+     * @throws PhoneBillException Thrown by this.validate()
+     */
     public PhoneCall(String callerNum, String calleeNum, String start, String end) throws PhoneBillException
     {
         this.callerNumber = callerNum;
@@ -58,21 +45,56 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         this.validate();
     }
 
-    /// Overrides getCaller method of AbstractPhoneCall method
+    /**
+     * This method is used by my Phonebill Sort method to compare phonecalls
+     * Implements compareTo interface java.lang.Comparable
+     * @param call PhoneCall
+     * @return int representing time different between start of two calls
+     */
+    @Override
+    public int compareTo(PhoneCall call)
+    {
+        int time = startTime.compareTo(call.getStartTime());
+
+        if (time != 0)
+        {
+            return time;
+        }
+
+        int caller = callerNumber.compareTo(call.getCaller());
+
+        if (caller != 0)
+        {
+            return caller;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Overrides getCaller method of AbstractPhoneCall method
+     * @return String of the caller's phone number
+     */
     @Override
     public String getCaller()
     {
         return this.callerNumber;
     }
 
-    /// Overrides getCallee method of AbstractPhoneCall method
+    /**
+     * Overrides getCallee method of AbstractPhoneCall method
+     * @return String of the callee phone number
+     */
     @Override
     public String getCallee()
     {
         return this.calleeNumber;
     }
 
-    /// Overrides getStartTimeString method of AbstractPhoneCall method
+    /**
+     * Converts the Start Date object to a String
+     * @return String of startTime
+     */
     @Override
     public String getStartTimeString()
     {
@@ -80,7 +102,10 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         return sdf.format(this.startTime);
     }
 
-    /// Overrides getEndTimeString method of AbstractPhoneCall method
+    /**
+     * Converts the End Date object to a String
+     * @return String of endTime
+     */
     @Override
     public String getEndTimeString()
     {
@@ -90,7 +115,10 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
 
     // Validation Methods
 
-    /// Validate Method for PhoneCall - Calls all private validate methods
+    /**
+     * Validate Method for PhoneCall - Calls all private validate methods
+     * @throws PhoneBillException thrown by validation of class propoerties
+     */
     private void validate() throws PhoneBillException
     {
         this.validatePhoneNumber(this.callerNumber);
@@ -102,6 +130,10 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         this.validateStartBeforeEnd();
     }
 
+    /**
+     * Validate that a start date comes before end date
+     * @throws PhoneBillException thrown if start <= end
+     */
     private void validateStartBeforeEnd() throws PhoneBillException
     {
         long duration  = this.endTime.getTime() - this.startTime.getTime();
@@ -113,6 +145,11 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         }
     }
 
+    /**
+     * Validates a Date/Time String
+     * @param s String representing a date/time
+     * @return Returns true if the date is valie
+     */
     private boolean validateDateTime(String s)
     {
         Pattern pattern = Pattern.compile(DATE_TIME_REGEX);
@@ -122,6 +159,12 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
     }
 
     /// Validate Date
+
+    /**
+     * Validates a Date - Makes sure the year date is at least 4 digits and not greater than 2099
+     * @param datetime Date object of the date to be validated
+     * @throws PhoneBillException thrown if the year is off
+     */
     private void validateDate(Date datetime) throws PhoneBillException
     {
         LocalDate localDate = datetime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -133,7 +176,11 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         }
     }
 
-    /// Validate Phone Number
+    /**
+     * Validates a Phone number
+     * @param phoneNumber String representing a phone number
+     * @throws PhoneBillException Thrown if the phone number pattern is not matched
+     */
     private void validatePhoneNumber(String phoneNumber) throws PhoneBillException
     {
         //nnn-nnn-nnnn
@@ -149,6 +196,12 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
 
     //// Private Methods ///////////////////////
 
+    /**
+     * Parses a string into a Date
+     * @param s String representation of a date
+     * @return Date object
+     * @throws PhoneBillException if date can't be parsed
+     */
     private Date parseDate(String s) throws PhoneBillException
     {
         try
@@ -173,13 +226,19 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         }
     }
 
-    /// Are these methods even used?
-
+    /**
+     * Gets the Start Date/Time
+     * @return Date Ojbect
+     */
     public Date getStartTime()
     {
         return this.startTime;
     }
 
+    /**
+     * Gets the End Date/Time
+     * @return Date Ojbect
+     */
     public Date getEndTime()
     {
         return this.endTime;

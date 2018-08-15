@@ -13,14 +13,18 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-/// PRETTY PRINTER
-
-/// public class TextDumper implements PhoneBillDumper<T extends AbstractPhoneBill>
+/**
+ * Class that manages the Pretty Printing of a PhoneBill
+ */
 public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
 {
     private String filePath = null;
 
-    /// Impelements dump method of PhoneBillDumper method
+    /**
+     * Pretty prints a PhoneBill object to a file
+     * @param bill The phone bill to be written to a file
+     * @throws IOException thrown if file I/O errors occur
+     */
     public void dump(PhoneBill bill) throws IOException
     {
         try
@@ -38,17 +42,27 @@ public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
         }
     }
 
-    /// Impelements dump method of PhoneBillDumper method
+    /**
+     * Converts a List of strings that represents a PhoneBill into one string
+     * @param bill The Phonebill to be converted to a string
+     * @return String representation of a Phonebill
+     * @throws ParseException thrown if the dates can't be parsed.
+     */
     public String getPrettyPrint(PhoneBill bill) throws ParseException
     {
         List<String> lines = this.formatPrettyPrint(bill);
 
-        String s = String.join("\n", lines);
-
-        return s;
+        return String.join("\n", lines);
     }
 
-    public List<String> formatPrettyPrint(PhoneBill bill) throws ParseException
+    /**
+     * Added the customer name, total minutes of phone calls and each
+     * phone call to a list of strings.
+     * @param bill The PhoneBill to be converted to a string
+     * @return List of strings presententing a phone bill
+     * @throws ParseException thrown if the dates can't be parsed.
+     */
+    private List<String> formatPrettyPrint(PhoneBill bill) throws ParseException
     {
         Collection<PhoneCall> calls = bill.getPhoneCalls();
 
@@ -58,7 +72,7 @@ public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
         String header = "    Caller         Callee      Minutes      Call Start            Call End";
         String divider = "---------------------------------------------------------------------------------";
 
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         lines.add(customer);
         lines.add(totalMinutes);
         lines.add("");
@@ -75,7 +89,13 @@ public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
 
     }
 
-    public String PrettyDate(String d) throws ParseException
+    /**
+     * Prints a string in a perferred 'pretty' format
+     * @param d Date of the string to be formatted.
+     * @return String in a pretty format
+     * @throws ParseException thrown if date can't be parsed
+     */
+    private String PrettyDate(String d) throws ParseException
     {
         String PARSE_DATETIME_PATTERN = "M/d/yyyy h:mm a";
         String PRINT_DATETIME_PATTERN = "MM/dd/yyyy hh:mm a";
@@ -84,46 +104,63 @@ public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
         sdf.setLenient(false);
         Date date = sdf.parse(d);
 
-        String formattedDate = new SimpleDateFormat(PRINT_DATETIME_PATTERN).format(date);
-
-        return formattedDate;
+        return new SimpleDateFormat(PRINT_DATETIME_PATTERN).format(date);
     }
 
+    /**
+     * Formats a phone call in a pretty format
+     * @param caller String representing the caller
+     * @param callee String representing the callee
+     * @param start String representing the start date/time
+     * @param end String representing the end date/time
+     * @return Pretty printed string of the call.
+     * @throws ParseException thrown if the dates can't be parsed
+     */
     private String FormatPrettyPrintedLine(String caller, String callee, String start, String end) throws ParseException
     {
         int minutes = GetDateDiffMinutes(start, end);
         String minFormatted = String.format("%5d", minutes);
 
-        String line = " " + caller + "   " + callee + "   " + minFormatted + "   " + PrettyDate(start) + "   " + PrettyDate(end);
-
-        return line;
+        return " " + caller + "   " + callee + "   " + minFormatted + "   " + PrettyDate(start) + "   " + PrettyDate(end);
     }
 
+    /**
+     * Get the duration in minutes of a call
+     * @param d1 String of start date
+     * @param d2 String of end date
+     * @return int reprsentating number of minutes of a call
+     * @throws ParseException thrown thrown if the dates can't be parsed
+     */
     private int GetDateDiffMinutes(String d1, String d2) throws ParseException
     {
-        Date startDate = parseDate(d1);; // Set start date
+        Date startDate = parseDate(d1); // Set start date
         Date endDate   = parseDate(d2); // Set end date
 
         long duration  = endDate.getTime() - startDate.getTime();
 
-        //long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);
-        int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
-        //long diffInHours = TimeUnit.MILLISECONDS.toHours(duration);
-
-        return diffInMinutes;
+        return (int) TimeUnit.MILLISECONDS.toMinutes(duration);
     }
 
+    /**
+     * Parse a string into a date
+     * @param s String representation of a date
+     * @return Date object
+     * @throws ParseException thrown if the date string can't be parsed
+     */
     private Date parseDate(String s)  throws ParseException
     {
         String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
 
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
         sdf.setLenient(false);
-        Date date = sdf.parse(s);
-
-        return date;
+        return sdf.parse(s);
     }
 
+    /**
+     * Creates Directory of the PhoneBill filepath, if it doesn't exist
+     * @param path The path used to create the directory
+     * @throws IOException thrown if the directory can't be created
+     */
     private void CreateDirFromFilePath(Path path) throws IOException
     {
         Path parentDir = path.getParent();
@@ -140,7 +177,11 @@ public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
         }
     }
 
-    /// Validate File Path
+    /**
+     * Validates a File Path
+     * @param path Path type object to be validated
+     * @throws IOException thrown if the filepath object can't be validated.
+     */
     private void validateFilePath(Path path) throws IOException
     {
         Path dir = path.getParent();

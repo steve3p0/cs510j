@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.nio.file.*;
 
-/// The class that manages the command line interface
+/**
+ * The class that manages the command line interface
+ */
 public class Cli
 {
     private ArrayList<String> arguments;
@@ -28,8 +30,8 @@ public class Cli
 
     /**
      * Constructor for CLI - Processes Command Line Arguments
-     * @param args
-     * @throws PhoneBillException
+     * @param args Command Line Arguments
+     * @throws PhoneBillException Thrown if arguments are invalid
      */
     public Cli(String[] args) throws PhoneBillException
     {
@@ -41,14 +43,10 @@ public class Cli
         this.print = Arrays.stream(args).anyMatch(s -> s.equals("-print"));
         this.textFile = Arrays.stream(args).anyMatch(s -> s.equals("-textFile"));
 
-        arguments = new ArrayList<String>(Arrays.asList(args));
-
-        int options = 0;
-
+        arguments = new ArrayList<>(Arrays.asList(args));
 
         if (this.pretty)
         {
-            options++;
             int i = arguments.indexOf("-pretty");
 
             if (i + 1 > arguments.size() - 1)
@@ -58,23 +56,18 @@ public class Cli
 
             if (this.prettyFile)
             {
-                options++;
                 this.prettyPath = Paths.get(arguments.get(i + 1));
                 arguments.remove(this.prettyPath.toString());
             }
 
             if (this.prettyStdout)
             {
-                options++;
                 arguments.remove("-");
             }
         }
 
         if (this.textFile)
         {
-            options++;
-            options++;
-
             int i = arguments.indexOf("-textFile");
 
             if (i + 1 > arguments.size() - 1)
@@ -84,12 +77,6 @@ public class Cli
 
             this.filePath = Paths.get(arguments.get(i + 1));
             arguments.remove(this.filePath.toString());
-        }
-
-
-        if (this.print)
-        {
-            options++;
         }
 
         if (this.readme)
@@ -123,7 +110,7 @@ public class Cli
         {
             throw new PhoneBillException("Missing command line arguments");
         }
-        else if (arguments.size() > 9)
+        else
         {
             throw new PhoneBillException("Too many command line arguments");
         }

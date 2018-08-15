@@ -9,18 +9,25 @@ import java.util.regex.*;
 import java.io.*;
 import java.nio.file.*;
 
-/// TextParser concrete class that reads in Phonebill from a file
+/**
+ * TextParser concrete class that reads in Phonebill from a file
+ */
 public class TextParser implements PhoneBillParser<PhoneBill>
 {
     public final Path filePath;
-    public final String customerFromCli;
+    private final String customerFromCli;
 
     private String callerNumber;
     private String calleeNumber;
     private String startTime;
     private String endTime;
 
-    /// Constructor for Text Parser - Path and customerName as args
+    /**
+     * Constructor for Text Parser - Path and customerName as args
+     * @param path String of filename path of the file to be parsed
+     * @param customerName Customer name that should be found in the file
+     * @throws ParserException Thrown if path is invalid or customer name dosn't match
+     */
     public TextParser(Path path, String customerName) throws ParserException
     {
         this.filePath = path;
@@ -29,12 +36,20 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         this.validateFile();
     }
 
-    /// FileExists method called in main
+    /**
+     * FileExists method called in main
+     * @return True if the file exists
+     */
     public Boolean fileExists()
     {
         return Files.exists(this.filePath);
     }
 
+    /**
+     * Extracts caller and callee phone numbers from a string
+     * @param line String of the phonecall record
+     * @throws ParserException thrown if 2 phone numbers can't be extracted
+     */
     private void extractPhoneNumbers(String line) throws ParserException
     {
         try
@@ -54,6 +69,11 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         }
     }
 
+    /**
+     * Extracts dates from a string
+     * @param line String of the phonecall record
+     * @throws ParserException thrown if 2 dates can't be extracted
+     */
     private void extractDateTimes(String line) throws ParserException
     {
         try
@@ -77,7 +97,11 @@ public class TextParser implements PhoneBillParser<PhoneBill>
 
     }
 
-    /// Overrides parse method of PhoneBillParser method
+    /**
+     * Parses a Phonebill record that is stored in a text file
+     * @return Phonebill object
+     * @throws ParserException thrown if the file can't be parsed
+     */
     @Override
     public PhoneBill parse() throws ParserException
     {
@@ -110,7 +134,10 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         }
     }
 
-    /// Validates a File Path passed to the TextParser
+    /**
+     * Validates a File Path passed to the TextParser
+     * @throws ParserException thrown if the file can't be validated
+     */
     private void validateFile() throws ParserException
     {
         if (this.filePath == null)
@@ -149,13 +176,18 @@ public class TextParser implements PhoneBillParser<PhoneBill>
         }
     }
 
-    /// Does the read file i/o heavy lifting
-    /// inspired by http://www.avajava.com/tutorials/lessons/how-do-i-read-a-string-from-a-file-line-by-line.html
+    /**
+     * Does the read file i/o heavy lifting.
+     * Inspired by:
+     * http://www.avajava.com/tutorials/lessons/how-do-i-read-a-string-from-a-file-line-by-line.html
+     * @return List of strings from the file being parsed
+     * @throws ParserException thrown if the file can't be read
+     */
     private List<String> ReadFile() throws ParserException
     {
         try
         {
-            ArrayList<String> lines = new ArrayList<String>();
+            ArrayList<String> lines = new ArrayList<>();
             Files.lines(this.filePath).forEach(s -> lines.add(s));
 
             if (lines.size() < 2)

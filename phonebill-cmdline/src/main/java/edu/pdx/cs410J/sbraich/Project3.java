@@ -3,9 +3,6 @@ package edu.pdx.cs410J.sbraich;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-
 
 /**
  * The main class for the CS510J Phone Bill Project
@@ -37,19 +34,6 @@ public class Project3
      */
     public static void main(String[] args) throws Exception
     {
-        // What can you do from main?
-        //
-        //  Either:
-        //    1. Show README
-        //          OR...
-        //    2. Add Phone Call
-        //
-        //  If you chose #2, there are options:
-        //    A. Pretty Print to STDOUT
-        //    B. Pretty Print to a FILE
-        //    C. Write output to a FILE
-        //    D. Print a description of the new phone call to STDOUT
-
         try
         {
             Cli cli = new Cli(args);
