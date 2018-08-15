@@ -8,7 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -24,6 +28,20 @@ public class Project3IT extends InvokeMainTestCase
     private MainMethodResult invokeMain(String... args)
     {
         return invokeMain( Project3.class, args );
+    }
+
+    public String PrettyDate(String d)  throws ParseException
+    {
+        String PARSE_DATETIME_PATTERN = "M/d/yyyy h:mm a";
+        String PRINT_DATETIME_PATTERN = "MM/dd/yyyy hh:mm a";
+
+        SimpleDateFormat sdf = new SimpleDateFormat(PARSE_DATETIME_PATTERN, Locale.US);
+        sdf.setLenient(false);
+        Date date = sdf.parse(d);
+
+        String formattedDate = new SimpleDateFormat(PRINT_DATETIME_PATTERN).format(date);
+
+        return formattedDate;
     }
 
     /// Tests that invoking the main method with no arguments issues an error
@@ -44,7 +62,7 @@ public class Project3IT extends InvokeMainTestCase
     }
 
     @Test
-    public void TestMain_PrintOption()
+    public void TestMain_PrintOption() throws ParseException
     {
         String caller = "123-456-7890";
         String callee = "234-567-8901";
@@ -56,19 +74,21 @@ public class Project3IT extends InvokeMainTestCase
         String endTime = "6:48";
         String endAMPM = "PM";
 
+        String start = PrettyDate(startDate + " " + startTime + " " + startAMPM);
+        String end   = PrettyDate(endDate + " " + endTime + " " + endAMPM);
+
+        // Expected Results
+        String phoneCallToString = String.format("Phone call from %s to %s from %s to %s", caller, callee, start,end);
+
         MainMethodResult result = invokeMain("-print", "My Customer", caller, callee,
                         startDate, startTime, startAMPM, endDate, endTime, endAMPM);
 
         assertThat(result.getExitCode(), equalTo(0));
-
-        String phoneCallToString = String.format("Phone call from %s to %s from %s %s %s to %s %s %s",
-                caller, callee, startDate, startTime, startAMPM, endDate, endTime, endAMPM);
-
         assertThat(result.getTextWrittenToStandardOut(), equalTo(phoneCallToString + "\n"));
     }
 
     @Test
-    public void TestMain_ParserNoFile_Dumper() throws IOException
+    public void TestMain_ParserNoFile_Dumper() throws IOException, ParseException
     {
         String customer = "My Customer";
 
@@ -85,8 +105,11 @@ public class Project3IT extends InvokeMainTestCase
         String endTime = "12:48";
         String endAMPM = "PM";
 
-        String phoneCallToString = String.format("Phone call from %s to %s from %s %s %s to %s %s %s",
-                caller, callee, startDate, startTime, startAMPM, endDate, endTime, endAMPM);
+        String start = PrettyDate(startDate + " " + startTime + " " + startAMPM);
+        String end   = PrettyDate(endDate + " " + endTime + " " + endAMPM);
+
+        // Expected Results
+        String phoneCallToString = String.format("Phone call from %s to %s from %s to %s", caller, callee, start,end);
 
         String expectedCallFromFile = "[" + phoneCallToString + "]";
         File f = new File(filePath);
@@ -117,7 +140,7 @@ public class Project3IT extends InvokeMainTestCase
     }
 
     @Test
-    public void TestMain_ParserDumper_NameDifferent() throws IOException, ParserException
+    public void TestMain_ParserDumper_NameDifferent() throws IOException, ParseException
     {
         String printOption = "-print";
         String textFileOption = "-textFile";
@@ -135,16 +158,16 @@ public class Project3IT extends InvokeMainTestCase
         String endTime = "6:48";
         String endAMPM = "PM";
 
-        String phoneCallToString = String.format("Phone call from %s to %s from %s %s %s to %s %s %s",
-                caller, callee, startDate, startTime, startAMPM, endDate, endTime, endAMPM);
-
-        String expectedCallFromFile = "[" + phoneCallToString + "]";
-
-
         File f = new File(filePath);
 
         try
         {
+            String start = PrettyDate(startDate + " " + startTime + " " + startAMPM);
+            String end   = PrettyDate(endDate + " " + endTime + " " + endAMPM);
+
+            // Expected Results
+            String expectedCallFromFile = "[" + String.format("Phone call from %s to %s from %s to %s", caller, callee, start,end) + "]";
+
             // Setup first textFile call with "My Customer 1"
             MainMethodResult result1 = invokeMain(
                     textFileOption, filePath, printOption,  customer1, caller, callee,

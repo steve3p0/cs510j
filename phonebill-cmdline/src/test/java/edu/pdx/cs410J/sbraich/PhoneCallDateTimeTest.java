@@ -18,8 +18,8 @@ public class PhoneCallDateTimeTest
         PhoneCall call = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 12:39 am","1/15/2018 08:39 pm");
 
-        assertThat(call.getStartTimeString(), is("1/15/2018 12:39 AM"));
-        assertThat(call.getEndTimeString(),   is("1/15/2018 8:39 PM"));
+        assertThat(call.getStartTimeString(), is("01/15/2018 12:39 AM"));
+        assertThat(call.getEndTimeString(),   is("01/15/2018 08:39 PM"));
     }
 
     @Test
@@ -28,8 +28,8 @@ public class PhoneCallDateTimeTest
         PhoneCall call = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 7:39 am","1/15/2018 8:39 PM");
 
-        assertThat(call.getStartTimeString(), is("1/15/2018 7:39 AM"));
-        assertThat(call.getEndTimeString(),   is("1/15/2018 8:39 PM"));
+        assertThat(call.getStartTimeString(), is("01/15/2018 07:39 AM"));
+        assertThat(call.getEndTimeString(),   is("01/15/2018 08:39 PM"));
     }
 
     @Test
@@ -38,8 +38,8 @@ public class PhoneCallDateTimeTest
         PhoneCall call = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 12:39 am","1/15/2018 10:39 pm");
 
-        assertThat(call.getStartTimeString(), is("1/15/2018 12:39 AM"));
-        assertThat(call.getEndTimeString(),   is("1/15/2018 10:39 PM"));
+        assertThat(call.getStartTimeString(), is("01/15/2018 12:39 AM"));
+        assertThat(call.getEndTimeString(),   is("01/15/2018 10:39 PM"));
     }
 
     @Test
@@ -48,13 +48,9 @@ public class PhoneCallDateTimeTest
         PhoneCall call = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 7:39 am","1/15/2018 8:39 PM");
 
-        assertThat(call.getStartTimeString(), is("1/15/2018 7:39 AM"));
-        assertThat(call.getEndTimeString(),   is("1/15/2018 8:39 PM"));
+        assertThat(call.getStartTimeString(), is("01/15/2018 07:39 AM"));
+        assertThat(call.getEndTimeString(),   is("01/15/2018 08:39 PM"));
     }
-
-
-
-
 
     @Test
     public void getStartTimeString_ValidDateTimes() throws PhoneBillException
@@ -76,39 +72,39 @@ public class PhoneCallDateTimeTest
 
         PhoneCall call1 = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 07:39 am","1/15/2018 08:39 pm");
-        assertThat(call1.getStartTimeString(), is("1/15/2018 7:39 AM"));
-        assertThat(call1.getEndTimeString(),   is("1/15/2018 8:39 PM"));
+        assertThat(call1.getStartTimeString(), is("01/15/2018 07:39 AM"));
+        assertThat(call1.getEndTimeString(),   is("01/15/2018 08:39 PM"));
 
         PhoneCall call2 = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 7:39 am","1/15/2018 8:39 pm");
-        assertThat(call2.getStartTimeString(), is("1/15/2018 7:39 AM"));
-        assertThat(call2.getEndTimeString(),   is("1/15/2018 8:39 PM"));
+        assertThat(call2.getStartTimeString(), is("01/15/2018 07:39 AM"));
+        assertThat(call2.getEndTimeString(),   is("01/15/2018 08:39 PM"));
 
         PhoneCall call3 = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 7:39 AM","1/15/2018 8:39 PM");
-        assertThat(call3.getStartTimeString(), is("1/15/2018 7:39 AM"));
-        assertThat(call3.getEndTimeString(),   is("1/15/2018 8:39 PM"));
+        assertThat(call3.getStartTimeString(), is("01/15/2018 07:39 AM"));
+        assertThat(call3.getEndTimeString(),   is("01/15/2018 08:39 PM"));
 
         PhoneCall call4 = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 12:39 am","1/15/2018 10:39 pm");
-        assertThat(call4.getStartTimeString(), is("1/15/2018 12:39 AM"));
-        assertThat(call4.getEndTimeString(),   is("1/15/2018 10:39 PM"));
+        assertThat(call4.getStartTimeString(), is("01/15/2018 12:39 AM"));
+        assertThat(call4.getEndTimeString(),   is("01/15/2018 10:39 PM"));
 
         //1/15/2018 12:39 AM
         PhoneCall call5 = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 12:39 AM","1/15/2018 10:39 PM");
-        assertThat(call5.getStartTimeString(), is("1/15/2018 12:39 AM"));
-        assertThat(call5.getEndTimeString(),   is("1/15/2018 10:39 PM"));
+        assertThat(call5.getStartTimeString(), is("01/15/2018 12:39 AM"));
+        assertThat(call5.getEndTimeString(),   is("01/15/2018 10:39 PM"));
 
         PhoneCall call6 = new PhoneCall("555-555-5555", "123-123-1234",
                 "12/1/2018 9:39 AM","12/1/2018 08:39 PM");
-        assertThat(call6.getStartTimeString(), is("12/1/2018 9:39 AM"));
-        assertThat(call6.getEndTimeString(),   is("12/1/2018 8:39 PM"));
+        assertThat(call6.getStartTimeString(), is("12/01/2018 09:39 AM"));
+        assertThat(call6.getEndTimeString(),   is("12/01/2018 08:39 PM"));
 
         PhoneCall call7 = new PhoneCall("555-555-5555", "123-123-1234",
                 "12/1/2018 11:39 pm","12/1/2018 11:39 PM");
-        assertThat(call7.getStartTimeString(), is("12/1/2018 11:39 PM"));
-        assertThat(call7.getEndTimeString(),   is("12/1/2018 11:39 PM"));
+        assertThat(call7.getStartTimeString(), is("12/01/2018 11:39 PM"));
+        assertThat(call7.getEndTimeString(),   is("12/01/2018 11:39 PM"));
 
     }
 

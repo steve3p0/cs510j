@@ -25,7 +25,8 @@ public class PhoneBillTest
     @Test
     public void getCustomer() throws PhoneBillException
     {
-        PhoneBill bill = new PhoneBill("Steve", "readonly.txt");
+        PhoneBill bill = new PhoneBill("Steve");
+        bill.setFilePath("readonly.txt");
 
         assertThat(bill.getCustomer(), is("Steve"));
     }
@@ -44,8 +45,8 @@ public class PhoneBillTest
 
         assertEquals("555-555-5555", c.getCaller());
         assertEquals("123-123-1234", c.getCallee());
-        assertEquals("1/15/2018 7:39 AM", c.getStartTimeString());
-        assertEquals("1/15/2018 8:39 PM", c.getEndTimeString());
+        assertEquals("01/15/2018 07:39 AM", c.getStartTimeString());
+        assertEquals("01/15/2018 08:39 PM", c.getEndTimeString());
     }
 
     @Test
@@ -91,7 +92,7 @@ public class PhoneBillTest
 
         assertEquals("555-555-5555", c.getCaller());
         assertEquals("123-123-1234", c.getCallee());
-        assertEquals("1/15/2018 7:39 AM", c.getStartTimeString());
-        assertEquals("1/15/2018 8:39 PM", c.getEndTimeString());
+        assertEquals("01/15/2018 07:39 AM", c.getStartTimeString());
+        assertEquals("01/15/2018 08:39 PM", c.getEndTimeString());
     }
 }

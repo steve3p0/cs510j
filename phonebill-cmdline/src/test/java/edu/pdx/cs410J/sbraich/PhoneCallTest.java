@@ -14,8 +14,8 @@ public class PhoneCallTest {
         PhoneCall call = new PhoneCall("123-123-1234", "555-555-5555", 
                                            "4/27/2018 11:39 am","5/15/2018 08:39 pm");
 
-        assertThat(call.getStartTimeString(), is("4/27/2018 11:39 AM"));
-        assertThat(call.getEndTimeString(), is("5/15/2018 8:39 PM"));
+        assertThat(call.getStartTimeString(), is("04/27/2018 11:39 AM"));
+        assertThat(call.getEndTimeString(), is("05/15/2018 08:39 PM"));
     }
 
     @Test

@@ -14,7 +14,9 @@ import java.time.LocalDate;
 /// The Class that manages a phone call
 public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall>
 {
-    private static String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
+    private static String PARSE_DATETIME_PATTERN = "M/d/yyyy h:mm a";
+    private static String PRINT_DATETIME_PATTERN = "MM/dd/yyyy hh:mm a";
+
     private static String DATE_TIME_REGEX = "(\\d{1,2}/){1}(\\d{1,2}/){1}\\d{4}\\s+(\\d{1,2}:\\d{2}\\s+)(am|pm|AM|PM)";
     //private static String DATE_TIME_REGEX = "(\\d{1,2}\\/){1}(\\d{1,2}\\/){1}\\d{4}\\s+(\\d{1,2}:\\d{2}\\s+)(am|pm|AM|PM)";
 
@@ -73,7 +75,7 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
     @Override
     public String getStartTimeString()
     {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT);
+        SimpleDateFormat sdf = new SimpleDateFormat(PRINT_DATETIME_PATTERN);
         return sdf.format(this.startTime);
     }
 
@@ -81,7 +83,7 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
     @Override
     public String getEndTimeString()
     {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT);
+        SimpleDateFormat sdf = new SimpleDateFormat(PRINT_DATETIME_PATTERN);
         return sdf.format(this.endTime);
     }
 
@@ -139,21 +141,21 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         {
             if (!validateDateTime(s))
             {
-                throw new PhoneBillException("'" + s + "' is not a valid date/time in the format of '" + DATE_TIME_FORMAT + "'");
+                throw new PhoneBillException("'" + s + "' is not a valid date/time in the format of '" + PARSE_DATETIME_PATTERN + "'");
             }
 
-            SimpleDateFormat sdf = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.US);
+            SimpleDateFormat sdf = new SimpleDateFormat(PARSE_DATETIME_PATTERN, Locale.US);
             sdf.setLenient(false);
 
             return sdf.parse(s);
         }
         catch (java.time.format.DateTimeParseException e)
         {
-            throw new PhoneBillException("DateTimeParseException: '" + s + "' is not a valid date/time in the format of '" + DATE_TIME_FORMAT + "'");
+            throw new PhoneBillException("DateTimeParseException: '" + s + "' is not a valid date/time in the format of '" + PARSE_DATETIME_PATTERN + "'");
         }
         catch (ParseException e)
         {
-            throw new PhoneBillException("ParseException: '" + s + "' is not a valid date/time in the format of '" + DATE_TIME_FORMAT + "'");
+            throw new PhoneBillException("ParseException: '" + s + "' is not a valid date/time in the format of '" + PARSE_DATETIME_PATTERN + "'");
         }
     }
 

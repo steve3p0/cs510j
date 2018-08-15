@@ -25,12 +25,20 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
 
         Path path = bill.getFilePath();
         String callStr = this.toCallsString(bill);
+
+
+
         String customer = bill.getCustomer();
         List<String> lines = Arrays.asList(customer, callStr);
 
         this.CreateDirFromFilePath(path);
         this.validateFilePath(path);
+
+        // WHAT ARE WE DOING HERE??
         Files.write(path, lines, Charset.forName("UTF-8"));
+
+        //Files.write(blah, lines, OpenOption.)
+
     }
 
     private String toCallsString(PhoneBill bill)

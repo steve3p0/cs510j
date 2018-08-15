@@ -44,8 +44,6 @@ public class Cli
         if (this.pretty)
         {
             options++;
-            options++;
-
             int i = arguments.indexOf("-pretty");
 
             if (i + 1 > arguments.size() - 1)
@@ -120,8 +118,7 @@ public class Cli
         {
             throw new PhoneBillException("Missing command line arguments");
         }
-
-        if (arguments.size() > 9)
+        else if (arguments.size() > 9)
         {
             throw new PhoneBillException("Too many command line arguments");
         }

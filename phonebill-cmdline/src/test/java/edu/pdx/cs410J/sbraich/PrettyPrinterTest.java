@@ -265,7 +265,8 @@ public class PrettyPrinterTest
         String filePath = "prettyprint_test.txt";
         String caller = "123-123-1234";
 
-        PhoneBill bill = new PhoneBill(customer, filePath);
+        PhoneBill bill = new PhoneBill(customer);
+        bill.setFilePath(filePath);
 
         File file = new File(bill.getFilePath().toString());
 
@@ -348,7 +349,8 @@ public class PrettyPrinterTest
         {
             f.setReadOnly();
 
-            PhoneBill bill = new PhoneBill("Steve", "readonly.txt");
+            PhoneBill bill = new PhoneBill("Steve");
+            bill.setFilePath("readonly.txt");
             PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234",
                     "1/15/2018 7:39 AM", "1/15/2018 8:39 PM");
 
@@ -367,7 +369,8 @@ public class PrettyPrinterTest
     @Test(expected = IOException.class)
     public void PrettyPrinter_InvalidPath() throws PhoneBillException, IOException
     {
-        PhoneBill bill = new PhoneBill("Steve", "/nonexistant/readonly.txt");
+        PhoneBill bill = new PhoneBill("Steve");
+        bill.setFilePath("/nonexistant/readonly.txt");
         PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234",
                 "1/15/2018 11:39 AM", "1/15/2018 10:39 pm");
 

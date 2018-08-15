@@ -20,7 +20,8 @@ public class TextDumperTest
         String customer = "Steve";
         String filePath = "text.txt";
 
-        PhoneBill bill = new PhoneBill(customer, filePath);
+        PhoneBill bill = new PhoneBill(customer);
+        bill.setFilePath(filePath);
 
         File file = new File(bill.getFilePath().toString());
 
@@ -77,7 +78,8 @@ public class TextDumperTest
     {
         // TODO: USE MOCKING!!!
 
-        PhoneBill bill = new PhoneBill("Steve", "text.txt");
+        PhoneBill bill = new PhoneBill("Steve");
+        bill.setFilePath("text.txt");
         PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234",
                 "1/15/2018 07:39 am","1/15/2018 08:39 pm");
 
@@ -108,7 +110,8 @@ public class TextDumperTest
         {
             f.setReadOnly();
 
-            PhoneBill bill = new PhoneBill("Steve", "readonly.txt");
+            PhoneBill bill = new PhoneBill("Steve");
+            bill.setFilePath("readonly.txt");
             PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234",
                                                "1/15/2018 7:39 AM", "1/15/2018 8:39 PM");
 
@@ -127,7 +130,8 @@ public class TextDumperTest
     @Test(expected = IOException.class)
     public void TestTextDumper_InvalidPath() throws PhoneBillException, IOException
     {
-        PhoneBill bill = new PhoneBill("Steve", "/nonexistant/readonly.txt");
+        PhoneBill bill = new PhoneBill("Steve");
+        bill.setFilePath("/nonexistant/readonly.txt");
         PhoneCall call = new PhoneCall("123-123-1234", "123-123-1234",
                                            "1/15/2018 11:39 AM", "1/15/2018 10:39 pm");
 

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class PhoneBill extends AbstractPhoneBill<PhoneCall>
 {
     private String customer;
-    private String customerFromFile;
+    //private String customerFromFile;
     private Path filePath = null;
     private Collection<PhoneCall> calls = new ArrayList<>();
 
@@ -20,31 +20,35 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
     public PhoneBill(String customerName) throws PhoneBillException
     {
         this.customer = customerName;
-        this.customerFromFile = null;
+        //this.customerFromFile = null;
         this.filePath = null;
 
         this.validateCustomerName();
     }
 
-    /// Constructor for PhoneBill - Takes a Customer Name and FilePath
-    public PhoneBill(String customerName, String filePath) throws PhoneBillException
-    {
-        this.customer = customerName;
-        this.customerFromFile = null;
-        this.filePath = Paths.get(filePath);
+//    /// Constructor for PhoneBill - Takes a Customer Name and FilePath
+//    public PhoneBill(String customerName, String filePath) throws PhoneBillException
+//    {
+//        this.customer = customerName;
+//        //this.customerFromFile = null;
+//
+//        if (filePath != null)
+//        {
+//            this.filePath = Paths.get(filePath);
+//        }
+//
+//        this.validateCustomerName();
+//    }
 
-        this.validateCustomerName();
-    }
-
-    /// Constructor for PhoneBill - Takes a Customer Name and FilePath
-    public PhoneBill(String customerFromCli, String customerFromFile, String filePath) throws PhoneBillException
-    {
-        this.customer = customerFromCli;
-        this.customerFromFile = customerFromFile;
-        this.filePath = Paths.get(filePath);
-
-        this.compareCustomerNames();
-    }
+//    /// Constructor for PhoneBill - Takes a Customer Name and FilePath
+//    public PhoneBill(String customerFromCli, String customerFromFile, String filePath) throws PhoneBillException
+//    {
+//        this.customer = customerFromCli;
+//        this.customerFromFile = customerFromFile;
+//        this.filePath = Paths.get(filePath);
+//
+//        this.compareCustomerNames();
+//    }
 
     /// Overrides addPhoneCall method of AbstractPhoneBill method
     @Override
@@ -78,10 +82,32 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         return this.customer;
     }
 
+    public void setFilePath( String filePath)
+    {
+        this.filePath = Paths.get(filePath);
+    }
+
     /// Gets the File Path of the Phone Bill
     public Path getFilePath()
     {
         return this.filePath;
+    }
+
+    /// Validates a Customer Name in the PhoneBill text file.
+    public void compareCustomerNames(String customerNameInFile) throws PhoneBillException
+    {
+        this.validateCustomerName();
+
+        if (customerNameInFile == null || customerNameInFile.isEmpty())
+        {
+            throw new PhoneBillException("Customer name in phone bill file '" + this.filePath.toString() + "' is is empty");
+        }
+
+        if (!customerNameInFile.equals(this.customer))
+        {
+            String msg = "Customer from command line '" + this.customer + "' does not match customer '" + customerNameInFile + "' in file '" + filePath.toString() + "'";
+            throw new PhoneBillException(msg);
+        }
     }
 
     //////  PRIVATE METHODS /////////////////////////////
@@ -108,29 +134,12 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         return date;
     }
 
-    /// Validate File Path
+    /// Validate Customer Name
     private void validateCustomerName() throws PhoneBillException
     {
         if (this.customer == null || this.customer.isEmpty())
         {
             throw new PhoneBillException("Missing customer name");
-        }
-    }
-
-    /// Validates a Customer Name in the PhoneBill text file.
-    private void compareCustomerNames() throws PhoneBillException
-    {
-        this.validateCustomerName();
-
-        if (this.customerFromFile == null || this.customerFromFile.isEmpty())
-        {
-            throw new PhoneBillException("Customer name in phone bill file '" + this.filePath.toString() + "' is is empty");
-        }
-
-        if (!customerFromFile.equals(this.customer))
-        {
-            String msg = "Customer from command line '" + this.customer + "' does not match customer '" + customerFromFile + "' in file '" + filePath.toString() + "'";
-            throw new PhoneBillException(msg);
         }
     }
 }

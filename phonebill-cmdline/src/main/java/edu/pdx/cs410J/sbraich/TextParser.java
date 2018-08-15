@@ -88,7 +88,10 @@ public class TextParser implements PhoneBillParser<PhoneBill>
             // Get the Customer Name
             String customerFromFile = lines.get(0);
             lines.remove(0);
-            PhoneBill bill = new PhoneBill(this.customerFromCli, customerFromFile, filePath.toString());
+
+            PhoneBill bill = new PhoneBill(this.customerFromCli);
+            bill.setFilePath(filePath.toString());
+            bill.compareCustomerNames(customerFromFile);
 
             for (String line : lines)
             {

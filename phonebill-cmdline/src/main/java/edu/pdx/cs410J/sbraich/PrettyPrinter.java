@@ -73,7 +73,7 @@ public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
 
     }
 
-    private String PrettyDate(String d)  throws ParseException
+    public String PrettyDate(String d) throws ParseException
     {
         String PARSE_DATETIME_PATTERN = "M/d/yyyy h:mm a";
         String PRINT_DATETIME_PATTERN = "MM/dd/yyyy hh:mm a";

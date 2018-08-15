@@ -11,8 +11,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -27,6 +31,20 @@ public class GraderIT extends InvokeMainTestCase
     private MainMethodResult invokeMain(String... args)
     {
         return invokeMain( Project3.class, args );
+    }
+
+    public String PrettyDate(String d)  throws ParseException
+    {
+        String PARSE_DATETIME_PATTERN = "M/d/yyyy h:mm a";
+        String PRINT_DATETIME_PATTERN = "MM/dd/yyyy hh:mm a";
+
+        SimpleDateFormat sdf = new SimpleDateFormat(PARSE_DATETIME_PATTERN, Locale.US);
+        sdf.setLenient(false);
+        Date date = sdf.parse(d);
+
+        String formattedDate = new SimpleDateFormat(PRINT_DATETIME_PATTERN).format(date);
+
+        return formattedDate;
     }
 
     @Test
@@ -239,7 +257,7 @@ public class GraderIT extends InvokeMainTestCase
 
     // $ -textFile sbraich/sbraich.txt -print Project3 123-456-7890 234-567-9081 01/07/2018 07:00 01/17/2018 17:00
     @Test
-    public void Test07_StartingNewPhoneBillFile()
+    public void Test07_StartingNewPhoneBillFile() throws ParseException
     {
         String fileOption = "-textFile";
         String filePath = "sbraich/sbraich.txt";
@@ -255,9 +273,14 @@ public class GraderIT extends InvokeMainTestCase
         String endTime = "5:00";
         String endAMPM = "PM";
 
+        String start = PrettyDate(startDate + " " + startTime + " " + startAMPM);
+        String end   = PrettyDate(endDate + " " + endTime + " " + endAMPM);
+
+        // Expected Results
+        String expectedCallFromFile = String.format("Phone call from %s to %s from %s to %s", caller, callee, start, end);
+
         Integer expectedExitCode = 0;
-        String expectedStdOut = "StdOut: " + String.format("Phone call from %s to %s from %s %s %s to %s %s %s\n",
-                caller, callee,  startDate, startTime, startAMPM, endDate, endTime, endAMPM);
+        String expectedStdOut = "StdOut: " + expectedCallFromFile + "\n";
         String expectedStdErr = "StdErr: " + "";
 
         File f = new File(filePath);
@@ -284,7 +307,7 @@ public class GraderIT extends InvokeMainTestCase
 
     // $ -textFile sbraich/sbraich.txt -print Project3 123-456-7890 456-789-0123 01/08/2018 08:00 01/08/2018 18:00
     @Test
-    public void Test08_UsingAnExistingPhoneBillFile() throws IOException, NoSuchFileException
+    public void Test08_UsingAnExistingPhoneBillFile() throws IOException, NoSuchFileException, ParseException
     {
         // Setup Variables
         String setupCustomer = "Project3";
@@ -297,9 +320,11 @@ public class GraderIT extends InvokeMainTestCase
         String setupEndTime = "5:00";
         String setupEndAMPM = "PM";
 
-        String setupLine = String.format("Phone call from %s to %s from %s %s %s to %s %s %s",
-                setupCaller, setupCallee,
-                setupStartDate, setupStartTime, setupStartAMPM, setupEndDate, setupEndTime, setupEndAMPM);
+        String setupStart = PrettyDate(setupStartDate + " " + setupStartTime + " " + setupStartAMPM);
+        String setupEnd   = PrettyDate(setupEndDate + " " + setupEndTime + " " + setupEndAMPM);
+
+        // Expected Results
+        String setupLine = String.format("Phone call from %s to %s from %s to %s", setupCaller, setupCallee, setupStart, setupEnd);
         List<String> setupLines = Arrays.asList(setupCustomer, "[" + setupLine + "]");
 
         // Input Arguments
@@ -316,10 +341,14 @@ public class GraderIT extends InvokeMainTestCase
         String endTime = "5:00";
         String endAMPM = "PM";
 
+        String start = PrettyDate(startDate + " " + startTime + " " + startAMPM);
+        String end   = PrettyDate(endDate + " " + endTime + " " + endAMPM);
+
+        // Expected Results
+        String expectedCallFromFile = String.format("Phone call from %s to %s from %s to %s", caller, callee, start, end);
+
         // Expected Outputs
-        String expectedStdOut = "StdOut: " + String.format("Phone call from %s to %s from %s %s %s to %s %s %s\n",
-                caller, callee,
-                startDate, startTime, startAMPM, endDate, endTime, endAMPM);
+        String expectedStdOut = "StdOut: " + expectedCallFromFile + "\n";
         String expectedStdErr = "StdErr: " + "";
         Integer expectedExitCode = 0;
 

@@ -36,7 +36,8 @@ public class TextParserTest
             PhoneCall call3 = new PhoneCall("333-333-3333", "123-123-1234", "3/1/2018 12:01 AM", "3/1/2018 12:05 AM");
             PhoneCall call4 = new PhoneCall("444-444-4444", "123-123-1234", "4/1/2018 12:01 AM", "4/1/2018 12:05 AM");
 
-            PhoneBill billDumper = new PhoneBill(customer, filePath);
+            PhoneBill billDumper = new PhoneBill(customer);
+            billDumper.setFilePath(filePath);
             billDumper.addPhoneCall(call3);
             billDumper.addPhoneCall(call1);
             billDumper.addPhoneCall(call4);
@@ -78,7 +79,8 @@ public class TextParserTest
 
         try
         {
-            PhoneBill bill1 = new PhoneBill(customer, filePath);
+            PhoneBill bill1 = new PhoneBill(customer);
+            bill1.setFilePath(filePath);
             PhoneCall call1 = new PhoneCall("123-123-1234", "321-321-3210",
                                                 "1/15/2018 7:39 am","12/5/2018 11:05 pm");
 
@@ -96,8 +98,8 @@ public class TextParserTest
             assertEquals("Steve", bill.getCustomer());
             assertEquals("123-123-1234", call.getCaller());
             assertEquals("321-321-3210", call.getCallee());
-            assertEquals("1/15/2018 7:39 AM", call.getStartTimeString());
-            assertEquals("12/5/2018 11:05 PM", call.getEndTimeString());
+            assertEquals("01/15/2018 07:39 AM", call.getStartTimeString());
+            assertEquals("12/05/2018 11:05 PM", call.getEndTimeString());
         }
         finally
         {
@@ -210,7 +212,8 @@ public class TextParserTest
         String customer1 = "Steve";
         String customer2 = "Not Steve";
 
-        PhoneBill bill1 = new PhoneBill(customer1, filePath);
+        PhoneBill bill1 = new PhoneBill(customer1);
+        bill1.setFilePath(filePath);
         PhoneCall call1 = new PhoneCall("123-123-1234", "321-321-3210",
                                             "1/15/2018 7:39 AM","12/5/2018 8:39 PM");
 

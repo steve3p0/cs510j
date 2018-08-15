@@ -3,6 +3,8 @@ package edu.pdx.cs410J.sbraich;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /// The main class for the CS410J Phone Bill Project
 public class Project3
@@ -41,14 +43,31 @@ public class Project3
             {
                 PhoneCall call = new PhoneCall(cli.callerNumber, cli.calleeNumber, cli.startTime, cli.endTime);
 
+                PhoneBill bill = new PhoneBill(cli.customer);
+
+                // Check if this bill has a file that exists with it
+                // Load it into the PhoneBill object if it does
+                if (cli.textFile)
+                {
+                    bill.setFilePath( cli.filePath.toString());
+                    TextParser parser = new TextParser(cli.filePath, bill.getCustomer());
+
+                    if (parser.fileExists())
+                    {
+                        //System.out.println("parser.fileExists()");
+                        bill = parser.parse();
+                    }
+                }
+
+                // Add the new file to
+                bill.addPhoneCall(call);
+
+
                 // OPTIONS:
 
                 // Option A: Pretty Print to STDOUT
                 if (cli.prettyStdout)
                 {
-                    PhoneBill bill = new PhoneBill(cli.customer);
-                    bill.addPhoneCall(call);
-
                     PrettyPrinter pretty = new PrettyPrinter();
                     String stdout = pretty.getPrettyPrint(bill);
 
@@ -57,9 +76,7 @@ public class Project3
                 // Option B: Pretty Print to a FILE
                 else if (cli.prettyFile)
                 {
-                    PhoneBill bill = new PhoneBill(cli.customer, cli.prettyPath.toString());
-                    bill.addPhoneCall(call);
-
+                    bill.setFilePath(cli.prettyPath.toString());
                     PrettyPrinter pretty = new PrettyPrinter();
                     pretty.dump(bill);
                 }
@@ -67,24 +84,8 @@ public class Project3
                 // Option C: Write output to a FILE
                 if (cli.textFile)
                 {
-                    PhoneBill readbill = new PhoneBill(cli.customer, cli.filePath.toString());
-
-                    TextParser parser = new TextParser(cli.filePath, readbill.getCustomer());
-                    if (parser.fileExists())
-                    {
-                        readbill = parser.parse();
-                    }
-
-                    PhoneBill writeBill = new PhoneBill(cli.customer, cli.filePath.toString());
-                    writeBill.addPhoneCall(call);
                     TextDumper dumper = new TextDumper();
-                    dumper.dump(writeBill);
-                }
-                // NOT Option B: Don't Write output to a FILE
-                else
-                {
-                    PhoneBill bill = new PhoneBill(cli.customer);
-                    bill.addPhoneCall(call);
+                    dumper.dump(bill);
                 }
 
                 // Option D. Print a description of the new phone call to STDOUT
