@@ -24,19 +24,6 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         this.validateCustomerName();
     }
 
-//    public void loadFromFile()
-//    {
-//
-//        bill.setFilePath( cli.filePath.toString());
-//        TextParser parser = new TextParser(cli.filePath, bill.getCustomer());
-//
-//        if (parser.fileExists())
-//        {
-//            //System.out.println("parser.fileExists()");
-//            bill = parser.parse();
-//        }
-//    }
-
     /// Overrides addPhoneCall method of AbstractPhoneBill method
     @Override
     public void addPhoneCall(PhoneCall call)

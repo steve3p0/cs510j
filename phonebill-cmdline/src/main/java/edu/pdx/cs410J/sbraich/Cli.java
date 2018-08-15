@@ -9,6 +9,7 @@ public class Cli
 {
     private ArrayList<String> arguments;
 
+    // Arguments
     protected String customer;
     protected String callerNumber;
     protected String calleeNumber;
@@ -25,7 +26,11 @@ public class Cli
     protected Path filePath;
     protected Path prettyPath;
 
-    /// Constructor for CLI - Processes Command Line Arguments
+    /**
+     * Constructor for CLI - Processes Command Line Arguments
+     * @param args
+     * @throws PhoneBillException
+     */
     public Cli(String[] args) throws PhoneBillException
     {
         this.pretty = Arrays.stream(args).anyMatch(s -> s.equals("-pretty"));

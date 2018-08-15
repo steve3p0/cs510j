@@ -6,13 +6,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/// The main class for the CS410J Phone Bill Project
+
+/**
+ * The main class for the CS510J Phone Bill Project
+ */
 public class Project3
 {
-    static final String README = "This is a PhoneBill app. Blah Blah.";
+    static final String README =
+            "\nProject 3 README by Steve Braich for CS510J Summer 2018\n" +
+            "This project continues Project 2, implementing dates, sorting and a pretty print feature.\n\n";
+    static final String USAGE =
+            "usage: java edu.pdx.cs410J.<login-id>.Project3 [options] <args>\n" +
+            "  args are (in this order):\n" +
+                "\tcustomer        Person whose phone bill we’re modeling\n" +
+                "\tcallerNumber    Phone number of caller\n" +
+                "\tcalleeNumber    Phone number of person who was called\n" +
+                "\tstartTime       Date and time (am/pm) call began\n" +
+                "\tendTime         Date and time (am/pm) call ended\n" +
+            "  options are (options may appear in any order):\n" +
+                "\t-pretty file    Pretty print the phone bill to a text file\n" +
+                "\t                or standard out (file -).\n" +
+                "\t-textFile file  Where to read/write the phone bill\n" +
+                "\t-print          Prints a description of the new phone call\n" +
+                "\t-README         Prints a README for this project and exits\n\n";
 
-    /// Expecting command line arguments
-    /// We have moved most of the command line arg logic into its own class
+    /**
+     * Main function for Project 3
+     * @param args Takes in arguments from the command line
+     * @throws Exception Can throw PhonebillException, ParseException, IOException
+     */
     public static void main(String[] args) throws Exception
     {
         // What can you do from main?
@@ -35,7 +57,7 @@ public class Project3
             // 1. Show README and exit
             if (cli.readme)
             {
-                System.out.println(README);
+                System.out.println(README + USAGE);
                 System.exit(0);
             }
             // 2. Add Phone Call

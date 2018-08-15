@@ -1,6 +1,8 @@
 package edu.pdx.cs410J.sbraich;
 
-/// PhoneBill Project Custom Exception class
+/**
+ * PhoneBill Project Custom Exception class
+ */
 public class PhoneBillException extends Exception
 {
     /// Constructor for PhoneBill Exception Class

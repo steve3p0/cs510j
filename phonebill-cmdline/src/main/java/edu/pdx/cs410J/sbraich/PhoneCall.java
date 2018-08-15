@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.time.ZoneId;
@@ -97,6 +98,19 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
 
         this.validateDate(this.startTime);
         this.validateDate(this.endTime);
+
+        this.validateStartBeforeEnd();
+    }
+
+    private void validateStartBeforeEnd() throws PhoneBillException
+    {
+        long duration  = this.endTime.getTime() - this.startTime.getTime();
+
+        if (duration <= 0)
+        {
+            throw new PhoneBillException("The start date '" + this.getStartTimeString() +"' must come before the end date "
+                    + "'" + this.getEndTimeString() + "'");
+        }
     }
 
     private boolean validateDateTime(String s)

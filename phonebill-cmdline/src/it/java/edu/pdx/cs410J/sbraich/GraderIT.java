@@ -65,16 +65,22 @@ public class GraderIT extends InvokeMainTestCase
     public void Test02_YourReadme()
     {
         String readmeOption = "-README";
+        String readmeOutput = Project3.README + Project3.USAGE;
 
         Integer expectedExitCode = 0;
-        String expectedStdOut = Project3.README + "\n";
-        String expectedStdErr = "";
+        String expectedStdOut = "StdOut: " + readmeOutput + "\n";
+        String expectedStdErr = "StdErr: " + "";
 
         MainMethodResult result = invokeMain(readmeOption);
 
-        assertThat(result.getExitCode(), equalTo(expectedExitCode));
-        assertThat(result.getTextWrittenToStandardOut(), equalTo(expectedStdOut));
-        assertThat(result.getTextWrittenToStandardError(), equalTo(expectedStdErr));
+        Integer actualExitCode = result.getExitCode();
+        String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
+        String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
+
+        // Make Assertions
+        assertThat(actualExitCode, equalTo(expectedExitCode));
+        assertThat(actualStdOut, equalTo(expectedStdOut));
+        assertThat(actualStdErr, equalTo(expectedStdErr));
     }
 
     // -textFile sbraich/sbraich-x.txt Test3 ABC-123-4567 123-456-7890 03/03/2018 12:00 03/03/2018 16:00

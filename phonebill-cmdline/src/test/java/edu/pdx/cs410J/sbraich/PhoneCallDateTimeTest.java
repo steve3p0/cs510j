@@ -55,21 +55,6 @@ public class PhoneCallDateTimeTest
     @Test
     public void getStartTimeString_ValidDateTimes() throws PhoneBillException
     {
-        //1. 1/15/2018 07:39 am
-        //   1/15/2018 08:39 pm
-        //2. 1/15/2018 7:39 am
-        //   1/15/2018 8:39 pm
-        //3. 1/15/2018 7:39 AM
-        //   1/15/2018 8:39 PM
-        //4. 1/15/2018 12:39 am
-        //   1/15/2018 10:39 pm
-        //5. 1/15/2018 12:39 AM
-        //   1/15/2018 10:39 PM
-        //6. 12/1/2018 9:39 AM
-        //   12/1/2018 08:39 PM
-        //7. 12/1/2018 11:39 pm
-        //   12/1/2018 11:39 PM
-
         PhoneCall call1 = new PhoneCall("555-555-5555", "123-123-1234",
                 "1/15/2018 07:39 am","1/15/2018 08:39 pm");
         assertThat(call1.getStartTimeString(), is("01/15/2018 07:39 AM"));
@@ -100,6 +85,11 @@ public class PhoneCallDateTimeTest
                 "12/1/2018 9:39 AM","12/1/2018 08:39 PM");
         assertThat(call6.getStartTimeString(), is("12/01/2018 09:39 AM"));
         assertThat(call6.getEndTimeString(),   is("12/01/2018 08:39 PM"));
+    }
+
+    @Test(expected = PhoneBillException.class)
+    public void getStartTimeString_StartEqualToEnd() throws PhoneBillException
+    {
 
         PhoneCall call7 = new PhoneCall("555-555-5555", "123-123-1234",
                 "12/1/2018 11:39 pm","12/1/2018 11:39 PM");
@@ -108,7 +98,16 @@ public class PhoneCallDateTimeTest
 
     }
 
+    @Test(expected = PhoneBillException.class)
+    public void getStartTimeString_StartAfterEnd() throws PhoneBillException
+    {
 
+        PhoneCall call7 = new PhoneCall("555-555-5555", "123-123-1234",
+                "12/1/2018 11:39 pm","12/1/2018 11:39 PM");
+        assertThat(call7.getStartTimeString(), is("12/02/2018 11:39 PM"));
+        assertThat(call7.getEndTimeString(),   is("12/01/2018 11:39 PM"));
+
+    }
 
 
     /// Edge Cases ///////////////////////////////////////////////////////////////////////////
