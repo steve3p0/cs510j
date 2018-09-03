@@ -1,0 +1,2 @@
+Customer: Steve
+[Phone call from 123-123-1234 to 111-111-1111 from 1/15/2018 7:30 AM to 1/15/2018 7:35 AM, Phone call from 123-123-1234 to 222-222-2222 from 8/1/2018 3:10 PM to 8/1/2018 3:20 PM, Phone call from 123-123-1234 to 333-333-3333 from 9/15/2018 9:30 AM to 9/15/2018 11:35 AM, Phone call from 123-123-1234 to 444-444-4444 from 10/1/2018 12:01 PM to 10/2/2018 12:01 PM, Phone call from 123-123-1234 to 555-555-5555 from 12/15/2018 11:05 AM to 12/25/2018 11:05 AM]
