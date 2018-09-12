@@ -15,25 +15,29 @@ import static org.hamcrest.Matchers.equalTo;
  * Tests the {@link Project4} class by invoking its main method with various arguments
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class Project4IT extends InvokeMainTestCase {
+public class Project4IT extends InvokeMainTestCase
+{
     private static final String HOSTNAME = "localhost";
     private static final String PORT = System.getProperty("http.port", "8080");
 
     @Test
-    public void test0RemoveAllMappings() throws IOException {
-      PhoneBillRestClient client = new PhoneBillRestClient(HOSTNAME, Integer.parseInt(PORT));
-      client.removeAllDictionaryEntries();
+    public void test0RemoveAllMappings() throws IOException
+    {
+        PhoneBillRestClient client = new PhoneBillRestClient(HOSTNAME, Integer.parseInt(PORT));
+        client.removeAllDictionaryEntries();
     }
 
     @Test
-    public void test1NoCommandLineArguments() {
+    public void test1NoCommandLineArguments()
+    {
         MainMethodResult result = invokeMain( Project4.class );
         assertThat(result.getExitCode(), equalTo(1));
         assertThat(result.getTextWrittenToStandardError(), containsString(Project4.MISSING_ARGS));
     }
 
     @Test
-    public void test2EmptyServer() {
+    public void test2EmptyServer()
+    {
         MainMethodResult result = invokeMain( Project4.class, HOSTNAME, PORT );
         assertThat(result.getTextWrittenToStandardError(), result.getExitCode(), equalTo(0));
         String out = result.getTextWrittenToStandardOut();
@@ -41,7 +45,8 @@ public class Project4IT extends InvokeMainTestCase {
     }
 
     @Test
-    public void test3NoDefinitions() {
+    public void test3NoDefinitions()
+    {
         String word = "WORD";
         MainMethodResult result = invokeMain( Project4.class, HOSTNAME, PORT, word );
         assertThat(result.getTextWrittenToStandardError(), result.getExitCode(), equalTo(0));
@@ -50,7 +55,8 @@ public class Project4IT extends InvokeMainTestCase {
     }
 
     @Test
-    public void test4AddDefinition() {
+    public void test4AddDefinition()
+    {
         String word = "WORD";
         String definition = "DEFINITION";
 
