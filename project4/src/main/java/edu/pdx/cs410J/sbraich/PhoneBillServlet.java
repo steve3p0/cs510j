@@ -36,10 +36,13 @@ public class PhoneBillServlet extends HttpServlet
         response.setContentType( "text/plain" );
 
         String word = getParameter( WORD_PARAMETER, request );
-        if (word != null) {
+        if (word != null)
+        {
             writeDefinition(word, response);
 
-        } else {
+        }
+        else
+        {
             writeAllDictionaryEntries(response);
         }
     }
@@ -55,13 +58,15 @@ public class PhoneBillServlet extends HttpServlet
         response.setContentType( "text/plain" );
 
         String word = getParameter(WORD_PARAMETER, request );
-        if (word == null) {
+        if (word == null)
+        {
             missingRequiredParameter(response, WORD_PARAMETER);
             return;
         }
 
         String definition = getParameter(DEFINITION_PARAMETER, request );
-        if ( definition == null) {
+        if ( definition == null)
+        {
             missingRequiredParameter( response, DEFINITION_PARAMETER );
             return;
         }
@@ -146,18 +151,22 @@ public class PhoneBillServlet extends HttpServlet
      * @return <code>null</code> if the value of the parameter is
      *         <code>null</code> or is the empty string
      */
-    private String getParameter(String name, HttpServletRequest request) {
-      String value = request.getParameter(name);
-      if (value == null || "".equals(value)) {
-        return null;
-
-      } else {
-        return value;
-      }
+    private String getParameter(String name, HttpServletRequest request)
+    {
+        String value = request.getParameter(name);
+        if (value == null || "".equals(value))
+        {
+            return null;
+        }
+        else
+        {
+            return value;
+        }
     }
 
     @VisibleForTesting
-    String getDefinition(String word) {
+    String getDefinition(String word)
+    {
         return this.dictionary.get(word);
     }
 

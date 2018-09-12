@@ -20,7 +20,6 @@ public class PhoneBillRestClient extends HttpRequestHelper
 
     private final String url;
 
-
     /**
      * Creates a client to the Phone Bil REST service running on the given host and port
      * @param hostName The name of the host
@@ -34,48 +33,55 @@ public class PhoneBillRestClient extends HttpRequestHelper
     /**
      * Returns all dictionary entries from the server
      */
-    public Map<String, String> getAllDictionaryEntries() throws IOException {
-      Response response = get(this.url);
-      return Messages.parseDictionary(response.getContent());
+    public Map<String, String> getAllDictionaryEntries() throws IOException
+    {
+        Response response = get(this.url);
+        return Messages.parseDictionary(response.getContent());
     }
 
     /**
      * Returns the definition for the given word
      */
-    public String getDefinition(String word) throws IOException {
-      Response response = get(this.url, "word", word);
-      throwExceptionIfNotOkayHttpStatus(response);
-      String content = response.getContent();
-      return Messages.parseDictionaryEntry(content).getValue();
+    public String getDefinition(String word) throws IOException
+    {
+        Response response = get(this.url, "word", word);
+        throwExceptionIfNotOkayHttpStatus(response);
+        String content = response.getContent();
+        return Messages.parseDictionaryEntry(content).getValue();
     }
 
-    public void addDictionaryEntry(String word, String definition) throws IOException {
-      Response response = postToMyURL("word", word, "definition", definition);
-      throwExceptionIfNotOkayHttpStatus(response);
+    public void addDictionaryEntry(String word, String definition) throws IOException
+    {
+        Response response = postToMyURL("word", word, "definition", definition);
+        throwExceptionIfNotOkayHttpStatus(response);
     }
 
     @VisibleForTesting
-    Response postToMyURL(String... dictionaryEntries) throws IOException {
-      return post(this.url, dictionaryEntries);
+    Response postToMyURL(String... dictionaryEntries) throws IOException
+    {
+        return post(this.url, dictionaryEntries);
     }
 
-    public void removeAllDictionaryEntries() throws IOException {
-      Response response = delete(this.url);
-      throwExceptionIfNotOkayHttpStatus(response);
+    public void removeAllDictionaryEntries() throws IOException
+    {
+        Response response = delete(this.url);
+        throwExceptionIfNotOkayHttpStatus(response);
     }
 
-    private Response throwExceptionIfNotOkayHttpStatus(Response response) {
-      int code = response.getCode();
-      if (code != HTTP_OK) {
-        throw new PhoneBillRestException(code);
-      }
-      return response;
+    private Response throwExceptionIfNotOkayHttpStatus(Response response)
+    {
+        int code = response.getCode();
+        if (code != HTTP_OK)
+        {
+            throw new PhoneBillRestException(code);
+        }
+        return response;
     }
 
-    private class PhoneBillRestException extends RuntimeException {
-      public PhoneBillRestException(int httpStatusCode) {
+    private class PhoneBillRestException extends RuntimeException
+    {
+        public PhoneBillRestException(int httpStatusCode) {
         super("Got an HTTP Status Code of " + httpStatusCode);
       }
     }
-
 }

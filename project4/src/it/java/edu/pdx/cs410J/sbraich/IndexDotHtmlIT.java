@@ -10,6 +10,11 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+/**
+ * NOTE:
+ * In order to run this test, the jetty web server needs to be running with this command:
+ * $ mvn jetty:run
+ */
 public class IndexDotHtmlIT
 {
     private static final String HOSTNAME = "localhost";

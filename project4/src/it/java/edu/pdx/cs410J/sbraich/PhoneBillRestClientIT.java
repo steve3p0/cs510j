@@ -15,6 +15,9 @@ import static org.hamcrest.Matchers.equalTo;
 
 /**
  * Integration test that tests the REST calls made by {@link PhoneBillRestClient}
+ * NOTE:
+ * In order to run this test, the jetty web server needs to be running with this command:
+ * $ mvn jetty:run
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PhoneBillRestClientIT

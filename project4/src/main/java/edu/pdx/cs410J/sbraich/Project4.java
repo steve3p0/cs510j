@@ -16,42 +16,59 @@ public class Project4 {
 
     public static final String MISSING_ARGS = "Missing command line arguments";
 
-    public static void main(String... args) {
+    public static void main(String... args)
+    {
         String hostName = null;
         String portString = null;
         String word = null;
         String definition = null;
 
-        for (String arg : args) {
-            if (hostName == null) {
+        for (String arg : args)
+        {
+            if (hostName == null)
+            {
                 hostName = arg;
 
-            } else if ( portString == null) {
+            }
+            else if ( portString == null)
+            {
                 portString = arg;
 
-            } else if (word == null) {
+            }
+            else if (word == null)
+            {
                 word = arg;
 
-            } else if (definition == null) {
+            }
+            else if (definition == null)
+            {
                 definition = arg;
 
-            } else {
+            }
+            else
+            {
                 usage("Extraneous command line argument: " + arg);
             }
         }
 
-        if (hostName == null) {
+        if (hostName == null)
+        {
             usage( MISSING_ARGS );
 
-        } else if ( portString == null) {
+        }
+        else if ( portString == null)
+        {
             usage( "Missing port" );
         }
 
         int port;
-        try {
+        try
+        {
             port = Integer.parseInt( portString );
             
-        } catch (NumberFormatException ex) {
+        }
+        catch (NumberFormatException ex)
+        {
             usage("Port \"" + portString + "\" must be an integer");
             return;
         }
@@ -59,25 +76,33 @@ public class Project4 {
         PhoneBillRestClient client = new PhoneBillRestClient(hostName, port);
 
         String message;
-        try {
-            if (word == null) {
+        try
+        {
+            if (word == null)
+            {
                 // Print all word/definition pairs
                 Map<String, String> dictionary = client.getAllDictionaryEntries();
                 StringWriter sw = new StringWriter();
                 Messages.formatDictionaryEntries(new PrintWriter(sw, true), dictionary);
                 message = sw.toString();
 
-            } else if (definition == null) {
+            }
+            else if (definition == null)
+            {
                 // Print all dictionary entries
                 message = Messages.formatDictionaryEntry(word, client.getDefinition(word));
 
-            } else {
+            }
+            else
+            {
                 // Post the word/definition pair
                 client.addDictionaryEntry(word, definition);
                 message = Messages.definedWordAs(word, definition);
             }
 
-        } catch ( IOException ex ) {
+        }
+        catch ( IOException ex )
+        {
             error("While contacting server: " + ex);
             return;
         }
@@ -94,7 +119,8 @@ public class Project4 {
      */
     private static void checkResponseCode( int code, HttpRequestHelper.Response response )
     {
-        if (response.getCode() != code) {
+        if (response.getCode() != code)
+        {
             error(String.format("Expected HTTP code %d, got code %d.\n\n%s", code,
                                 response.getCode(), response.getContent()));
         }

@@ -13,6 +13,9 @@ import static org.hamcrest.Matchers.equalTo;
 
 /**
  * Tests the {@link Project4} class by invoking its main method with various arguments
+ * NOTE:
+ * In order to run this test, the jetty web server needs to be running with this command:
+ * $ mvn jetty:run
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Project4IT extends InvokeMainTestCase
