@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.sbraich;
 
+import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.IOException;
@@ -16,7 +17,81 @@ public class Project4 {
 
     public static final String MISSING_ARGS = "Missing command line arguments";
 
-    public static void main(String... args)
+    static final String README =
+            "\nProject 3 README by Steve Braich for CS510J Summer 2018\n" +
+                    "This project continues Project 2, implementing dates, sorting and a pretty print feature.\n\n";
+    static final String USAGE =
+            "usage: java edu.pdx.cs410J.<login-id>.Project3 [options] <args>\n" +
+                    "  args are (in this order):\n" +
+                    "\tcustomer        Person whose phone bill we’re modeling\n" +
+                    "\tcallerNumber    Phone number of caller\n" +
+                    "\tcalleeNumber    Phone number of person who was called\n" +
+                    "\tstartTime       Date and time (am/pm) call began\n" +
+                    "\tendTime         Date and time (am/pm) call ended\n" +
+                    "  options are (options may appear in any order):\n" +
+                    "\t-pretty file    Pretty print the phone bill to a text file\n" +
+                    "\t                or standard out (file -).\n" +
+                    "\t-textFile file  Where to read/write the phone bill\n" +
+                    "\t-print          Prints a description of the new phone call\n" +
+                    "\t-README         Prints a README for this project and exits\n\n";
+
+    /**
+     * Main function for Project 4
+     * @param args Takes in arguments from the command line
+     * @throws Exception Can throw PhonebillException, ParseException, IOException
+     */
+    public static void main(String[] args) throws Exception
+    {
+        try
+        {
+            Cli cli = new Cli(args);
+
+            PhoneBillRestClient client = new PhoneBillRestClient(cli.hostname, cli.portNumber);
+
+            // 1. Show README and exit
+            if (cli.readme)
+            {
+                System.out.println(README + USAGE);
+                System.exit(0);
+            }
+            // 2. Search
+            else if (cli.search)
+            {
+                System.out.println("Search Not implemented");
+                System.exit(0);
+            }
+            // 3. Print
+            // Option D. Print a description of the new phone call to STDOUT
+            if (cli.print)
+            {
+                System.out.println("Print Not implemented");
+                System.exit(0);
+            }
+
+            // 4. Add Phone Call
+            else
+            {
+                PhoneBill bill = new PhoneBill(cli.customer);
+
+                // Add the new PhoneCall
+                PhoneCall call = new PhoneCall(cli.callerNumber, cli.calleeNumber, cli.startTime, cli.endTime);
+                bill.addPhoneCall(call);
+
+                // For testing
+                PrettyPrinter pretty = new PrettyPrinter();
+                System.out.println(pretty.getPrettyPrint(bill));
+
+                System.exit(0);
+            }
+        }
+        catch (PhoneBillException e)
+        {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public static void main2(String... args)
     {
         String hostName = null;
         String portString = null;

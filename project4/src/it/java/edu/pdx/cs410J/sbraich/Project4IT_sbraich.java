@@ -40,6 +40,11 @@ public class Project4IT_sbraich extends InvokeMainTestCase
 
     private String Add3Calls() throws PhoneBillException, ParseException
     {
+        String host = "-host";
+        String hostname = "localhost";
+        String port = "-port";
+        String portNumber = "12345";
+
         // Format Dates
         PrettyPrinter pp = new PrettyPrinter();
         PhoneCall call = new PhoneCall();
@@ -114,28 +119,34 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         MainMethodResult result = null;
 
         result = invokeMain
-                (
-                        Project4.class, HOSTNAME, PORT,
-                        customer, caller, callee,
-                        startDate1, startTime1, startAmPm1,
-                        endDate1, endTime1, endAmPm1
-                );
+        (
+            Project4.class,
+            host, hostname,
+            port, portNumber,
+            customer, caller, callee,
+            startDate1, startTime1, startAmPm1,
+            endDate1, endTime1, endAmPm1
+        );
 
         result = invokeMain
-                (
-                        Project4.class, HOSTNAME, PORT,
-                        customer, caller, callee,
-                        startDate2, startTime2, startAmPm2,
-                        endDate2, endTime2, endAmPm2
-                );
+        (
+            Project4.class,
+            host, hostname,
+            port, portNumber,
+            customer, caller, callee,
+            startDate2, startTime2, startAmPm2,
+            endDate2, endTime2, endAmPm2
+        );
 
         result = invokeMain
-                (
-                        Project4.class, HOSTNAME, PORT,
-                        customer, caller, callee,
-                        startDate3, startTime3, startAmPm3,
-                        endDate3, endTime3, endAmPm3
-                );
+        (
+            Project4.class, HOSTNAME, PORT,
+            host, hostname,
+            port, portNumber,
+            customer, caller, callee,
+            startDate3, startTime3, startAmPm3,
+            endDate3, endTime3, endAmPm3
+        );
 
         return expectedPrettyPrint;
     }
@@ -145,6 +156,11 @@ public class Project4IT_sbraich extends InvokeMainTestCase
     {
         // java -jar target/phonebill.jar
         // -host localhost -port 12345 "Dave" 503-245-2345 765-389-1273 02/27/2018 8:56 am 02/27/2018 10:27 am
+
+        String host = "-host";
+        String hostname = "localhost";
+        String port = "-port";
+        String portNumber = "12345";
 
         String customer = "Dave";
         String caller = "503-245-2345";
@@ -173,7 +189,7 @@ public class Project4IT_sbraich extends InvokeMainTestCase
                 + "\n"
                 + "    Caller         Callee      Minutes      Call Start            Call End\n"
                 + "---------------------------------------------------------------------------------\n"
-                + " " + caller + "   " + callee  + "     "  + diffInMinutes + "   " + start + "   " + end + "\n";
+                + " " + caller + "   " + callee  + "      "  + diffInMinutes + "   " + start + "   " + end + "\n";
 
         // Set Expectations
         MainMethodResult result = null;
@@ -185,7 +201,10 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         {
             result = invokeMain
             (
-                Project4.class, HOSTNAME, PORT,
+                Project4.class,
+                //HOSTNAME, PORT,
+                host, hostname,
+                port, portNumber,
                 customer, caller, callee,
                 startDate, startTime, startAmPm,
                 endDate, endTime, endAmPm
@@ -197,9 +216,9 @@ public class Project4IT_sbraich extends InvokeMainTestCase
             String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
             String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
 
-            assertThat(actualExitCode, CoreMatchers.equalTo(expectedExitCode));
-            assertThat(actualStdOut, CoreMatchers.equalTo(expectedStdOut));
-            assertThat(actualStdErr, CoreMatchers.equalTo(expectedStdErr));
+            assertEquals(expectedExitCode, actualExitCode);
+            assertEquals(expectedStdErr, actualStdErr);
+            assertEquals(expectedStdOut, actualStdOut);
         }
     }
 
@@ -284,9 +303,9 @@ public class Project4IT_sbraich extends InvokeMainTestCase
             String actualStdOut = "StdOut: " + result.getTextWrittenToStandardOut();
             String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
 
-            assertThat(actualExitCode, CoreMatchers.equalTo(expectedExitCode));
-            assertThat(actualStdOut, CoreMatchers.equalTo(expectedStdOut));
-            assertThat(actualStdErr, CoreMatchers.equalTo(expectedStdErr));
+            assertEquals(expectedExitCode, actualExitCode);
+            assertEquals(expectedStdErr, actualStdErr);
+            assertEquals(expectedStdOut, actualStdOut);
         }
     }
 }
