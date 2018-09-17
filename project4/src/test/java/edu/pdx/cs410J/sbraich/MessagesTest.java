@@ -19,6 +19,7 @@ public class MessagesTest
         assertThat(Messages.parseDictionaryEntry("blah"), nullValue());
     }
 
+
     @Test
     public void canParseFormattedDictionaryEntryPair()
     {

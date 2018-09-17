@@ -51,6 +51,7 @@ public class PhoneBillServletTest
         HttpServletResponse response = mock(HttpServletResponse.class);
         PrintWriter pw = mock(PrintWriter.class);
 
+
         when(response.getWriter()).thenReturn(pw);
 
         servlet.doPost(request, response);
