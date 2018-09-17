@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.sbraich;
 
 import edu.pdx.cs410J.InvokeMainTestCase;
+import edu.pdx.cs410J.ParserException;
 import org.hamcrest.CoreMatchers;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -31,14 +32,13 @@ public class Project4IT_sbraich extends InvokeMainTestCase
     private static final String HOSTNAME = "localhost";
     private static final String PORT = System.getProperty("http.port", "8080");
 
-    @Test
-    public void test0RemoveAllMappings() throws IOException
+    private void test0RemoveAllMappings() throws IOException
     {
         PhoneBillRestClient client = new PhoneBillRestClient(HOSTNAME, Integer.parseInt(PORT));
         client.removeAllDictionaryEntries();
     }
 
-    private String Add3Calls() throws PhoneBillException, ParseException
+    private String add3Calls() throws PhoneBillException, ParseException, ParserException
     {
         String host = "-host";
         String hostname = "localhost";
@@ -119,43 +119,136 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         MainMethodResult result = null;
 
         result = invokeMain
-        (
-            Project4.class,
-            host, hostname,
-            port, portNumber,
-            customer, caller, callee,
-            startDate1, startTime1, startAmPm1,
-            endDate1, endTime1, endAmPm1
-        );
+                (
+                        Project4.class,
+                        host, hostname,
+                        port, portNumber,
+                        customer, caller, callee,
+                        startDate1, startTime1, startAmPm1,
+                        endDate1, endTime1, endAmPm1
+                );
 
         result = invokeMain
-        (
-            Project4.class,
-            host, hostname,
-            port, portNumber,
-            customer, caller, callee,
-            startDate2, startTime2, startAmPm2,
-            endDate2, endTime2, endAmPm2
-        );
+                (
+                        Project4.class,
+                        host, hostname,
+                        port, portNumber,
+                        customer, caller, callee,
+                        startDate2, startTime2, startAmPm2,
+                        endDate2, endTime2, endAmPm2
+                );
 
         result = invokeMain
-        (
-            Project4.class, HOSTNAME, PORT,
-            host, hostname,
-            port, portNumber,
-            customer, caller, callee,
-            startDate3, startTime3, startAmPm3,
-            endDate3, endTime3, endAmPm3
-        );
+                (
+                        Project4.class, HOSTNAME, PORT,
+                        host, hostname,
+                        port, portNumber,
+                        customer, caller, callee,
+                        startDate3, startTime3, startAmPm3,
+                        endDate3, endTime3, endAmPm3
+                );
 
         return expectedPrettyPrint;
     }
 
-    @Test
-    public void testAddPhoneCall() throws PhoneBillException, ParseException
+    private String prettyPrint() throws PhoneBillException, ParseException, IOException
     {
+        String customer = "Dave";
+
+        MainMethodResult result = invokeMain
+                (
+                        Project4.class, HOSTNAME, PORT,
+                        customer
+                );
+
+        return result.getTextWrittenToStandardOut();
+    }
+
+    @Test
+    public void testAddPhoneCall() throws PhoneBillException, ParseException, IOException, ParserException
+    {
+        test0RemoveAllMappings();
+
         // java -jar target/phonebill.jar
         // -host localhost -port 12345 "Dave" 503-245-2345 765-389-1273 02/27/2018 8:56 am 02/27/2018 10:27 am
+
+        String host = "-host";
+        String hostname = "localhost";
+        String port = "-port";
+        String portNumber = "12345";
+
+        String customer = "Dave";
+        String caller = "503-245-2345";
+        String callee = "765-389-1273";
+        String startDate = "02/27/2018";
+        String startTime = "8:56";
+        String startAmPm = "am";
+        String endDate = "02/27/2018";
+        String endTime = "10:27";
+        String endAmPm = "am";
+
+        // Format Dates
+        PrettyPrinter pp = new PrettyPrinter();
+        PhoneCall call = new PhoneCall();
+        String start = pp.PrettyDate(startDate + " " + startTime + " " + startAmPm);
+        String end   = pp.PrettyDate(endDate   + " " + endTime   + " " + endAmPm);
+        Date startD = call.parseDate(start); // Set start date
+        Date endD   = call.parseDate(end); // Set end date
+        long duration  = endD.getTime() - startD.getTime();
+        int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
+
+        // Create expected Pretty Print Output
+        int expectetdTotalMinutes = diffInMinutes;
+        String expectedPrettyPrint = "Customer: " + customer + "\n"
+                + "Total Minutes: " + expectetdTotalMinutes + "\n"
+                + "\n"
+                + "    Caller         Callee      Minutes      Call Start            Call End\n"
+                + "---------------------------------------------------------------------------------\n"
+                + " " + caller + "   " + callee  + "      "  + diffInMinutes + "   " + start + "   " + end + "\n";
+
+        // Set Expectations
+        MainMethodResult result = null;
+        String printResult = null;
+        Integer expectedExitCode = 0;
+        String expectedStdOut = "StdOut: " + expectedPrettyPrint;
+        String expectedStdErr = "StdErr: " + "";
+
+        try
+        {
+            result = invokeMain
+                    (
+                            Project4.class,
+                            //HOSTNAME, PORT,
+                            host, hostname,
+                            port, portNumber,
+                            customer, caller, callee,
+                            startDate, startTime, startAmPm,
+                            endDate, endTime, endAmPm
+                    );
+
+            printResult = prettyPrint();
+        }
+        finally
+        {
+            Integer actualExitCode = result.getExitCode();
+            String actualStdOut = "StdOut: " + printResult;
+            String actualStdErr = "StdErr: " + result.getTextWrittenToStandardError();
+
+            assertEquals(expectedExitCode, actualExitCode);
+            assertEquals(expectedStdErr, actualStdErr);
+            assertEquals(expectedStdOut, actualStdOut);
+        }
+    }
+
+    @Test
+    public void testPrintNewPhoneCall() throws PhoneBillException, ParseException, IOException, ParserException
+    {
+        test0RemoveAllMappings();
+
+        // java -jar target/phonebill.jar
+        // -host localhost -port 12345 -print "Dave" 503-245-2345 765-389-1273 02/27/2018 8:56 am 02/27/2018 10:27 am
+
+        String print = "-print";
 
         String host = "-host";
         String hostname = "localhost";
@@ -200,15 +293,15 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         try
         {
             result = invokeMain
-            (
-                Project4.class,
-                //HOSTNAME, PORT,
-                host, hostname,
-                port, portNumber,
-                customer, caller, callee,
-                startDate, startTime, startAmPm,
-                endDate, endTime, endAmPm
-            );
+                    (
+                            Project4.class,
+                            host, hostname,
+                            print,
+                            port, portNumber,
+                            customer, caller, callee,
+                            startDate, startTime, startAmPm,
+                            endDate, endTime, endAmPm
+                    );
         }
         finally
         {
@@ -223,8 +316,10 @@ public class Project4IT_sbraich extends InvokeMainTestCase
     }
 
     @Test
-    public void testSearch() throws PhoneBillException, ParseException
+    public void testSearch() throws PhoneBillException, ParseException, IOException, ParserException
     {
+        test0RemoveAllMappings();
+
         String option = "-search";
         String customer = "Dave";
         String startDate = "03/01/2018";
@@ -245,7 +340,7 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         int diffInMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(duration);
 
         // Create expected Pretty Print Output
-        String expectedPrettyPrint = Add3Calls();
+        String expectedPrettyPrint = add3Calls();
 
         // Set Expectations
         MainMethodResult result = null;
@@ -256,12 +351,12 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         try
         {
             result = invokeMain
-            (
-                Project4.class, HOSTNAME, PORT,
-                option, customer,
-                startDate, startTime, startAmPm,
-                endDate, endTime, endAmPm
-            );
+                    (
+                            Project4.class, HOSTNAME, PORT,
+                            option, customer,
+                            startDate, startTime, startAmPm,
+                            endDate, endTime, endAmPm
+                    );
         }
         finally
         {
@@ -276,12 +371,14 @@ public class Project4IT_sbraich extends InvokeMainTestCase
     }
 
     @Test
-    public void testPrettyPrint() throws PhoneBillException, ParseException
+    public void testPrettyPrint() throws PhoneBillException, ParseException, IOException, ParserException
     {
+        test0RemoveAllMappings();
+
         String customer = "Dave";
 
         // Create expected Pretty Print Output
-        String expectedPrettyPrint = Add3Calls();
+        String expectedPrettyPrint = add3Calls();
 
         // Set Expectations
         MainMethodResult result = null;
