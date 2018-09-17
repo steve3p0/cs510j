@@ -60,14 +60,12 @@ public class Project4 {
                 System.out.println("Search Not implemented");
                 System.exit(0);
             }
-            // 3. Print
-            // Option D. Print a description of the new phone call to STDOUT
-            if (cli.print)
+            // 3. Print all Calls for a Customer
+            else if (cli.printCustomer)
             {
-                System.out.println("Print Not implemented");
+
                 System.exit(0);
             }
-
             // 4. Add Phone Call
             else
             {
@@ -77,9 +75,12 @@ public class Project4 {
                 PhoneCall call = new PhoneCall(cli.callerNumber, cli.calleeNumber, cli.startTime, cli.endTime);
                 bill.addPhoneCall(call);
 
-                // For testing
-                PrettyPrinter pretty = new PrettyPrinter();
-                System.out.println(pretty.getPrettyPrint(bill));
+                // 3. Print
+                if (cli.print)
+                {
+                    PrettyPrinter pretty = new PrettyPrinter();
+                    System.out.println(pretty.getPrettyPrint(bill));
+                }
 
                 System.exit(0);
             }
@@ -89,102 +90,6 @@ public class Project4 {
             System.err.println(e.getMessage());
             System.exit(1);
         }
-    }
-
-    public static void main2(String... args)
-    {
-        String hostName = null;
-        String portString = null;
-        String word = null;
-        String definition = null;
-
-        for (String arg : args)
-        {
-            if (hostName == null)
-            {
-                hostName = arg;
-
-            }
-            else if ( portString == null)
-            {
-                portString = arg;
-
-            }
-            else if (word == null)
-            {
-                word = arg;
-
-            }
-            else if (definition == null)
-            {
-                definition = arg;
-
-            }
-            else
-            {
-                usage("Extraneous command line argument: " + arg);
-            }
-        }
-
-        if (hostName == null)
-        {
-            usage( MISSING_ARGS );
-
-        }
-        else if ( portString == null)
-        {
-            usage( "Missing port" );
-        }
-
-        int port;
-        try
-        {
-            port = Integer.parseInt( portString );
-
-        }
-        catch (NumberFormatException ex)
-        {
-            usage("Port \"" + portString + "\" must be an integer");
-            return;
-        }
-
-        PhoneBillRestClient client = new PhoneBillRestClient(hostName, port);
-
-        String message;
-        try
-        {
-            if (word == null)
-            {
-                // Print all word/definition pairs
-                Map<String, String> dictionary = client.getAllDictionaryEntries();
-                StringWriter sw = new StringWriter();
-                Messages.formatDictionaryEntries(new PrintWriter(sw, true), dictionary);
-                message = sw.toString();
-
-            }
-            else if (definition == null)
-            {
-                // Print all dictionary entries
-                message = Messages.formatDictionaryEntry(word, client.getDefinition(word));
-
-            }
-            else
-            {
-                // Post the word/definition pair
-                client.addDictionaryEntry(word, definition);
-                message = Messages.definedWordAs(word, definition);
-            }
-
-        }
-        catch ( IOException ex )
-        {
-            error("While contacting server: " + ex);
-            return;
-        }
-
-        System.out.println(message);
-
-        System.exit(0);
     }
 
     /**

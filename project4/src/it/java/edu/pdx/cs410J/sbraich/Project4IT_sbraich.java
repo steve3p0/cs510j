@@ -119,34 +119,34 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         MainMethodResult result = null;
 
         result = invokeMain
-                (
-                        Project4.class,
-                        host, hostname,
-                        port, portNumber,
-                        customer, caller, callee,
-                        startDate1, startTime1, startAmPm1,
-                        endDate1, endTime1, endAmPm1
-                );
+        (
+            Project4.class,
+            host, hostname,
+            port, portNumber,
+            customer, caller, callee,
+            startDate1, startTime1, startAmPm1,
+            endDate1, endTime1, endAmPm1
+        );
 
         result = invokeMain
-                (
-                        Project4.class,
-                        host, hostname,
-                        port, portNumber,
-                        customer, caller, callee,
-                        startDate2, startTime2, startAmPm2,
-                        endDate2, endTime2, endAmPm2
-                );
+        (
+            Project4.class,
+            host, hostname,
+            port, portNumber,
+            customer, caller, callee,
+            startDate2, startTime2, startAmPm2,
+            endDate2, endTime2, endAmPm2
+        );
 
         result = invokeMain
-                (
-                        Project4.class, HOSTNAME, PORT,
-                        host, hostname,
-                        port, portNumber,
-                        customer, caller, callee,
-                        startDate3, startTime3, startAmPm3,
-                        endDate3, endTime3, endAmPm3
-                );
+        (
+            Project4.class, HOSTNAME, PORT,
+            host, hostname,
+            port, portNumber,
+            customer, caller, callee,
+            startDate3, startTime3, startAmPm3,
+            endDate3, endTime3, endAmPm3
+        );
 
         return expectedPrettyPrint;
     }
@@ -216,15 +216,15 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         try
         {
             result = invokeMain
-                    (
-                            Project4.class,
-                            //HOSTNAME, PORT,
-                            host, hostname,
-                            port, portNumber,
-                            customer, caller, callee,
-                            startDate, startTime, startAmPm,
-                            endDate, endTime, endAmPm
-                    );
+            (
+                Project4.class,
+                //HOSTNAME, PORT,
+                host, hostname,
+                port, portNumber,
+                customer, caller, callee,
+                startDate, startTime, startAmPm,
+                endDate, endTime, endAmPm
+            );
 
             printResult = prettyPrint();
         }
@@ -293,15 +293,15 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         try
         {
             result = invokeMain
-                    (
-                            Project4.class,
-                            host, hostname,
-                            print,
-                            port, portNumber,
-                            customer, caller, callee,
-                            startDate, startTime, startAmPm,
-                            endDate, endTime, endAmPm
-                    );
+            (
+                Project4.class,
+                host, hostname,
+                print,
+                port, portNumber,
+                customer, caller, callee,
+                startDate, startTime, startAmPm,
+                endDate, endTime, endAmPm
+            );
         }
         finally
         {
@@ -351,12 +351,12 @@ public class Project4IT_sbraich extends InvokeMainTestCase
         try
         {
             result = invokeMain
-                    (
-                            Project4.class, HOSTNAME, PORT,
-                            option, customer,
-                            startDate, startTime, startAmPm,
-                            endDate, endTime, endAmPm
-                    );
+            (
+                Project4.class, HOSTNAME, PORT,
+                option, customer,
+                startDate, startTime, startAmPm,
+                endDate, endTime, endAmPm
+            );
         }
         finally
         {

@@ -46,6 +46,7 @@ public class Cli
 
         this.readme = Arrays.stream(args).anyMatch(s -> s.equals("-README"));
         this.print = Arrays.stream(args).anyMatch(s -> s.equals("-print"));
+        this.printCustomer = false;
 
         arguments = new ArrayList<>(Arrays.asList(args));
 
