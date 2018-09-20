@@ -31,39 +31,35 @@ public class PhoneBillRestClientIT
         return new PhoneBillRestClient(HOSTNAME, port);
     }
 
-    @Test
-    public void test0RemoveAllPhoneBills() throws IOException
+
+    @Test(expected = NoSuchPhoneBillException.class)
+    public void testEmptyServerThrowsNoSuchPhoneBillException() throws IOException
     {
         PhoneBillRestClient client = newPhoneBillRestClient();
         client.removeAllPhoneBills();
-    }
 
-    @Test(expected = NoSuchPhoneBillException.class)
-    public void test1EmptyServerThrowsNoSuchPhoneBillException() throws IOException
-    {
-        PhoneBillRestClient client = newPhoneBillRestClient();
         client.getPrettyPhoneBill("No such customer");
     }
 
     @Test
-    public void test2AddOnePhoneCall() throws IOException, PhoneBillException
+    public void testAddOnePhoneCall() throws IOException, PhoneBillException
     {
         PhoneBillRestClient client = newPhoneBillRestClient();
+        client.removeAllPhoneBills();
+
+        String customer = "Customer";
         String callerNumber = "123-456-7890";
         String calleeNumber = "234-567-8901";
         String start = "9/20/2018 7:15 AM";
         String end = "9/20/2018 7:30 AM";
 
         PhoneCall phoneCall = new PhoneCall(callerNumber, calleeNumber, start, end);
-
-        String customer = "Customer";
         client.addPhoneCall(customer, phoneCall);
 
         String pretty = client.getPrettyPhoneBill(customer);
         assertThat(pretty, containsString(customer));
         assertThat(pretty, containsString(callerNumber));
         assertThat(pretty, containsString(calleeNumber));
-
         assertThat(pretty, containsString(start));
         assertThat(pretty, containsString(end));
     }
@@ -72,6 +68,8 @@ public class PhoneBillRestClientIT
     public void test_MalformedTime() throws IOException, PhoneBillException
     {
         PhoneBillRestClient client = newPhoneBillRestClient();
+        client.removeAllPhoneBills();
+
         String callerNumber = "123-456-7890";
         String calleeNumber = "234-567-8901";
         String start = "9/20/20180 7:15 AM";

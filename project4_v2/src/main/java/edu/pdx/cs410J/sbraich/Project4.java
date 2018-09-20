@@ -9,111 +9,87 @@ import java.io.PrintStream;
  * The main class that parses the command line and communicates with the
  * Phone Bill server using REST.
  */
-public class Project4 {
+public class Project4
+{
 
-    public static final String MISSING_ARGS = "Missing command line arguments";
+    static final String README =
+            "\nProject 4 README by Steve Braich for CS510J Summer 2018\n" +
+                    "This project continues Project 3, exposing it as a web service.\n\n";
+    static final String USAGE =
+            "usage: java edu.pdx.cs410J.<login-id>.Project4 [options] <args>\n" +
+                    "  args are (in this order):\n" +
+                    "\tcustomer        Person whose phone bill we’re modeling\n" +
+                    "\tcallerNumber    Phone number of caller\n" +
+                    "\tcalleeNumber    Phone number of person who was called\n" +
+                    "\tstartTime       Date and time (am/pm) call began\n" +
+                    "\tendTime         Date and time (am/pm) call ended\n" +
+                    "  options are (options may appear in any order):\n" +
+                    "\t-host hostname  Host computer on which the server runs\n" +
+                    "\t-port port      Port on which the server is listening\n" +
+                    "\t-search         Phone calls should be searched for\n" +
+                    "\t-print          Prints a description of the new phone call\n" +
+                    "\t-README         Prints a README for this project and exits\n\n";
 
-    public static void main(String... args) {
-        String hostName = null;
-        String portString = null;
-        String word = null;
-        String definition = null;
+    /**
+     * Main function for Project 4
+     * @param args Takes in arguments from the command line
+     * @throws Exception Can throw PhonebillException, ParseException, IOException
+     */
+    public static void main(String[] args) throws Exception
+    {
+        try
+        {
+            Cli cli = new Cli(args);
 
-        for (String arg : args) {
-            if (hostName == null) {
-                hostName = arg;
+            // 1. Show README and exit
+            if (cli.readme)
+            {
+                System.out.println(README + USAGE);
+                System.exit(0);
+            }
+            // 2. Search
+            else if (cli.search)
+            {
+                PhoneBillRestClient client = new PhoneBillRestClient(cli.hostname, cli.portNumber);
 
-            } else if ( portString == null) {
-                portString = arg;
+                String message = client.searchPhoneCalls(cli.customer, cli.startTime, cli.endTime);
+                System.out.println(message);
+                System.exit(0);
+            }
+            // 3. Get all calls for customer
+            else if (cli.customer != null &&
+                    cli.callerNumber == null && cli.calleeNumber == null &&
+                    cli.startTime == null && cli.endTime == null)
+            {
+                PhoneBillRestClient client = new PhoneBillRestClient(cli.hostname, cli.portNumber);
+                String message = client.getPrettyPhoneBill(cli.customer);
+                System.out.println(message);
+                System.exit(0);
+            }
+            // 4. Add Phone Call
+            else
+            {
+                PhoneBillRestClient client = new PhoneBillRestClient(cli.hostname, cli.portNumber);
 
-            } else if (word == null) {
-                word = arg;
+                PhoneCall call = new PhoneCall(cli.callerNumber, cli.calleeNumber, cli.startTime, cli.endTime);
+                client.addPhoneCall(cli.customer, call);
 
-            } else if (definition == null) {
-                definition = arg;
-
-            } else {
-                usage("Extraneous command line argument: " + arg);
+                if (cli.print)
+                {
+                    System.out.println(call.toString());
+                }
+                System.exit(0);
             }
         }
-
-        if (hostName == null) {
-            usage( MISSING_ARGS );
-
-        } else if ( portString == null) {
-            usage( "Missing port" );
+        catch (NoSuchPhoneBillException e)
+        {
+            System.out.println(e.getMessage());
+            System.exit(0);
         }
-
-        int port;
-        try {
-            port = Integer.parseInt( portString );
-            
-        } catch (NumberFormatException ex) {
-            usage("Port \"" + portString + "\" must be an integer");
-            return;
+        catch (PhoneBillException e)
+        {
+            System.err.println(e.getMessage());
+            System.exit(1);
         }
-
-        PhoneBillRestClient client = new PhoneBillRestClient(hostName, port);
-
-        String message;
-        try {
-            // Print all word/definition pairs
-            String customerName = "Customer";
-            message = client.getPrettyPhoneBill(customerName);
-
-        } catch ( IOException ex ) {
-            error("While contacting server: " + ex);
-            return;
-        }
-
-        System.out.println(message);
-
-        System.exit(0);
-    }
-
-    /**
-     * Makes sure that the give response has the expected HTTP status code
-     * @param code The expected status code
-     * @param response The response from the server
-     */
-    private static void checkResponseCode( int code, HttpRequestHelper.Response response )
-    {
-        if (response.getCode() != code) {
-            error(String.format("Expected HTTP code %d, got code %d.\n\n%s", code,
-                                response.getCode(), response.getContent()));
-        }
-    }
-
-    private static void error( String message )
-    {
-        PrintStream err = System.err;
-        err.println("** " + message);
-
-        System.exit(1);
-    }
-
-    /**
-     * Prints usage information for this program and exits
-     * @param message An error message to print
-     */
-    private static void usage( String message )
-    {
-        PrintStream err = System.err;
-        err.println("** " + message);
-        err.println();
-        err.println("usage: java Project4 host port [word] [definition]");
-        err.println("  host         Host of web server");
-        err.println("  port         Port of web server");
-        err.println("  word         Word in dictionary");
-        err.println("  definition   Definition of word");
-        err.println();
-        err.println("This simple program posts words and their definitions");
-        err.println("to the server.");
-        err.println("If no definition is specified, then the word's definition");
-        err.println("is printed.");
-        err.println("If no word is specified, all dictionary entries are printed");
-        err.println();
-
-        System.exit(1);
     }
 }

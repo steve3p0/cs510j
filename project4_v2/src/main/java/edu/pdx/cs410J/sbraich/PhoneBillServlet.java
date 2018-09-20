@@ -28,7 +28,6 @@ public class PhoneBillServlet extends HttpServlet
     private static final String START_TIME_PARAMETER = "startTime";
     private static final String END_TIME_PARAMETER = "endTime";
 
-    private final Map<String, String> dictionary = new HashMap<>();
     private Map<String, PhoneBill> bills = new HashMap<>();
 
     /**
@@ -38,7 +37,7 @@ public class PhoneBillServlet extends HttpServlet
      * are written to the HTTP response.
      */
     @Override
-    protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
+    protected void doGet(HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
         // So this function needs to figure out:
         // 1. Are simply returning all calls for a customer?
@@ -148,7 +147,7 @@ public class PhoneBillServlet extends HttpServlet
         PhoneCall call = new PhoneCall(caller, callee, startTime, endTime);
         bill.addPhoneCall(call);
 
-        response.setStatus( HttpServletResponse.SC_OK);
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     /**
@@ -160,14 +159,13 @@ public class PhoneBillServlet extends HttpServlet
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
 
-        this.dictionary.clear();
+        this.bills.clear();
 
         PrintWriter pw = response.getWriter();
-        pw.println(Messages.allDictionaryEntriesDeleted());
+        pw.println("All phone calls and bills deleted");
         pw.flush();
 
         response.setStatus(HttpServletResponse.SC_OK);
-
     }
 
     /**
@@ -182,43 +180,6 @@ public class PhoneBillServlet extends HttpServlet
         response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
     }
 
-    /**
-     * Writes the definition of the given word to the HTTP response.
-     *
-     * The text of the message is formatted with
-     * {@link Messages#formatDictionaryEntry(String, String)}
-     */
-    private void writeDefinition(String word, HttpServletResponse response ) throws IOException
-    {
-        String definition = this.dictionary.get(word);
-
-        System.out.println("The definition of " + word + " is \"" + definition + "\"");
-
-        PrintWriter pw = response.getWriter();
-        pw.println(Messages.formatDictionaryEntry(word, definition));
-
-        pw.flush();
-
-        response.setStatus( HttpServletResponse.SC_OK );
-    }
-
-    /**
-     * Writes all of the dictionary entries to the HTTP response.
-     *
-     * The text of the message is formatted with
-     * {@link Messages#formatDictionaryEntry(String, String)}
-     */
-    private void writeAllDictionaryEntries(HttpServletResponse response ) throws IOException
-    {
-        PrintWriter pw = response.getWriter();
-        Messages.formatDictionaryEntries(pw, dictionary);
-
-        System.out.println("Writing all dictionary entries");
-
-        pw.flush();
-
-        response.setStatus( HttpServletResponse.SC_OK );
-    }
 
     /**
      * Returns the value of the HTTP request parameter with the given name.

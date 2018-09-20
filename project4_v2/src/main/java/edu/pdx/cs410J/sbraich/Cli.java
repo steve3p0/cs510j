@@ -4,89 +4,90 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.nio.file.*;
 
-/// The class that manages the command line interface
+/**
+ * The class that manages the command line interface
+ */
 public class Cli
 {
     private ArrayList<String> arguments;
 
+    // Arguments
     protected String customer;
     protected String callerNumber;
     protected String calleeNumber;
     protected String startTime;
     protected String endTime;
 
+    // Rest Arguments
+    protected Boolean host;
+    protected Boolean port;
+    protected String hostname;
+    protected int portNumber;
+
+    // Search Arguments
+    protected Boolean search;
+    protected String searchCustomer;
+
     // Optional Arguments
-    protected Boolean pretty;
-    protected Boolean prettyFile;
-    protected Boolean prettyStdout;
     protected Boolean print;
     protected Boolean readme;
-    protected Boolean textFile;
-    protected Path filePath;
-    protected Path prettyPath;
 
-    /// Constructor for CLI - Processes Command Line Arguments
+    /**
+     * Constructor for CLI - Processes Command Line Arguments
+     * @param args Command Line Arguments
+     * @throws PhoneBillException Thrown if arguments are invalid
+     */
     public Cli(String[] args) throws PhoneBillException
     {
-        this.pretty = Arrays.stream(args).anyMatch(s -> s.equals("-pretty"));
-        this.prettyStdout = Arrays.stream(args).anyMatch(s -> s.equals("-"));
-        this.prettyFile = (this.pretty && !this.prettyStdout);
+        this.host = Arrays.stream(args).anyMatch(s -> s.equals("-host"));
+        this.port = Arrays.stream(args).anyMatch(s -> s.equals("-port"));
+        this.search = Arrays.stream(args).anyMatch(s -> s.equals("-search"));
 
         this.readme = Arrays.stream(args).anyMatch(s -> s.equals("-README"));
         this.print = Arrays.stream(args).anyMatch(s -> s.equals("-print"));
-        this.textFile = Arrays.stream(args).anyMatch(s -> s.equals("-textFile"));
 
-        arguments = new ArrayList<String>(Arrays.asList(args));
+        arguments = new ArrayList<>(Arrays.asList(args));
 
-        int options = 0;
-
-
-        if (this.pretty)
+        if (this.host)
         {
-            options++;
-            options++;
-
-            int i = arguments.indexOf("-pretty");
+            int i = arguments.indexOf("-host");
 
             if (i + 1 > arguments.size() - 1)
             {
-                throw new PhoneBillException("Missing Pretty filepath argument");
+                throw new PhoneBillException("Missing hostname argument");
             }
 
-            if (this.prettyFile)
-            {
-                options++;
-                this.prettyPath = Paths.get(arguments.get(i + 1));
-                arguments.remove(this.prettyPath.toString());
-            }
+            this.hostname = arguments.get(i + 1);
 
-            if (this.prettyStdout)
-            {
-                options++;
-                arguments.remove("-");
-            }
+            arguments.remove("-host");
+            arguments.remove(this.hostname);
         }
 
-        if (this.textFile)
+        if (this.port)
         {
-            options++;
-            options++;
-
-            int i = arguments.indexOf("-textFile");
+            int i = arguments.indexOf("-port");
 
             if (i + 1 > arguments.size() - 1)
             {
-                throw new PhoneBillException("Missing Text filepath argument");
+                throw new PhoneBillException("Missing port number argument");
             }
 
-            this.filePath = Paths.get(arguments.get(i + 1));
-            arguments.remove(this.filePath.toString());
+            this.portNumber = Integer.parseInt(arguments.get(i + 1));
+
+            arguments.remove("-port");
+            arguments.remove(Integer.toString(this.portNumber));
         }
 
-
-        if (this.print)
+        if (this.search)
         {
-            options++;
+            int i = arguments.indexOf("-search");
+
+            if (i + 1 > arguments.size() - 1)
+            {
+                throw new PhoneBillException("Missing search argument");
+            }
+
+            arguments.remove("-search");
         }
 
         if (this.readme)
@@ -100,30 +101,56 @@ public class Cli
         }
 
         // Remove options if they are in the arguments - we already set are class members
-        arguments.remove("-pretty");
         arguments.remove("-");
-        arguments.remove("-prettyFile");
-
-        arguments.remove("-textFile");
         arguments.remove("-print");
         arguments.remove("-README");
 
-        if (arguments.size() == 9)
+        if (this.search)
+        {
+            // Searching
+            if (arguments.size() == 7)
+            {
+                this.customer = arguments.get(0);
+                this.startTime = arguments.get(1) + " " + arguments.get(2) + " " + arguments.get(3);
+                this.endTime = arguments.get(4) + " " + arguments.get(5) + " " + arguments.get(6);
+            }
+            else if (arguments.size() < 7)
+            {
+                throw new PhoneBillException("Missing command line arguments");
+            }
+            else
+            {
+                throw new PhoneBillException("Too many command line arguments");
+            }
+        }
+//        // else PRINT all for a customer
+//        else if (arguments.size() == 1)
+//        {
+//            this.customer = arguments.get(0);
+//            this.printCustomer = true;
+//        }
+        else if (arguments.size() == 1)
         {
             this.customer = arguments.get(0);
-            this.callerNumber = arguments.get(1);
-            this.calleeNumber = arguments.get(2);
-            this.startTime = arguments.get(3) + " " + arguments.get(4) + " " + arguments.get(5);
-            this.endTime = arguments.get(6) + " " + arguments.get(7) + " " + arguments.get(8);
         }
-        else if (arguments.size() < 9)
+        else // Add phone call
         {
-            throw new PhoneBillException("Missing command line arguments");
-        }
-
-        if (arguments.size() > 9)
-        {
-            throw new PhoneBillException("Too many command line arguments");
+            if (arguments.size() == 9)
+            {
+                this.customer = arguments.get(0);
+                this.callerNumber = arguments.get(1);
+                this.calleeNumber = arguments.get(2);
+                this.startTime = arguments.get(3) + " " + arguments.get(4) + " " + arguments.get(5);
+                this.endTime = arguments.get(6) + " " + arguments.get(7) + " " + arguments.get(8);
+            }
+            else if (arguments.size() < 9)
+            {
+                throw new PhoneBillException("Missing command line arguments");
+            }
+            else
+            {
+                throw new PhoneBillException("Too many command line arguments");
+            }
         }
     }
 }

@@ -38,8 +38,6 @@ public class PhoneBillRestClient extends HttpRequestHelper
     {
         Response response = get(this.url, "customer", customerName);
 
-        //throw new NoSuchPhoneBillException(customerName);
-
         throwExceptionIfNotOkayHttpStatus(response);
 
         return response.getContent();
