@@ -45,14 +45,15 @@ public class PhoneBillRestClientIT
     }
 
     @Test
-    public void test2AddOnePhoneCall() throws IOException
+    public void test2AddOnePhoneCall() throws IOException, PhoneBillException
     {
         PhoneBillRestClient client = newPhoneBillRestClient();
         String callerNumber = "123-456-7890";
         String calleeNumber = "234-567-8901";
-        Date startTime = new Date(System.currentTimeMillis());
-        Date endTime = new Date(System.currentTimeMillis() + 100000);
-        PhoneCall phoneCall = new PhoneCall(callerNumber, calleeNumber, startTime, endTime);
+        String start = "9/20/2018 7:15 AM";
+        String end = "9/20/2018 7:30 AM";
+
+        PhoneCall phoneCall = new PhoneCall(callerNumber, calleeNumber, start, end);
 
         String customer = "Customer";
         client.addPhoneCall(customer, phoneCall);
@@ -63,8 +64,8 @@ public class PhoneBillRestClientIT
         assertThat(pretty, containsString(calleeNumber));
 
         DateFormat format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
-        assertThat(pretty, containsString(format.format(startTime)));
-        assertThat(pretty, containsString(format.format(endTime)));
+        assertThat(pretty, containsString(start));
+        assertThat(pretty, containsString(end));
     }
 
     @Ignore

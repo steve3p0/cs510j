@@ -49,16 +49,15 @@ public class PhoneBillServletTest
         String customer = "Customer";
         String caller = "123-456-8901";
         String callee = "234-567-1234";
-
-        long startTime = System.currentTimeMillis();
-        long endTime = System.currentTimeMillis() + 100000L;
+        String startTime = "9/20/2018 7:15 AM";
+        String endTime = "9/20/2018 7:30 AM";
 
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         when(mockRequest.getParameter("customer")).thenReturn(customer);
         when(mockRequest.getParameter("caller")).thenReturn(caller);
         when(mockRequest.getParameter("callee")).thenReturn(callee);
-        when(mockRequest.getParameter("startTime")).thenReturn(String.valueOf(startTime));
-        when(mockRequest.getParameter("endTime")).thenReturn(String.valueOf(endTime));
+        when(mockRequest.getParameter("startTime")).thenReturn(startTime);
+        when(mockRequest.getParameter("endTime")).thenReturn(endTime);
 
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         PrintWriter mockPrintWriter = mock(PrintWriter.class);
@@ -89,8 +88,13 @@ public class PhoneBillServletTest
         PhoneBillServlet servlet = new PhoneBillServlet();
 
         String customer = "Customer";
+        String callerNumber = "123-456-7890";
+        String calleeNumber = "234-567-8901";
+        String start = "9/20/2018 7:15 AM";
+        String end = "9/20/2018 7:30 AM";
+
         PhoneBill bill = new PhoneBill(customer);
-        PhoneCall call = new PhoneCall("123-456-7890", "234-456-6789", new Date(), new Date());
+        PhoneCall call = new PhoneCall(callerNumber, calleeNumber, start, end);
         bill.addPhoneCall(call);
         servlet.addPhoneBill(bill);
 

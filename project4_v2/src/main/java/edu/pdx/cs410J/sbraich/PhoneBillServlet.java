@@ -64,7 +64,7 @@ public class PhoneBillServlet extends HttpServlet
      * entry to the HTTP response.
      */
     @Override
-    protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
+    protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException //, PhoneBillException
     {
         response.setContentType( "text/plain" );
 
@@ -85,10 +85,10 @@ public class PhoneBillServlet extends HttpServlet
         String startTime = getParameter(START_TIME_PARAMETER, request);
         String endTime = getParameter(END_TIME_PARAMETER, request);
 
-        Date startDate = new Date(Long.parseLong(startTime));
-        Date endDate = new Date(Long.parseLong(endTime));
+        //Date startDate = new Date(Long.parseLong(startTime));
+        //Date endDate = new Date(Long.parseLong(endTime));
 
-        PhoneCall call = new PhoneCall(caller, callee, startDate, endDate);
+        PhoneCall call = new PhoneCall(caller, callee, startTime, endTime);
         bill.addPhoneCall(call);
 
         response.setStatus( HttpServletResponse.SC_OK);

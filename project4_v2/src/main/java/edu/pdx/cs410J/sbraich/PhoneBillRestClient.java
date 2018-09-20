@@ -63,8 +63,8 @@ public class PhoneBillRestClient extends HttpRequestHelper
             "customer", customerName,
             "caller", call.getCaller(),
             "callee", call.getCallee(),
-            "startTime", String.valueOf(call.getStartTime().getTime()),
-            "endTime", String.valueOf(call.getEndTime().getTime()),
+            "startTime", call.getStartTimeString(),
+            "endTime", call.getEndTimeString(),
         };
         Response response = postToMyURL(postParameters);
         throwExceptionIfNotOkayHttpStatus(response);
