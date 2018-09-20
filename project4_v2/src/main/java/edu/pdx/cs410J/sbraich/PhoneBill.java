@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.sbraich;
 
 import edu.pdx.cs410J.AbstractPhoneBill;
+import edu.pdx.cs410J.AbstractPhoneCall;
 
 import java.nio.file.*;
 import java.text.ParseException;
@@ -59,6 +60,37 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
     public Collection<PhoneCall> getPhoneCalls()
     {
         return this.calls;
+    }
+
+    public Collection<PhoneCall> getPhoneCallsByDate(String startTime, String endTime)
+    {
+        try
+        {
+            Date start = parseDate(startTime);
+            Date end = parseDate(endTime);
+
+            Collection<PhoneCall> calls = this.calls;
+            //Collection<PhoneCall> filteredCalls;
+            List filteredCalls = new ArrayList<PhoneCall>();
+
+            for (PhoneCall call : calls)
+            {
+                // NOTE: Criteria for search:
+                // if start date falls within search start and end,
+                // it will be returned, regardless of end date
+                if (call.getStartTime().after(start) &&
+                    call.getStartTime().before(end))
+                {
+                    filteredCalls.add(call);
+                }
+            }
+
+            return filteredCalls;
+        }
+        catch (ParseException e)
+        {
+            throw new PhoneBillException(e.getMessage());
+        }
     }
 
     public int getTotalMinutes() throws ParseException

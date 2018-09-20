@@ -33,6 +33,12 @@ public class PrettyPrinter implements PhoneBillDumper<PhoneBill>
         bill.getPhoneCalls().forEach((call) -> writer.println(call.toString()));
     }
 
+    public void dump(String customer, Collection<PhoneCall> calls) throws IOException
+    {
+        writer.println(customer);
+        calls.forEach((call) -> writer.println(call.toString()));
+    }
+
 //    /// Impelements dump method of PhoneBillDumper method
 //    public void dump(PhoneBill bill) throws IOException
 //    {

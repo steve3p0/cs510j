@@ -45,17 +45,6 @@ public class PhoneBillRestClient extends HttpRequestHelper
         return response.getContent();
     }
 
-    /**
-     * Returns the definition for the given word
-     */
-    public String getDefinition(String word) throws IOException
-    {
-        Response response = get(this.url, "word", word);
-        throwExceptionIfNotOkayHttpStatus(response);
-        String content = response.getContent();
-        return Messages.parseDictionaryEntry(content).getValue();
-    }
-
     public void addPhoneCall(String customerName, PhoneCall call) throws IOException
     {
         String[] postParameters =
@@ -70,10 +59,31 @@ public class PhoneBillRestClient extends HttpRequestHelper
         throwExceptionIfNotOkayHttpStatus(response);
     }
 
+    public String searchPhoneCalls(String customer, String startTimeAndDate, String endTimeAndDate) throws IOException
+    {
+        Response response = get(this.url,
+                "customer", customer,
+                "startTime", startTimeAndDate,
+                "endTime", endTimeAndDate);
+        throwExceptionIfNotOkayHttpStatus(response);
+        return response.getContent();
+    }
+
     @VisibleForTesting
     Response postToMyURL(String... phoneCallInformation) throws IOException
     {
-        return post(this.url, phoneCallInformation);
+        try
+        {
+            return post(this.url, phoneCallInformation);
+        }
+        catch (java.net.ConnectException e)
+        {
+            //throw new PhoneBillRestException(503);
+            //throw new RuntimeException("Error: Connection refused");
+            //Response r = new Response();
+
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public void removeAllPhoneBills() throws IOException

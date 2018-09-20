@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,18 +40,74 @@ public class PhoneBillServlet extends HttpServlet
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
+        // So this function needs to figure out:
+        // 1. Are simply returning all calls for a customer?
+        //    http://localhost:8080/phonebill/calls?customer=Customer
+        // OR...
+        // 2. Are we searching for all calls for a customer within a time period?
+        //    http://localhost:8080/phonebill/calls?customer=Customer&startTime=9/21/2018&endTime=9/22/2018
+
         response.setContentType( "text/plain" );
 
         String customer = getParameter(CUSTOMER_PARAMETER, request );
-        writePrettyPhoneBill(customer, response);
+        String startTime = getParameter(START_TIME_PARAMETER, request);
+        String endTime = getParameter(END_TIME_PARAMETER, request);
+
+        if (customer == null)
+        {
+            missingRequiredParameter(response, CUSTOMER_PARAMETER);
+        }
+        else if (startTime == null && endTime == null)
+        {
+            // 1. Simply returning all calls for a customer
+            //    http://localhost:8080/phonebill/calls?customer=Customer
+            writePrettyPhoneBill(customer, response);
+        }
+        else if (startTime == null)
+        {
+            missingRequiredParameter(response, START_TIME_PARAMETER);
+        }
+        else if (endTime == null)
+        {
+            missingRequiredParameter(response, END_TIME_PARAMETER);
+        }
+        else
+        {
+            // 2. We searching for all calls for a customer within a time period
+            //    http://localhost:8080/phonebill/calls?customer=Customer&startTime=9/21/2018&endTime=9/22/2018
+            writePrettyPhoneBill(customer, startTime, endTime, response);
+        }
     }
 
-    private void writePrettyPhoneBill(String customer, HttpServletResponse response) throws IOException {
+    private void writePrettyPhoneBill(String customer, String startTime, String endTime, HttpServletResponse response) throws IOException
+    {
         PhoneBill bill = getPhoneBill(customer);
-        if (bill == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
-        } else {
+        if (bill == null)
+        {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+        else
+        {
+            Collection<PhoneCall> calls = bill.getPhoneCallsByDate(startTime, endTime);
+
+            PrintWriter writer = response.getWriter();
+            PrettyPrinter pretty = new PrettyPrinter(writer);
+            pretty.dump(customer, calls);
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+    }
+
+    private void writePrettyPhoneBill(String customer, HttpServletResponse response) throws IOException
+    {
+        PhoneBill bill = getPhoneBill(customer);
+
+        if (bill == null)
+        {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+        else
+        {
             PrintWriter writer = response.getWriter();
             PrettyPrinter pretty = new PrettyPrinter(writer);
             pretty.dump(bill);
