@@ -20,7 +20,6 @@ public class PhoneBillRestClient extends HttpRequestHelper
 
     private final String url;
 
-
     /**
      * Creates a client to the Phone Bil REST service running on the given host and port
      * @param hostName The name of the host
@@ -35,62 +34,75 @@ public class PhoneBillRestClient extends HttpRequestHelper
      * Returns all dictionary entries from the server
      * @param customerName
      */
-    public String getPrettyPhoneBill(String customerName) throws IOException {
-      Response response = get(this.url, "customer", customerName);
+    public String getPrettyPhoneBill(String customerName) throws IOException
+    {
+        Response response = get(this.url, "customer", customerName);
 
-      throwExceptionIfNotOkayHttpStatus(response);
+        //throw new NoSuchPhoneBillException(customerName);
 
-      return response.getContent();
+        throwExceptionIfNotOkayHttpStatus(response);
+
+        return response.getContent();
     }
 
     /**
      * Returns the definition for the given word
      */
-    public String getDefinition(String word) throws IOException {
-      Response response = get(this.url, "word", word);
-      throwExceptionIfNotOkayHttpStatus(response);
-      String content = response.getContent();
-      return Messages.parseDictionaryEntry(content).getValue();
+    public String getDefinition(String word) throws IOException
+    {
+        Response response = get(this.url, "word", word);
+        throwExceptionIfNotOkayHttpStatus(response);
+        String content = response.getContent();
+        return Messages.parseDictionaryEntry(content).getValue();
     }
 
-    public void addPhoneCall(String customerName, PhoneCall call) throws IOException {
-      String[] postParameters = {
-        "customer", customerName,
-        "caller", call.getCaller(),
-        "callee", call.getCallee(),
-        "startTime", String.valueOf(call.getStartTime().getTime()),
-        "endTime", String.valueOf(call.getEndTime().getTime()),
-      };
-      Response response = postToMyURL(postParameters);
-      throwExceptionIfNotOkayHttpStatus(response);
+    public void addPhoneCall(String customerName, PhoneCall call) throws IOException
+    {
+        String[] postParameters =
+        {
+            "customer", customerName,
+            "caller", call.getCaller(),
+            "callee", call.getCallee(),
+            "startTime", String.valueOf(call.getStartTime().getTime()),
+            "endTime", String.valueOf(call.getEndTime().getTime()),
+        };
+        Response response = postToMyURL(postParameters);
+        throwExceptionIfNotOkayHttpStatus(response);
     }
 
     @VisibleForTesting
-    Response postToMyURL(String... phoneCallInformation) throws IOException {
-      return post(this.url, phoneCallInformation);
+    Response postToMyURL(String... phoneCallInformation) throws IOException
+    {
+        return post(this.url, phoneCallInformation);
     }
 
-    public void removeAllPhoneBills() throws IOException {
-      Response response = delete(this.url);
-      throwExceptionIfNotOkayHttpStatus(response);
+    public void removeAllPhoneBills() throws IOException
+    {
+        Response response = delete(this.url);
+        throwExceptionIfNotOkayHttpStatus(response);
     }
 
-    private Response throwExceptionIfNotOkayHttpStatus(Response response) {
-      int code = response.getCode();
-      if (code == HTTP_NOT_FOUND) {
-        String customer = response.getContent();
-        throw new NoSuchPhoneBillException(customer);
-
-      } else if (code != HTTP_OK) {
-        throw new PhoneBillRestException(code);
-      }
-      return response;
+    private Response throwExceptionIfNotOkayHttpStatus(Response response)
+    {
+        int code = response.getCode();
+        if (code == HTTP_NOT_FOUND)
+        {
+            String customer = response.getContent();
+            throw new NoSuchPhoneBillException(customer);
+        }
+        else if (code != HTTP_OK)
+        {
+            throw new PhoneBillRestException(code);
+        }
+        return response;
     }
 
-    private class PhoneBillRestException extends RuntimeException {
-      public PhoneBillRestException(int httpStatusCode) {
-        super("Got an HTTP Status Code of " + httpStatusCode);
-      }
+    private class PhoneBillRestException extends RuntimeException
+    {
+        public PhoneBillRestException(int httpStatusCode)
+        {
+            super("Got an HTTP Status Code of " + httpStatusCode);
+        }
     }
 
 }

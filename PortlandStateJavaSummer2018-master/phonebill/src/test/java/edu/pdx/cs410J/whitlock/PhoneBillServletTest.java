@@ -21,89 +21,91 @@ import static org.mockito.Mockito.*;
  * A unit test for the {@link PhoneBillServlet}.  It uses mockito to
  * provide mock http requests and responses.
  */
-public class PhoneBillServletTest {
+public class PhoneBillServletTest
+{
+    @Test
+    public void initiallyServletContainsNoPhoneBills() throws ServletException, IOException
+    {
+        PhoneBillServlet servlet = new PhoneBillServlet();
+        
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        PrintWriter mockPrintWriter = mock(PrintWriter.class);
 
-  @Test
-  public void initiallyServletContainsNoPhoneBills() throws ServletException, IOException {
-    PhoneBillServlet servlet = new PhoneBillServlet();
+        when(mockResponse.getWriter()).thenReturn(mockPrintWriter);
 
-    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-    HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-    PrintWriter mockPrintWriter = mock(PrintWriter.class);
+        when(mockRequest.getParameter(CUSTOMER_PARAMETER)).thenReturn("Customer");
 
-    when(mockResponse.getWriter()).thenReturn(mockPrintWriter);
+        servlet.doGet(mockRequest, mockResponse);
 
-    when(mockRequest.getParameter(CUSTOMER_PARAMETER)).thenReturn("Customer");
+        verify(mockResponse).setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
 
-    servlet.doGet(mockRequest, mockResponse);
+    @Test
+    public void addPhoneBill() throws ServletException, IOException
+    {
+        PhoneBillServlet servlet = new PhoneBillServlet();
 
-    verify(mockResponse).setStatus(HttpServletResponse.SC_NOT_FOUND);
-  }
+        String customer = "Customer";
+        String caller = "123-456-8901";
+        String callee = "234-567-1234";
 
-  @Test
-  public void addPhoneBill() throws ServletException, IOException {
-    PhoneBillServlet servlet = new PhoneBillServlet();
+        long startTime = System.currentTimeMillis();
+        long endTime = System.currentTimeMillis() + 100000L;
 
-    String customer = "Customer";
-    String caller = "123-456-8901";
-    String callee = "234-567-1234";
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        when(mockRequest.getParameter("customer")).thenReturn(customer);
+        when(mockRequest.getParameter("caller")).thenReturn(caller);
+        when(mockRequest.getParameter("callee")).thenReturn(callee);
+        when(mockRequest.getParameter("startTime")).thenReturn(String.valueOf(startTime));
+        when(mockRequest.getParameter("endTime")).thenReturn(String.valueOf(endTime));
 
-    long startTime = System.currentTimeMillis();
-    long endTime = System.currentTimeMillis() + 100000L;
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        PrintWriter mockPrintWriter = mock(PrintWriter.class);
 
-    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-    when(mockRequest.getParameter("customer")).thenReturn(customer);
-    when(mockRequest.getParameter("caller")).thenReturn(caller);
-    when(mockRequest.getParameter("callee")).thenReturn(callee);
-    when(mockRequest.getParameter("startTime")).thenReturn(String.valueOf(startTime));
-    when(mockRequest.getParameter("endTime")).thenReturn(String.valueOf(endTime));
+        when(mockResponse.getWriter()).thenReturn(mockPrintWriter);
 
-    HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-    PrintWriter mockPrintWriter = mock(PrintWriter.class);
+        servlet.doPost(mockRequest, mockResponse);
 
-    when(mockResponse.getWriter()).thenReturn(mockPrintWriter);
+        verify(mockResponse).setStatus(HttpServletResponse.SC_OK);
 
-    servlet.doPost(mockRequest, mockResponse);
+        PhoneBill bill = servlet.getPhoneBill(customer);
+        assertThat(bill, not(nullValue()));
+        assertThat(bill.getCustomer(), equalTo(customer));
 
-    verify(mockResponse).setStatus(HttpServletResponse.SC_OK);
+        Collection<PhoneCall> calls = bill.getPhoneCalls();
+        assertThat(calls.size(), equalTo(1));
 
-    PhoneBill bill = servlet.getPhoneBill(customer);
-    assertThat(bill, not(nullValue()));
-    assertThat(bill.getCustomer(), equalTo(customer));
+        PhoneCall call = calls.iterator().next();
+        assertThat(call.getCaller(), equalTo(caller));
+        assertThat(call.getCallee(), equalTo(callee));
+        assertThat(call.getStartTime(), equalTo(new Date(startTime)));
+        assertThat(call.getEndTime(), equalTo(new Date(endTime)));
+    }
 
-    Collection<PhoneCall> calls = bill.getPhoneCalls();
-    assertThat(calls.size(), equalTo(1));
+    @Test
+    public void getReturnsPrettyPhoneBill() throws IOException, ServletException
+    {
+        PhoneBillServlet servlet = new PhoneBillServlet();
 
-    PhoneCall call = calls.iterator().next();
-    assertThat(call.getCaller(), equalTo(caller));
-    assertThat(call.getCallee(), equalTo(callee));
-    assertThat(call.getStartTime(), equalTo(new Date(startTime)));
-    assertThat(call.getEndTime(), equalTo(new Date(endTime)));
-  }
+        String customer = "Customer";
+        PhoneBill bill = new PhoneBill(customer);
+        PhoneCall call = new PhoneCall("123-456-7890", "234-456-6789", new Date(), new Date());
+        bill.addPhoneCall(call);
+        servlet.addPhoneBill(bill);
 
-  @Test
-  public void getReturnsPrettyPhoneBill() throws IOException, ServletException {
-    PhoneBillServlet servlet = new PhoneBillServlet();
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+        PrintWriter mockPrintWriter = mock(PrintWriter.class);
 
-    String customer = "Customer";
-    PhoneBill bill = new PhoneBill(customer);
-    PhoneCall call = new PhoneCall("123-456-7890", "234-456-6789", new Date(), new Date());
-    bill.addPhoneCall(call);
-    servlet.addPhoneBill(bill);
+        when(mockResponse.getWriter()).thenReturn(mockPrintWriter);
 
-    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-    HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-    PrintWriter mockPrintWriter = mock(PrintWriter.class);
+        when(mockRequest.getParameter(CUSTOMER_PARAMETER)).thenReturn("Customer");
 
-    when(mockResponse.getWriter()).thenReturn(mockPrintWriter);
+        servlet.doGet(mockRequest, mockResponse);
 
-    when(mockRequest.getParameter(CUSTOMER_PARAMETER)).thenReturn("Customer");
-
-    servlet.doGet(mockRequest, mockResponse);
-
-    verify(mockResponse).setStatus(HttpServletResponse.SC_OK);
-    verify(mockPrintWriter).println(customer);
-    verify(mockPrintWriter).println(call.toString());
-  }
-
+        verify(mockResponse).setStatus(HttpServletResponse.SC_OK);
+        verify(mockPrintWriter).println(customer);
+        verify(mockPrintWriter).println(call.toString());
+    }
 }
