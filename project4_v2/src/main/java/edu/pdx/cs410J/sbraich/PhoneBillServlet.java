@@ -78,6 +78,14 @@ public class PhoneBillServlet extends HttpServlet
         }
     }
 
+    /**
+     * Print out a Pretty Phone Bill of all calls for a customer between startTime and endTime
+     * @param customer
+     * @param startTime
+     * @param endTime
+     * @param response
+     * @throws IOException
+     */
     private void writePrettyPhoneBill(String customer, String startTime, String endTime, HttpServletResponse response) throws IOException
     {
         PhoneBill bill = getPhoneBill(customer);
@@ -97,6 +105,12 @@ public class PhoneBillServlet extends HttpServlet
         }
     }
 
+    /**
+     * Print out a Pretty Phone Bill of all calls for a customer
+     * @param customer
+     * @param response
+     * @throws IOException
+     */
     private void writePrettyPhoneBill(String customer, HttpServletResponse response) throws IOException
     {
         PhoneBill bill = getPhoneBill(customer);
@@ -118,6 +132,10 @@ public class PhoneBillServlet extends HttpServlet
      * Handles an HTTP POST request by storing the dictionary entry for the
      * "word" and "definition" request parameters.  It writes the dictionary
      * entry to the HTTP response.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
      */
     @Override
     protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException //, PhoneBillException
@@ -141,9 +159,6 @@ public class PhoneBillServlet extends HttpServlet
         String startTime = getParameter(START_TIME_PARAMETER, request);
         String endTime = getParameter(END_TIME_PARAMETER, request);
 
-        //Date startDate = new Date(Long.parseLong(startTime));
-        //Date endDate = new Date(Long.parseLong(endTime));
-
         PhoneCall call = new PhoneCall(caller, callee, startTime, endTime);
         bill.addPhoneCall(call);
 
@@ -154,6 +169,10 @@ public class PhoneBillServlet extends HttpServlet
      * Handles an HTTP DELETE request by removing all dictionary entries.  This
      * behavior is exposed for testing purposes only.  It's probably not
      * something that you'd want a real application to expose.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -170,8 +189,10 @@ public class PhoneBillServlet extends HttpServlet
 
     /**
      * Writes an error message about a missing parameter to the HTTP response.
-     *
      * The text of the error message is created by {@link Messages#missingRequiredParameter(String)}
+     * @param response
+     * @param parameterName
+     * @throws IOException
      */
     private void missingRequiredParameter( HttpServletResponse response, String parameterName )
         throws IOException
@@ -197,11 +218,20 @@ public class PhoneBillServlet extends HttpServlet
       }
     }
 
+    /**
+     * Get PhoneBill of the specified customer
+     * @param customer
+     * @return
+     */
     @VisibleForTesting
     PhoneBill getPhoneBill(String customer) {
         return this.bills.get(customer);
     }
 
+    /**
+     * Add PhoneBill
+     * @param bill
+     */
     @VisibleForTesting
     void addPhoneBill(PhoneBill bill) {
         this.bills.put(bill.getCustomer(), bill);

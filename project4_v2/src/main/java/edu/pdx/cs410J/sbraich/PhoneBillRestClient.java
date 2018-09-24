@@ -43,6 +43,12 @@ public class PhoneBillRestClient extends HttpRequestHelper
         return response.getContent();
     }
 
+    /**
+     * Adds a phone call
+     * @param customerName
+     * @param call
+     * @throws IOException
+     */
     public void addPhoneCall(String customerName, PhoneCall call) throws IOException
     {
         String[] postParameters =
@@ -53,10 +59,19 @@ public class PhoneBillRestClient extends HttpRequestHelper
             "startTime", call.getStartTimeString(),
             "endTime", call.getEndTimeString(),
         };
+
         Response response = postToMyURL(postParameters);
         throwExceptionIfNotOkayHttpStatus(response);
     }
 
+    /**
+     * Search phone calls between startTimeAndDate and endTimeAndDate
+     * @param customer
+     * @param startTimeAndDate
+     * @param endTimeAndDate
+     * @return
+     * @throws IOException
+     */
     public String searchPhoneCalls(String customer, String startTimeAndDate, String endTimeAndDate) throws IOException
     {
         Response response = get(this.url,
@@ -67,6 +82,12 @@ public class PhoneBillRestClient extends HttpRequestHelper
         return response.getContent();
     }
 
+    /**
+     * Make an HTTP POST call
+     * @param phoneCallInformation
+     * @return
+     * @throws IOException
+     */
     @VisibleForTesting
     Response postToMyURL(String... phoneCallInformation) throws IOException
     {
@@ -76,20 +97,33 @@ public class PhoneBillRestClient extends HttpRequestHelper
         }
         catch (java.net.ConnectException e)
         {
-            //throw new PhoneBillRestException(503);
-            //throw new RuntimeException("Error: Connection refused");
             //Response r = new Response();
-
             throw new RuntimeException(e.getMessage());
         }
     }
 
+    /**
+     * Remove all phone bills from hashmap
+     * @throws IOException
+     */
     public void removeAllPhoneBills() throws IOException
     {
-        Response response = delete(this.url);
-        throwExceptionIfNotOkayHttpStatus(response);
+        try
+        {
+            Response response = delete(this.url);
+            throwExceptionIfNotOkayHttpStatus(response);
+        }
+        catch (java.net.ConnectException e)
+        {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
+    /**
+     * Throw an Exception if the HTTP Status is not OK
+     * @param response
+     * @return
+     */
     private Response throwExceptionIfNotOkayHttpStatus(Response response)
     {
         int code = response.getCode();
@@ -105,8 +139,15 @@ public class PhoneBillRestClient extends HttpRequestHelper
         return response;
     }
 
+    /**
+     * Class for PhoneBillRestException
+     */
     private class PhoneBillRestException extends RuntimeException
     {
+        /**
+         * Constructor for PhoneBillRestException
+         * @param httpStatusCode
+         */
         public PhoneBillRestException(int httpStatusCode)
         {
             super("Got an HTTP Status Code of " + httpStatusCode);

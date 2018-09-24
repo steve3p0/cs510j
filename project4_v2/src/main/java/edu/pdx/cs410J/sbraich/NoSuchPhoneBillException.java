@@ -1,13 +1,16 @@
 package edu.pdx.cs410J.sbraich;
 
+/**
+ * Custom Exception for when there is no phone bill
+ */
 public class NoSuchPhoneBillException extends RuntimeException
 {
-    //private final String customerName;
-
+    /**
+     * Constructor for NoSuchPhoneBillException
+     * @param s
+     */
     public NoSuchPhoneBillException(String s)
     {
-        //this.customerName = customerName;
-
         super(s);
     }
 }

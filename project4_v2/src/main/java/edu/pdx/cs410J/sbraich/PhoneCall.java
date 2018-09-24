@@ -11,12 +11,13 @@ import java.util.regex.Pattern;
 import java.time.ZoneId;
 import java.time.LocalDate;
 
-/// The Class that manages a phone call
+/**
+ * The Class that manages a phone call
+ */
 public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall>
 {
     private static String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
     private static String DATE_TIME_REGEX = "(\\d{1,2}/){1}(\\d{1,2}/){1}\\d{4}\\s+(\\d{1,2}:\\d{2}\\s+)(am|pm|AM|PM)";
-    //private static String DATE_TIME_REGEX = "(\\d{1,2}\\/){1}(\\d{1,2}\\/){1}\\d{4}\\s+(\\d{1,2}:\\d{2}\\s+)(am|pm|AM|PM)";
 
     private final String callerNumber;
     private final String calleeNumber;
@@ -24,6 +25,30 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
     private final Date startTime;
     private final Date endTime;
 
+    /**
+     * Constructor for PhoneCall = Takes numbers and datetimes as args
+     * @param callerNum The caller phonenumber
+     * @param calleeNum The call-EE phonenumber
+     * @param start Start Date/Time of the Call
+     * @param end End Date/Time of the Call
+     * @throws PhoneBillException Thrown by this.validate()
+     */
+    public PhoneCall(String callerNum, String calleeNum, String start, String end) throws PhoneBillException
+    {
+        this.callerNumber = callerNum;
+        this.calleeNumber = calleeNum;
+        this.startTime = parseDate(start);
+        this.endTime = parseDate(end);
+
+        this.validate();
+    }
+
+    /**
+     * This method is used by my Phonebill Sort method to compare phonecalls
+     * Implements compareTo interface java.lang.Comparable
+     * @param o
+     * @return
+     */
     @Override
     public int compareTo(PhoneCall o)
     {
@@ -44,32 +69,30 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         return 0;
     }
 
-    /// Constructor for PhoneCall = Takes numbers and datetimes as args
-    public PhoneCall(String callerNum, String calleeNum, String start, String end) throws PhoneBillException
-    {
-        this.callerNumber = callerNum;
-        this.calleeNumber = calleeNum;
-        this.startTime = parseDate(start);
-        this.endTime = parseDate(end);
-
-        this.validate();
-    }
-
-    /// Overrides getCaller method of AbstractPhoneCall method
+    /**
+     * Overrides getCaller method of AbstractPhoneCall method
+     * @return String of the caller's phone number
+     */
     @Override
     public String getCaller()
     {
         return this.callerNumber;
     }
 
-    /// Overrides getCallee method of AbstractPhoneCall method
+    /**
+     * Overrides getCallee method of AbstractPhoneCall method
+     * @return String of the callee phone number
+     */
     @Override
     public String getCallee()
     {
         return this.calleeNumber;
     }
 
-    /// Overrides getStartTimeString method of AbstractPhoneCall method
+    /**
+     * Converts the Start Date object to a String
+     * @return String of startTime
+     */
     @Override
     public String getStartTimeString()
     {
@@ -77,7 +100,10 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         return sdf.format(this.startTime);
     }
 
-    /// Overrides getEndTimeString method of AbstractPhoneCall method
+    /**
+     * Converts the End Date object to a String
+     * @return String of endTime
+     */
     @Override
     public String getEndTimeString()
     {
@@ -87,7 +113,10 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
 
     // Validation Methods
 
-    /// Validate Method for PhoneCall - Calls all private validate methods
+    /**
+     * Validate Method for PhoneCall - Calls all private validate methods
+     * @throws PhoneBillException thrown by validation of class propoerties
+     */
     private void validate() throws PhoneBillException
     {
         this.validatePhoneNumber(this.callerNumber);
@@ -97,6 +126,11 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         this.validateDate(this.endTime);
     }
 
+    /**
+     * Validates a Date/Time String
+     * @param s String representing a date/time
+     * @return Returns true if the date is valie
+     */
     private boolean validateDateTime(String s)
     {
         Pattern pattern = Pattern.compile(DATE_TIME_REGEX);
@@ -105,7 +139,11 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         return matcher.find();
     }
 
-    /// Validate Date
+    /**
+     * Validates a Date - Makes sure the year date is at least 4 digits and not greater than 2099
+     * @param datetime Date object of the date to be validated
+     * @throws PhoneBillException thrown if the year is off
+     */
     private void validateDate(Date datetime) throws PhoneBillException
     {
         LocalDate localDate = datetime.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -117,7 +155,11 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         }
     }
 
-    /// Validate Phone Number
+    /**
+     * Validates a Phone number
+     * @param phoneNumber String representing a phone number
+     * @throws PhoneBillException Thrown if the phone number pattern is not matched
+     */
     private void validatePhoneNumber(String phoneNumber) throws PhoneBillException
     {
         //nnn-nnn-nnnn
@@ -133,6 +175,12 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
 
     //// Private Methods ///////////////////////
 
+    /**
+     * Parses a string into a Date
+     * @param s String representation of a date
+     * @return Date object
+     * @throws PhoneBillException if date can't be parsed
+     */
     private Date parseDate(String s) throws PhoneBillException
     {
         try
@@ -157,13 +205,19 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         }
     }
 
-    /// Are these methods even used?
-
+    /**
+     * Gets the Start Date/Time
+     * @return Date Ojbect
+     */
     public Date getStartTime()
     {
         return this.startTime;
     }
 
+    /**
+     * Gets the End Date/Time
+     * @return Date Ojbect
+     */
     public Date getEndTime()
     {
         return this.endTime;

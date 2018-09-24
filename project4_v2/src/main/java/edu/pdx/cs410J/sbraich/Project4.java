@@ -69,15 +69,24 @@ public class Project4
             // 4. Add Phone Call
             else
             {
-                PhoneBillRestClient client = new PhoneBillRestClient(cli.hostname, cli.portNumber);
-
-                PhoneCall call = new PhoneCall(cli.callerNumber, cli.calleeNumber, cli.startTime, cli.endTime);
-                client.addPhoneCall(cli.customer, call);
-
-                if (cli.print)
+                try
                 {
-                    System.out.println(call.toString());
+                    PhoneBillRestClient client = new PhoneBillRestClient(cli.hostname, cli.portNumber);
+
+                    PhoneCall call = new PhoneCall(cli.callerNumber, cli.calleeNumber, cli.startTime, cli.endTime);
+                    client.addPhoneCall(cli.customer, call);
+
+                    if (cli.print)
+                    {
+                        System.out.println(call.toString());
+                    }
                 }
+                catch (RuntimeException e)
+                {
+                    System.err.println(e.getMessage());
+                    System.exit(1);
+                }
+
                 System.exit(0);
             }
         }

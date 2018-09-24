@@ -123,12 +123,6 @@ public class Cli
                 throw new PhoneBillException("Too many command line arguments");
             }
         }
-//        // else PRINT all for a customer
-//        else if (arguments.size() == 1)
-//        {
-//            this.customer = arguments.get(0);
-//            this.printCustomer = true;
-//        }
         else if (arguments.size() == 1)
         {
             this.customer = arguments.get(0);

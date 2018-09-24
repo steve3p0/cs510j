@@ -212,7 +212,6 @@ public class Project4IT extends InvokeMainTestCase
         int exitCodeAdd3 = resultAdd3.getExitCode();
         assertThat(exitCodeAdd3, equalTo(0));
 
-
         MainMethodResult resultSearch = invokeMain
         (
             Project4.class, "-host", HOSTNAME, "-port", PORT, "-search",
@@ -242,7 +241,6 @@ public class Project4IT extends InvokeMainTestCase
         assertThat(out, not(containsString(startDate3 + " " + startTime3 + " " + startAmPm3)));
         assertThat(out, not(containsString(endDate3 + " " + endTime3 + " " + endtAmPm3)));
     }
-
 
     @Test
     public void testDeleteAllPhoneBills() throws IOException

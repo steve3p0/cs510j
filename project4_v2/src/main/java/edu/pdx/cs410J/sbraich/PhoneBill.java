@@ -1,7 +1,6 @@
 package edu.pdx.cs410J.sbraich;
 
 import edu.pdx.cs410J.AbstractPhoneBill;
-import edu.pdx.cs410J.AbstractPhoneCall;
 
 import java.nio.file.*;
 import java.text.ParseException;
@@ -9,7 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-/// The class that manages a phone bill
+/**
+ * The class that manages a phone bill
+ */
 public class PhoneBill extends AbstractPhoneBill<PhoneCall>
 {
     private String customer;
@@ -17,7 +18,11 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
     private Path filePath = null;
     private Collection<PhoneCall> calls = new ArrayList<>();
 
-    /// Constructor for PhoneBill - Takes a Customer Name
+    /**
+     * Constructor for PhoneBill - Takes a Customer Name
+     * @param customerName String Customer name
+     * @throws PhoneBillException Thrown by this.validateCustomerName()
+     */
     public PhoneBill(String customerName) throws PhoneBillException
     {
         this.customer = customerName;
@@ -27,7 +32,12 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         this.validateCustomerName();
     }
 
-    /// Constructor for PhoneBill - Takes a Customer Name and FilePath
+    /**
+     * Constructor for PhoneBill - Takes a Customer Name and FilePath
+     * @param customerName
+     * @param filePath
+     * @throws PhoneBillException
+     */
     public PhoneBill(String customerName, String filePath) throws PhoneBillException
     {
         this.customer = customerName;
@@ -37,7 +47,13 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         this.validateCustomerName();
     }
 
-    /// Constructor for PhoneBill - Takes a Customer Name and FilePath
+    /**
+     * Constructor for PhoneBill - Takes a Customer Name and FilePath
+     * @param customerFromCli
+     * @param customerFromFile
+     * @param filePath
+     * @throws PhoneBillException
+     */
     public PhoneBill(String customerFromCli, String customerFromFile, String filePath) throws PhoneBillException
     {
         this.customer = customerFromCli;
@@ -47,7 +63,11 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         this.compareCustomerNames();
     }
 
-    /// Overrides addPhoneCall method of AbstractPhoneBill method
+    /**
+     * Adds a PhoneCall object to a phone bill
+     * Overrides addPhoneCall method of AbstractPhoneBill method
+     * @param call PhoneCall Object to be added
+     */
     @Override
     public void addPhoneCall(PhoneCall call)
     {
@@ -55,13 +75,22 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         Collections.sort((ArrayList)this.calls);
     }
 
-    /// Overrides getPhoneCalls method of AbstractPhoneBill method
+    /**
+     * Overrides getPhoneCalls method of AbstractPhoneBill method
+     * @return Returns collection of Phonecalls
+     */
     @Override
     public Collection<PhoneCall> getPhoneCalls()
     {
         return this.calls;
     }
 
+    /**
+     * Gets all phonecalls between startTime and endTime
+     * @param startTime
+     * @param endTime
+     * @return
+     */
     public Collection<PhoneCall> getPhoneCallsByDate(String startTime, String endTime)
     {
         try
@@ -93,6 +122,11 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         }
     }
 
+    /**
+     * Gets the Total Minutes of all calls in a phone bill
+     * @return int of total minutes of phone bill
+     * @throws ParseException throw if the total can't be summed
+     */
     public int getTotalMinutes() throws ParseException
     {
         int total = 0;
@@ -104,20 +138,30 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         return total;
     }
 
-    /// Gets the Customer Name from the Phone Bill
+    /** Gets the Customer name of a phone bill
+     * @return String Customer Name from the Phone Bill
+     */
     public String getCustomer()
     {
         return this.customer;
     }
 
-    /// Gets the File Path of the Phone Bill
+    /**
+     * Gets the File Path of the Phone Bill
+     * @return Path file path object
+     */
     public Path getFilePath()
     {
         return this.filePath;
     }
 
-    //////  PRIVATE METHODS /////////////////////////////
-
+    /**
+     * Gets the different between two dates
+     * @param d1 String of the 1st Date
+     * @param d2 String of the 2nd Date
+     * @return int representing difference between two dates in minutes.
+     * @throws ParseException thrown if the dates can't be parsed
+     */
     private int GetDateDiffMinutes(String d1, String d2) throws ParseException
     {
         Date startDate = parseDate(d1);
@@ -129,6 +173,12 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         return diffInMinutes;
     }
 
+    /**
+     * Parse a date string into a Date type
+     * @param s String that is to be parsed
+     * @return Date object
+     * @throws ParseException thrown if the date can't be parsed
+     */
     private Date parseDate(String s) throws ParseException
     {
         String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
@@ -140,7 +190,10 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         return date;
     }
 
-    /// Validate File Path
+    /**
+     * Validate a Phone Bill Customer name
+     * @throws PhoneBillException thrown if name can't be validated
+     */
     private void validateCustomerName() throws PhoneBillException
     {
         if (this.customer == null || this.customer.isEmpty())
@@ -149,7 +202,9 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         }
     }
 
-    /// Validates a Customer Name in the PhoneBill text file.
+    /**
+     * Validates a Customer Name in the PhoneBill text file.
+     */
     private void compareCustomerNames() throws PhoneBillException
     {
         this.validateCustomerName();

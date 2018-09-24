@@ -13,12 +13,16 @@ import java.io.File;
 
 import edu.pdx.cs410J.PhoneBillDumper;
 
-/// PRETTY PRINTER
-
-/// public class TextDumper implements PhoneBillDumper<T extends AbstractPhoneBill>
+/**
+ * Class that manages persisting phone billing data to a text file
+ */
 public class TextDumper implements PhoneBillDumper<PhoneBill>
 {
-    /// Impelements dump method of PhoneBillDumper method
+    /**
+     * Writes Phonebill and PhoneCall data to a text file
+     * @param bill PhoneBill object to write to a file
+     * @throws IOException thrown if PhoneBill write fails
+     */
     public void dump(PhoneBill bill) throws IOException
     {
         Collection<PhoneCall> calls = bill.getPhoneCalls();
@@ -33,6 +37,11 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
         Files.write(path, lines, Charset.forName("UTF-8"));
     }
 
+    /**
+     * Converts a collection of PhoneCall objects to a string
+     * @param bill Phonebill that is converted to a string
+     * @return String representation of all phonecalls in a phone bill
+     */
     private String toCallsString(PhoneBill bill)
     {
         List<String> callList = new ArrayList<String>();
@@ -49,6 +58,11 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
         return callString;
     }
 
+    /**
+     * Creates Directory of the PhoneBill filepath, if it doesn't exist
+     * @param path The path used to create the directory
+     * @throws IOException thrown if the directory can't be created
+     */
     private void CreateDirFromFilePath(Path path) throws IOException
     {
         Path parentDir = path.getParent();
@@ -65,7 +79,11 @@ public class TextDumper implements PhoneBillDumper<PhoneBill>
         }
     }
 
-    /// Validate File Path
+    /**
+     * Validates a File Path
+     * @param path Path type object to be validated
+     * @throws IOException thrown if the filepath object can't be validated.
+     */
     private void validateFilePath(Path path) throws IOException
     {
         Path dir = path.getParent();
