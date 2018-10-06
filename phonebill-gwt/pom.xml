@@ -12,7 +12,6 @@
   <properties>
     <jetty.http.port>8080</jetty.http.port>
   </properties>
-
   <packaging>war</packaging>
   <version>Summer2018</version>
   <name>Phone Bill GWT Application</name>
