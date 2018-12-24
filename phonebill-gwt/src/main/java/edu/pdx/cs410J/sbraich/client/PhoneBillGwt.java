@@ -13,6 +13,11 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.RootPanel;
+
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +32,7 @@ public class PhoneBillGwt implements EntryPoint
     private final Logger logger;
 
 
-    @VisibleForTesting
+    //@VisibleForTesting
     Button showPhoneBillButton;
 
     @VisibleForTesting
@@ -224,6 +229,25 @@ public class PhoneBillGwt implements EntryPoint
             public void execute()
             {
                 setupUI();
+
+
+                // Create a grid
+                Grid grid = new Grid(2, 2);
+
+                // Add images to the grid
+                int numRows = grid.getRowCount();
+                int numColumns = grid.getColumnCount();
+                for (int row = 0; row < numRows; row++) {
+                    for (int col = 0; col < numColumns; col++) {
+                        grid.setWidget(row, col,
+                                new Image("http://www.tutorialspoint.com/images/gwt-mini.png"));
+                    }
+                }
+
+                DecoratorPanel decoratorPanel = new DecoratorPanel();
+                decoratorPanel.add(grid);
+                // Add the widgets to the root panel.
+                RootPanel.get().add(decoratorPanel);
             }
         });
     }
