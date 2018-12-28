@@ -1,12 +1,19 @@
 package edu.pdx.cs410J.sbraich.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.List;
 
 /**
  * The client-side interface to the phone bill service
  */
 public interface PhoneBillServiceAsync {
 
+  /**
+   * Load the app with test data
+   */
+  void loadTestData(List<PhoneBill> testdata, AsyncCallback<Void> async);
+
+  void getPhoneBills(AsyncCallback<List<PhoneBill>> async);
   /**
    * Return the current date/time on the server
    */

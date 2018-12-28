@@ -38,7 +38,9 @@ public class PhoneBillGwt implements EntryPoint
     private final PhoneBillServiceAsync phoneBillService;
     private final Logger logger;
 
-    public List BILLS = new ArrayList<PhoneBill>();
+
+    private ListBox billsListBox = new ListBox();
+    private List bills = new ArrayList<PhoneBill>();
 
     //@VisibleForTesting
     Button showPhoneBillButton;
@@ -232,18 +234,22 @@ public class PhoneBillGwt implements EntryPoint
         table.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
 
         // Add a text column to show the Caller Number.
-        TextColumn<PhoneCall> callerColumn = new TextColumn<PhoneCall>() {
+        TextColumn<PhoneCall> callerColumn = new TextColumn<PhoneCall>()
+        {
             @Override
-            public String getValue(PhoneCall object) {
+            public String getValue(PhoneCall object)
+            {
                 return object.callerNumber;
             }
         };
         table.addColumn(callerColumn, "Caller");
 
         // Add a text column to show the Callee Number.
-        TextColumn<PhoneCall> calleeColumn = new TextColumn<PhoneCall>() {
+        TextColumn<PhoneCall> calleeColumn = new TextColumn<PhoneCall>()
+        {
             @Override
-            public String getValue(PhoneCall object) {
+            public String getValue(PhoneCall object)
+            {
                 return object.calleeNumber;
             }
         };
@@ -255,9 +261,11 @@ public class PhoneBillGwt implements EntryPoint
         String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
         DateTimeFormat fmt = DateTimeFormat.getFormat(DATE_TIME_FORMAT);
         DateCell dateCell = new DateCell(fmt);
-        Column<PhoneCall, Date> startColumn = new Column<PhoneCall, Date>(dateCell) {
+        Column<PhoneCall, Date> startColumn = new Column<PhoneCall, Date>(dateCell)
+        {
             @Override
-            public Date getValue(PhoneCall object) {
+            public Date getValue(PhoneCall object)
+            {
                 return object.startTime;
             }
         };
@@ -265,9 +273,11 @@ public class PhoneBillGwt implements EntryPoint
 
         // Add a date column to show the birthday.
         //DateCell dateCell = new DateCell();
-        Column<PhoneCall, Date> endColumn = new Column<PhoneCall, Date>(dateCell) {
+        Column<PhoneCall, Date> endColumn = new Column<PhoneCall, Date>(dateCell)
+        {
             @Override
-            public Date getValue(PhoneCall object) {
+            public Date getValue(PhoneCall object)
+            {
                 return object.endTime;
             }
         };
@@ -276,10 +286,13 @@ public class PhoneBillGwt implements EntryPoint
         // Add a selection model to handle user selection.
         final SingleSelectionModel<PhoneCall> selectionModel = new SingleSelectionModel<PhoneCall>();
         table.setSelectionModel(selectionModel);
-        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-            public void onSelectionChange(SelectionChangeEvent event) {
+        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
+        {
+            public void onSelectionChange(SelectionChangeEvent event)
+            {
                 PhoneCall selected = selectionModel.getSelectedObject();
-                if (selected != null) {
+                if (selected != null)
+                {
                     Window.alert("You selected: " + selected.callerNumber);
                 }
             }
@@ -305,10 +318,33 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
-
-    private List loadTestData()
+    private void loadBillsListBox()
     {
+        phoneBillService.getPhoneBills(new AsyncCallback<List<PhoneBill>>()
+        {
+            @Override
+            public void onFailure(Throwable throwable)
+            {
+                alerter.alert("phoneBillService.getPhoneBills FAILED");
+            }
 
+            @Override
+            public void onSuccess(List<PhoneBill> list)
+            {
+                billsListBox.clear();
+
+                bills = list;
+                for (Object b : bills)
+                {
+                    PhoneBill bill = (PhoneBill) b;
+                    billsListBox.addItem(bill.customer);
+                }
+            }
+        });
+    }
+
+    private void loadTestPhoneBills()
+    {
         // First Bill: Luke Skywalker
         PhoneBill bill1 = new PhoneBill("Luke Skywalker");
 
@@ -378,14 +414,12 @@ public class PhoneBillGwt implements EntryPoint
         PhoneCall bill4_call5 = new PhoneCall("999-999-9999", "503-867-5309", "12/13/2018 1:13 PM", "12/13/2018 1:27 PM" );
         PhoneCall bill4_call6 = new PhoneCall("999-999-9999", "503-867-5309", "12/15/2018 3:15 PM", "12/15/2018 3:17 PM" );
 
-
         bill4.addPhoneCall(bill4_call1);
         bill4.addPhoneCall(bill4_call2);
         bill4.addPhoneCall(bill4_call3);
         bill4.addPhoneCall(bill4_call4);
         bill4.addPhoneCall(bill4_call5);
         bill4.addPhoneCall(bill4_call6);
-
 
         // 5th Bill: Princess Leia
         PhoneBill bill5 = new PhoneBill("Princess Leia");
@@ -412,16 +446,35 @@ public class PhoneBillGwt implements EntryPoint
         bill5.addPhoneCall(bill5_call9);
         bill5.addPhoneCall(bill5_call10);
 
-        List billList = new ArrayList<PhoneBill>();
-        billList.add(bill1);
-        billList.add(bill2);
-        billList.add(bill3);
-        billList.add(bill4);
-        billList.add(bill5);
-
-        return billList;
+        //List billList = new ArrayList<PhoneBill>();
+        this.bills.add(bill1);
+        this.bills.add(bill2);
+        this.bills.add(bill3);
+        this.bills.add(bill4);
+        this.bills.add(bill5);
     }
 
+    private void loadTestData()
+    {
+        loadTestPhoneBills();
+
+        phoneBillService.loadTestData(this.bills, new AsyncCallback<Void>()
+        {
+            @Override
+            public void onFailure(Throwable throwable)
+            {
+                String msg = throwable.toString();
+                alerter.alert("phoneBillService.loadTestData FAILED: " + msg);
+            }
+
+            @Override
+            public void onSuccess(Void v)
+            {
+                // don't do shit
+                loadBillsListBox();
+            }
+        });
+    }
 
     private void setupUI()
     {
@@ -435,32 +488,23 @@ public class PhoneBillGwt implements EntryPoint
         hPanel.add(rPanel);
         rootPanel.add(hPanel);
 
-        this.BILLS = loadTestData();
-
-        // Left Panel
-        //addWidgets(lPanel);
-        // Make a new list box, adding a few items to it.
-        ListBox lb = new ListBox();
-
-        for (Object b : BILLS)
-        {
-            PhoneBill bill = (PhoneBill)b;
-            lb.addItem(bill.customer);
-        }
+        //////////////////////////////////////
+        loadTestData();
+        //loadBillsListBox();
 
         // Make enough room for all five items (setting this value to 1 turns it
         // into a drop-down list).
-        lb.setVisibleItemCount(15);
+        billsListBox.setVisibleItemCount(15);
 
         // Add it to the root panel.
-        lPanel.add(lb);
+        lPanel.add(billsListBox);
 
         // Right Panel
         CellTable<PhoneCall> table = showGrid();
 
 
         // Show the initial Bill in the PhoneCalls grid
-        PhoneBill initialBill = (PhoneBill)this.BILLS.get(0);
+        PhoneBill initialBill = (PhoneBill) this.bills.get(0);
 
         // Set the total row count. This isn't strictly necessary, but it affects
         // paging calculations, so its good habit to keep the row count up to date.
@@ -474,7 +518,7 @@ public class PhoneBillGwt implements EntryPoint
         rPanel.add(table);
     }
 
-    private void setUpUncaughtExceptionHandler()
+    private void setUpUncaughtExceptionHandler ()
     {
         GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler()
         {
