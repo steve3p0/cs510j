@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.sbraich.client;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Iterables;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -25,7 +26,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Arrays;
 import java.util.*;
 
 
@@ -38,6 +38,7 @@ public class PhoneBillGwt implements EntryPoint
     private final PhoneBillServiceAsync phoneBillService;
     private final Logger logger;
 
+    public List BILLS = new ArrayList<PhoneBill>();
 
     //@VisibleForTesting
     Button showPhoneBillButton;
@@ -223,42 +224,8 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
-    private List testPhoneBills(PhoneBill bill)
+    private CellTable<PhoneCall> showGrid()
     {
-        PhoneCall call1 = new PhoneCall("318-467-8383", "503-867-5309", "12/01/2018 3:34 PM", "12/01/2018 3:37 PM" );
-        PhoneCall call2 = new PhoneCall("318-467-8383", "503-555-1212", "12/02/2018 1:12 PM", "12/02/2018 1:17 PM" );
-        PhoneCall call3 = new PhoneCall("318-467-8383", "503-730-5753", "12/03/2018 10:46 PM", "12/03/2018 10:55 PM" );
-        PhoneCall call4 = new PhoneCall("318-467-8383", "503-867-5309", "12/04/2018 11:03 PM", "12/05/2018 11:28 PM" );
-        PhoneCall call5 = new PhoneCall("318-467-8383", "503-555-1212", "12/05/2018 9:07 AM", "12/05/2018 9:08 PM" );
-        PhoneCall call6 = new PhoneCall("318-467-8383", "503-730-5753", "12/06/2018 12:33 PM", "12/06/2018 12:37 PM" );
-        PhoneCall call7 = new PhoneCall("318-467-8383", "503-555-1212", "12/07/2018 6:25 PM", "12/07/2018 6:26 PM" );
-        PhoneCall call8 = new PhoneCall("318-467-8383", "503-867-5309", "12/09/2018 5:29 PM", "12/09/2018 5:38 PM" );
-        PhoneCall call9 = new PhoneCall("318-467-8383", "503-730-5753", "12/09/2018 6:05 PM", "12/09/2018 6:17 PM" );
-        PhoneCall call10 = new PhoneCall("318-467-8383", "503-867-5309", "12/09/2018 6:19 PM", "12/09/2018 6:37 PM" );
-
-        bill.addPhoneCall(call1);
-        bill.addPhoneCall(call2);
-        bill.addPhoneCall(call3);
-        bill.addPhoneCall(call4);
-        bill.addPhoneCall(call5);
-        bill.addPhoneCall(call6);
-        bill.addPhoneCall(call7);
-        bill.addPhoneCall(call8);
-        bill.addPhoneCall(call9);
-        bill.addPhoneCall(call10);
-
-        List list = new ArrayList<>(bill.calls);
-
-        return list;
-    }
-
-    private CellTable<PhoneCall> loadGrid()
-    {
-        PhoneBill bill = new PhoneBill();
-        bill.setCustomer("Luke Skywalker");
-        List list = testPhoneBills(bill);
-
-
         // http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/cellview/client/DataGrid.html
         // Create a CellTable.
         CellTable<PhoneCall> table = new CellTable<PhoneCall>();
@@ -318,13 +285,6 @@ public class PhoneBillGwt implements EntryPoint
             }
         });
 
-        // Set the total row count. This isn't strictly necessary, but it affects
-        // paging calculations, so its good habit to keep the row count up to date.
-        table.setRowCount(bill.getPhoneCalls().size(), true);
-
-        // Push the data into the widget.
-        table.setRowData(0, list);
-
         return table;
     }
 
@@ -346,6 +306,123 @@ public class PhoneBillGwt implements EntryPoint
     }
 
 
+    private List loadTestData()
+    {
+
+        // First Bill: Luke Skywalker
+        PhoneBill bill1 = new PhoneBill("Luke Skywalker");
+
+        PhoneCall bill1_call1 = new PhoneCall("318-467-8383", "503-867-5309", "12/01/2018 3:34 PM", "12/01/2018 3:37 PM" );
+        PhoneCall bill1_call2 = new PhoneCall("318-467-8383", "503-555-1212", "12/02/2018 1:12 PM", "12/02/2018 1:17 PM" );
+        PhoneCall bill1_call3 = new PhoneCall("318-467-8383", "503-730-5753", "12/03/2018 10:46 PM", "12/03/2018 10:55 PM" );
+        PhoneCall bill1_call4 = new PhoneCall("318-467-8383", "503-867-5309", "12/04/2018 11:03 PM", "12/05/2018 11:28 PM" );
+        PhoneCall bill1_call5 = new PhoneCall("318-467-8383", "503-555-1212", "12/05/2018 9:07 AM", "12/05/2018 9:08 AM" );
+        PhoneCall bill1_call6 = new PhoneCall("318-467-8383", "503-730-5753", "12/06/2018 12:33 PM", "12/06/2018 12:37 PM" );
+        PhoneCall bill1_call7 = new PhoneCall("318-467-8383", "503-555-1212", "12/07/2018 6:25 PM", "12/07/2018 6:26 PM" );
+        PhoneCall bill1_call8 = new PhoneCall("318-467-8383", "503-867-5309", "12/09/2018 5:29 PM", "12/09/2018 5:38 PM" );
+        PhoneCall bill1_call9 = new PhoneCall("318-467-8383", "503-730-5753", "12/09/2018 6:05 PM", "12/09/2018 6:17 PM" );
+        PhoneCall bill1_call10 = new PhoneCall("318-467-8383", "503-867-5309", "12/09/2018 6:19 PM", "12/09/2018 6:37 PM" );
+
+        bill1.addPhoneCall(bill1_call1);
+        bill1.addPhoneCall(bill1_call2);
+        bill1.addPhoneCall(bill1_call3);
+        bill1.addPhoneCall(bill1_call4);
+        bill1.addPhoneCall(bill1_call5);
+        bill1.addPhoneCall(bill1_call6);
+        bill1.addPhoneCall(bill1_call7);
+        bill1.addPhoneCall(bill1_call8);
+        bill1.addPhoneCall(bill1_call9);
+        bill1.addPhoneCall(bill1_call10);
+
+        // 2nd Bill: Mara Jade
+        PhoneBill bill2 = new PhoneBill("Mara Jade");
+
+        PhoneCall bill2_call1 = new PhoneCall("503-867-5309", "318-467-8383", "12/01/2018 1:11 AM", "12/01/2018 1:21 AM" );
+        PhoneCall bill2_call2 = new PhoneCall("503-867-5309", "503-730-5753", "12/03/2018 3:33 AM", "12/03/2018 3:38 AM" );
+        PhoneCall bill2_call3 = new PhoneCall("503-867-5309", "503-555-1212", "12/05/2018 5:05 AM", "12/05/2018 5:13 AM" );
+        PhoneCall bill2_call4 = new PhoneCall("503-867-5309", "503-555-1212", "12/07/2018 7:25 AM", "12/07/2018 7:26 AM" );
+        PhoneCall bill2_call5 = new PhoneCall("503-867-5309", "503-730-5753", "12/09/2018 9:09 AM", "12/09/2018 9:17 PM" );
+
+        bill2.addPhoneCall(bill2_call1);
+        bill2.addPhoneCall(bill2_call2);
+        bill2.addPhoneCall(bill2_call3);
+        bill2.addPhoneCall(bill2_call4);
+        bill2.addPhoneCall(bill2_call5);
+
+        // 3rd Bill: Lando
+        PhoneBill bill3 = new PhoneBill("Lando Calrissian");
+
+        PhoneCall bill3_call1 = new PhoneCall("408-555-1234", "503-867-5309", "11/28/2018 6:19 PM", "12/09/2018 6:37 PM" );
+        PhoneCall bill3_call2 = new PhoneCall("408-555-1234", "503-555-1212", "12/02/2018 2:22 AM", "12/02/2018 2:27 AM" );
+        PhoneCall bill3_call3 = new PhoneCall("408-555-1234", "503-867-5309", "12/04/2018 4:44 PM", "12/05/2018 4:54 PM" );
+        PhoneCall bill3_call4 = new PhoneCall("408-555-1234", "503-867-5309", "12/19/2018 5:29 AM", "12/09/2018 5:38 AM" );
+        PhoneCall bill3_call5 = new PhoneCall("408-555-1234", "503-730-5753", "12/21/2018 6:05 PM", "12/09/2018 6:17 PM" );
+        PhoneCall bill3_call6 = new PhoneCall("408-555-1234", "503-730-5753", "12/22/2018 12:33 AM", "12/06/2018 12:37 AM" );
+        PhoneCall bill3_call7 = new PhoneCall("408-555-1234", "503-555-1212", "12/24/2018 6:25 PM", "12/07/2018 6:26 PM" );
+
+        bill3.addPhoneCall(bill3_call1);
+        bill3.addPhoneCall(bill3_call2);
+        bill3.addPhoneCall(bill3_call3);
+        bill3.addPhoneCall(bill3_call4);
+        bill3.addPhoneCall(bill3_call5);
+        bill3.addPhoneCall(bill3_call6);
+        bill3.addPhoneCall(bill3_call7);
+
+        // 4th Bill: Han Solo
+        PhoneBill bill4 = new PhoneBill("Han Solo");
+
+        PhoneCall bill4_call1 = new PhoneCall("999-999-9999", "503-555-1212", "12/05/2018 5:55 AM", "12/05/2018 5:59 AM" );
+        PhoneCall bill4_call2 = new PhoneCall("999-999-9999", "503-555-1212", "12/07/2018 7:27 PM", "12/07/2018 7:36 PM" );
+        PhoneCall bill4_call3 = new PhoneCall("999-999-9999", "503-867-5309", "12/09/2018 9:29 PM", "12/09/2018 9:38 PM" );
+        PhoneCall bill4_call4 = new PhoneCall("999-999-9999", "503-730-5753", "12/11/2018 11:11 PM", "12/11/2018 11:22 PM" );
+        PhoneCall bill4_call5 = new PhoneCall("999-999-9999", "503-867-5309", "12/13/2018 1:13 PM", "12/13/2018 1:27 PM" );
+        PhoneCall bill4_call6 = new PhoneCall("999-999-9999", "503-867-5309", "12/15/2018 3:15 PM", "12/15/2018 3:17 PM" );
+
+
+        bill4.addPhoneCall(bill4_call1);
+        bill4.addPhoneCall(bill4_call2);
+        bill4.addPhoneCall(bill4_call3);
+        bill4.addPhoneCall(bill4_call4);
+        bill4.addPhoneCall(bill4_call5);
+        bill4.addPhoneCall(bill4_call6);
+
+
+        // 5th Bill: Princess Leia
+        PhoneBill bill5 = new PhoneBill("Princess Leia");
+
+        PhoneCall bill5_call1 = new PhoneCall("503-555-2187", "503-867-5309", "12/01/2018 3:34 PM", "12/01/2018 3:37 PM" );
+        PhoneCall bill5_call2 = new PhoneCall("503-555-2187", "503-555-1212", "12/02/2018 1:12 PM", "12/02/2018 1:17 PM" );
+        PhoneCall bill5_call3 = new PhoneCall("503-555-2187", "503-730-5753", "12/03/2018 10:46 PM", "12/03/2018 10:55 PM" );
+        PhoneCall bill5_call4 = new PhoneCall("503-555-2187", "503-867-5309", "12/04/2018 11:03 PM", "12/05/2018 11:28 PM" );
+        PhoneCall bill5_call5 = new PhoneCall("503-555-2187", "503-555-1212", "12/05/2018 9:07 AM", "12/05/2018 9:08 AM" );
+        PhoneCall bill5_call6 = new PhoneCall("503-555-2187", "503-730-5753", "12/06/2018 12:33 PM", "12/06/2018 12:37 PM" );
+        PhoneCall bill5_call7 = new PhoneCall("503-555-2187", "503-555-1212", "12/07/2018 6:25 PM", "12/07/2018 6:26 PM" );
+        PhoneCall bill5_call8 = new PhoneCall("503-555-2187", "503-867-5309", "12/09/2018 5:29 PM", "12/09/2018 5:38 PM" );
+        PhoneCall bill5_call9 = new PhoneCall("503-555-2187", "503-730-5753", "12/09/2018 6:05 PM", "12/09/2018 6:17 PM" );
+        PhoneCall bill5_call10 = new PhoneCall("503-555-2187", "503-867-5309", "12/09/2018 6:19 PM", "12/09/2018 6:37 PM" );
+
+        bill5.addPhoneCall(bill5_call1);
+        bill5.addPhoneCall(bill5_call2);
+        bill5.addPhoneCall(bill5_call3);
+        bill5.addPhoneCall(bill5_call4);
+        bill5.addPhoneCall(bill5_call5);
+        bill5.addPhoneCall(bill5_call6);
+        bill5.addPhoneCall(bill5_call7);
+        bill5.addPhoneCall(bill5_call8);
+        bill5.addPhoneCall(bill5_call9);
+        bill5.addPhoneCall(bill5_call10);
+
+        List billList = new ArrayList<PhoneBill>();
+        billList.add(bill1);
+        billList.add(bill2);
+        billList.add(bill3);
+        billList.add(bill4);
+        billList.add(bill5);
+
+        return billList;
+    }
+
+
     private void setupUI()
     {
         RootPanel rootPanel = RootPanel.get();
@@ -358,11 +435,43 @@ public class PhoneBillGwt implements EntryPoint
         hPanel.add(rPanel);
         rootPanel.add(hPanel);
 
-        addWidgets(lPanel);
+        this.BILLS = loadTestData();
 
-        CellTable<PhoneCall> table = loadGrid();
+        // Left Panel
+        //addWidgets(lPanel);
+        // Make a new list box, adding a few items to it.
+        ListBox lb = new ListBox();
+
+        for (Object b : BILLS)
+        {
+            PhoneBill bill = (PhoneBill)b;
+            lb.addItem(bill.customer);
+        }
+
+        // Make enough room for all five items (setting this value to 1 turns it
+        // into a drop-down list).
+        lb.setVisibleItemCount(15);
+
+        // Add it to the root panel.
+        lPanel.add(lb);
+
+        // Right Panel
+        CellTable<PhoneCall> table = showGrid();
+
+
+        // Show the initial Bill in the PhoneCalls grid
+        PhoneBill initialBill = (PhoneBill)this.BILLS.get(0);
+
+        // Set the total row count. This isn't strictly necessary, but it affects
+        // paging calculations, so its good habit to keep the row count up to date.
+        table.setRowCount(initialBill.getPhoneCalls().size(), true);
+
+        List<PhoneCall> initialCalls = new ArrayList<>(initialBill.calls);
+
+        // Push the data into the widget.
+        table.setRowData(0, initialCalls);
+
         rPanel.add(table);
-
     }
 
     private void setUpUncaughtExceptionHandler()
