@@ -22,10 +22,7 @@ import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
-//import com.google.gwt.user.cellview.client.
-//SingleSelectionModel
 
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.*;
@@ -41,9 +38,9 @@ public class PhoneBillGwt implements EntryPoint
     private final Logger logger;
 
     private ListBox billsListBox = new ListBox();
-    private CellTable<PhoneCall> callsTable = showGrid();
+    private CellTable<PhoneCall> callsTable = new CellTable<PhoneCall>();
+    //private DataGrid<PhoneCall> callsTable = new DataGrid<PhoneCall>();
     private List bills = new ArrayList<PhoneBill>();
-    //private PhoneBill bill = new PhoneBill();
 
     //@VisibleForTesting
     Button showPhoneBillButton;
@@ -204,8 +201,6 @@ public class PhoneBillGwt implements EntryPoint
 
     private CellTable<PhoneCall> showGrid()
     {
-        // http://www.gwtproject.org/javadoc/latest/com/google/gwt/user/cellview/client/DataGrid.html
-        // Create a CellTable.
         CellTable<PhoneCall> table = new CellTable<PhoneCall>();
         table.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
 
@@ -231,9 +226,6 @@ public class PhoneBillGwt implements EntryPoint
         };
         table.addColumn(calleeColumn, "Callee");
 
-        // Add a date column to show the birthday.
-        //DateCell dateCell = new DateCell();
-        //"M/d/yyyy h:mm a"
         String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
         DateTimeFormat fmt = DateTimeFormat.getFormat(DATE_TIME_FORMAT);
         DateCell dateCell = new DateCell(fmt);
@@ -247,8 +239,6 @@ public class PhoneBillGwt implements EntryPoint
         };
         table.addColumn(startColumn, "Start Time");
 
-        // Add a date column to show the birthday.
-        //DateCell dateCell = new DateCell();
         Column<PhoneCall, Date> endColumn = new Column<PhoneCall, Date>(dateCell)
         {
             @Override
@@ -273,6 +263,8 @@ public class PhoneBillGwt implements EntryPoint
                 }
             }
         });
+
+        //table.setHeight("350px");
 
         return table;
     }
@@ -484,14 +476,28 @@ public class PhoneBillGwt implements EntryPoint
     private void setupUI()
     {
         RootPanel rootPanel = RootPanel.get();
-        HorizontalPanel hPanel = new HorizontalPanel();
+        HorizontalPanel leftHorizontalPanel = new HorizontalPanel();
+        HorizontalPanel horizontalPanel = new HorizontalPanel();
         VerticalPanel lPanel = new VerticalPanel();
         VerticalPanel rPanel = new VerticalPanel();
+        ScrollPanel scrollPanel = new ScrollPanel();
+        //scrollPanel.setHeight("300px");
+        //scrollPanel.setAlwaysShowScrollBars(true);
+        //scrollPanel.
 
-        //VerticalPanel panel = new VerticalPanel();
-        hPanel.add(lPanel);
-        hPanel.add(rPanel);
-        rootPanel.add(hPanel);
+        lPanel.add(leftHorizontalPanel);
+        rPanel.add(scrollPanel);
+        horizontalPanel.add(lPanel);
+        horizontalPanel.add(rPanel);
+        rootPanel.add(horizontalPanel);
+
+        //////////////////////////////////////
+        TextBox customerTexBox = new TextBox();
+        customerTexBox.setWidth("100px");
+        Button addCustomerButton = new Button();
+        addCustomerButton.setText("Add Bill");
+        leftHorizontalPanel.add(customerTexBox);
+        leftHorizontalPanel.add(addCustomerButton);
 
         //////////////////////////////////////
 
@@ -511,11 +517,8 @@ public class PhoneBillGwt implements EntryPoint
 
         loadTestData();
 
-        // Make enough room for all five items (setting this value to 1 turns it
-        // into a drop-down list).
-        billsListBox.setVisibleItemCount(15);
 
-        // Add it to the root panel.
+        billsListBox.setVisibleItemCount(15);
         lPanel.add(billsListBox);
 
         // Right Panel
@@ -533,7 +536,7 @@ public class PhoneBillGwt implements EntryPoint
         // Push the data into the widget.
         callsTable.setRowData(0, initialCalls);
 
-        rPanel.add(callsTable);
+        scrollPanel.add(callsTable);
     }
 
     private void setUpUncaughtExceptionHandler()
