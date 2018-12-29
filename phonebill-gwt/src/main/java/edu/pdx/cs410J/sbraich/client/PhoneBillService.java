@@ -9,28 +9,33 @@ import java.util.List;
  * A GWT remote service that returns a dummy Phone Bill
  */
 @RemoteServiceRelativePath("phoneBill")
-public interface PhoneBillService extends RemoteService {
+public interface PhoneBillService extends RemoteService
+{
+    /**
+     * Returns the a dummy Phone Bill
+     */
+    public PhoneBill getDummyPhoneBill();
 
-  /**
-   * Load the app with test data
-   */
-  public void loadTestData(List<PhoneBill> testdata);
+    /**
+     * Load the app with test data
+     */
+    public void loadTestData(List<PhoneBill> testdata);
 
-  /**
-   * Returns the a dummy Phone Bill
-   */
-  public PhoneBill getPhoneBill();
+    /**
+     * Returns a phone bill that matches customer name
+     */
+    public PhoneBill getPhoneBill(String customer);
 
-  public List<PhoneBill> getPhoneBills();
+    public List<PhoneBill> getPhoneBills();
 
-  /**
-   * Always throws an undeclared exception so that we can see GWT handles it.
-   */
-  void throwUndeclaredException();
+    /**
+     * Always throws an undeclared exception so that we can see GWT handles it.
+     */
+    void throwUndeclaredException();
 
-  /**
-   * Always throws a declared exception so that we can see GWT handles it.
-   */
-  void throwDeclaredException() throws IllegalStateException;
+    /**
+     * Always throws a declared exception so that we can see GWT handles it.
+     */
+    void throwDeclaredException() throws IllegalStateException;
 
 }

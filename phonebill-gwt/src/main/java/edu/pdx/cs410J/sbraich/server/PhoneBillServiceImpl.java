@@ -15,6 +15,14 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
 {
     private List bills = new ArrayList<PhoneBill>();
 
+    @Override
+    public PhoneBill getDummyPhoneBill()
+    {
+        PhoneBill phonebill = new PhoneBill();
+        phonebill.addPhoneCall(new PhoneCall());
+        return phonebill;
+    }
+
     /**
      * Testdata for initial load of Phonbill app
      * @return
@@ -26,11 +34,18 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
     }
 
     @Override
-    public PhoneBill getPhoneBill()
+    public PhoneBill getPhoneBill(String customer) throws IllegalStateException
     {
-        PhoneBill phonebill = new PhoneBill();
-        phonebill.addPhoneCall(new PhoneCall());
-        return phonebill;
+        for (Object b : bills)
+        {
+            PhoneBill bill = (PhoneBill) b;
+            if (customer.equals(bill.customer))
+            {
+                return bill;
+            }
+        }
+
+        throw new IllegalStateException("Customer Not Found: " + customer);
     }
 
     @Override

@@ -10,26 +10,29 @@ import java.io.IOException;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class PhoneBillServiceSyncProxyIT extends HttpRequestHelper {
+public class PhoneBillServiceSyncProxyIT extends HttpRequestHelper
+{
 
-  private final int httpPort = Integer.getInteger("http.port", 8080);
-  private String webAppUrl = "http://localhost:" + httpPort + "/phonebill";
+    private final int httpPort = Integer.getInteger("http.port", 8080);
+    private String webAppUrl = "http://localhost:" + httpPort + "/phonebill";
 
-  @Test
-  public void gwtWebApplicationIsRunning() throws IOException {
-    Response response = get(this.webAppUrl);
-    assertEquals(200, response.getCode());
-  }
+    @Test
+    public void gwtWebApplicationIsRunning() throws IOException
+    {
+        Response response = get(this.webAppUrl);
+        assertEquals(200, response.getCode());
+    }
 
-  @Test
-  public void canInvokePhoneBillServiceWithGwtSyncProxy() {
-    String moduleName = "phonebill";
-    SyncProxy.setBaseURL(this.webAppUrl + "/" + moduleName + "/");
+    @Test
+    public void canInvokePhoneBillServiceWithGwtSyncProxy()
+    {
+        String moduleName = "phonebill";
+        SyncProxy.setBaseURL(this.webAppUrl + "/" + moduleName + "/");
 
-    PhoneBillService service = SyncProxy.createSync(PhoneBillService.class);
-    PhoneBill bill = service.getPhoneBill();
-    assertEquals("CS410J", bill.getCustomer());
-    assertEquals(1, bill.getPhoneCalls().size());
-  }
+        PhoneBillService service = SyncProxy.createSync(PhoneBillService.class);
+        PhoneBill bill = service.getDummyPhoneBill();
+        assertEquals("CS410J", bill.getCustomer());
+        assertEquals(1, bill.getPhoneCalls().size());
+    }
 
 }

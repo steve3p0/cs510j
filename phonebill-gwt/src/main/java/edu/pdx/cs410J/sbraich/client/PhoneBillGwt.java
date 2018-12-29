@@ -8,6 +8,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
@@ -38,9 +40,10 @@ public class PhoneBillGwt implements EntryPoint
     private final PhoneBillServiceAsync phoneBillService;
     private final Logger logger;
 
-
     private ListBox billsListBox = new ListBox();
+    private CellTable<PhoneCall> callsTable = showGrid();
     private List bills = new ArrayList<PhoneBill>();
+    //private PhoneBill bill = new PhoneBill();
 
     //@VisibleForTesting
     Button showPhoneBillButton;
@@ -109,15 +112,15 @@ public class PhoneBillGwt implements EntryPoint
 
     private void addWidgets(VerticalPanel panel)
     {
-        showPhoneBillButton = new Button("Show Phone Bill");
-        showPhoneBillButton.addClickHandler(new ClickHandler()
-        {
-            @Override
-            public void onClick(ClickEvent clickEvent)
-            {
-                showPhoneBill();
-            }
-        });
+//        showPhoneBillButton = new Button("Show Phone Bill");
+//        showPhoneBillButton.addClickHandler(new ClickHandler()
+//        {
+//            @Override
+//            public void onClick(ClickEvent clickEvent)
+//            {
+//                showPhoneBill();
+//            }
+//        });
 
         showUndeclaredExceptionButton = new Button("Show undeclared exception");
         showUndeclaredExceptionButton.addClickHandler(new ClickHandler()
@@ -195,33 +198,6 @@ public class PhoneBillGwt implements EntryPoint
             public void onSuccess(Void aVoid)
             {
                 alerter.alert("This shouldn't happen");
-            }
-        });
-    }
-
-    private void showPhoneBill()
-    {
-        logger.info("Calling getPhoneBill");
-        phoneBillService.getPhoneBill(new AsyncCallback<PhoneBill>()
-        {
-
-            @Override
-            public void onFailure(Throwable ex)
-            {
-                alertOnException(ex);
-            }
-
-            @Override
-            public void onSuccess(PhoneBill phoneBill)
-            {
-                StringBuilder sb = new StringBuilder(phoneBill.toString());
-                Collection<PhoneCall> calls = phoneBill.getPhoneCalls();
-                for (PhoneCall call : calls)
-                {
-                    sb.append(call);
-                    sb.append("\n");
-                }
-                alerter.alert(sb.toString());
             }
         });
     }
@@ -348,16 +324,16 @@ public class PhoneBillGwt implements EntryPoint
         // First Bill: Luke Skywalker
         PhoneBill bill1 = new PhoneBill("Luke Skywalker");
 
-        PhoneCall bill1_call1 = new PhoneCall("318-467-8383", "503-867-5309", "12/01/2018 3:34 PM", "12/01/2018 3:37 PM" );
-        PhoneCall bill1_call2 = new PhoneCall("318-467-8383", "503-555-1212", "12/02/2018 1:12 PM", "12/02/2018 1:17 PM" );
-        PhoneCall bill1_call3 = new PhoneCall("318-467-8383", "503-730-5753", "12/03/2018 10:46 PM", "12/03/2018 10:55 PM" );
-        PhoneCall bill1_call4 = new PhoneCall("318-467-8383", "503-867-5309", "12/04/2018 11:03 PM", "12/05/2018 11:28 PM" );
-        PhoneCall bill1_call5 = new PhoneCall("318-467-8383", "503-555-1212", "12/05/2018 9:07 AM", "12/05/2018 9:08 AM" );
-        PhoneCall bill1_call6 = new PhoneCall("318-467-8383", "503-730-5753", "12/06/2018 12:33 PM", "12/06/2018 12:37 PM" );
-        PhoneCall bill1_call7 = new PhoneCall("318-467-8383", "503-555-1212", "12/07/2018 6:25 PM", "12/07/2018 6:26 PM" );
-        PhoneCall bill1_call8 = new PhoneCall("318-467-8383", "503-867-5309", "12/09/2018 5:29 PM", "12/09/2018 5:38 PM" );
-        PhoneCall bill1_call9 = new PhoneCall("318-467-8383", "503-730-5753", "12/09/2018 6:05 PM", "12/09/2018 6:17 PM" );
-        PhoneCall bill1_call10 = new PhoneCall("318-467-8383", "503-867-5309", "12/09/2018 6:19 PM", "12/09/2018 6:37 PM" );
+        PhoneCall bill1_call1 = new PhoneCall("318-467-8383", "503-867-5309", "12/01/2018 3:34 PM", "12/01/2018 3:37 PM");
+        PhoneCall bill1_call2 = new PhoneCall("318-467-8383", "503-555-1212", "12/02/2018 1:12 PM", "12/02/2018 1:17 PM");
+        PhoneCall bill1_call3 = new PhoneCall("318-467-8383", "503-730-5753", "12/03/2018 10:46 PM", "12/03/2018 10:55 PM");
+        PhoneCall bill1_call4 = new PhoneCall("318-467-8383", "503-867-5309", "12/04/2018 11:03 PM", "12/05/2018 11:28 PM");
+        PhoneCall bill1_call5 = new PhoneCall("318-467-8383", "503-555-1212", "12/05/2018 9:07 AM", "12/05/2018 9:08 AM");
+        PhoneCall bill1_call6 = new PhoneCall("318-467-8383", "503-730-5753", "12/06/2018 12:33 PM", "12/06/2018 12:37 PM");
+        PhoneCall bill1_call7 = new PhoneCall("318-467-8383", "503-555-1212", "12/07/2018 6:25 PM", "12/07/2018 6:26 PM");
+        PhoneCall bill1_call8 = new PhoneCall("318-467-8383", "503-867-5309", "12/09/2018 5:29 PM", "12/09/2018 5:38 PM");
+        PhoneCall bill1_call9 = new PhoneCall("318-467-8383", "503-730-5753", "12/09/2018 6:05 PM", "12/09/2018 6:17 PM");
+        PhoneCall bill1_call10 = new PhoneCall("318-467-8383", "503-867-5309", "12/09/2018 6:19 PM", "12/09/2018 6:37 PM");
 
         bill1.addPhoneCall(bill1_call1);
         bill1.addPhoneCall(bill1_call2);
@@ -373,11 +349,11 @@ public class PhoneBillGwt implements EntryPoint
         // 2nd Bill: Mara Jade
         PhoneBill bill2 = new PhoneBill("Mara Jade");
 
-        PhoneCall bill2_call1 = new PhoneCall("503-867-5309", "318-467-8383", "12/01/2018 1:11 AM", "12/01/2018 1:21 AM" );
-        PhoneCall bill2_call2 = new PhoneCall("503-867-5309", "503-730-5753", "12/03/2018 3:33 AM", "12/03/2018 3:38 AM" );
-        PhoneCall bill2_call3 = new PhoneCall("503-867-5309", "503-555-1212", "12/05/2018 5:05 AM", "12/05/2018 5:13 AM" );
-        PhoneCall bill2_call4 = new PhoneCall("503-867-5309", "503-555-1212", "12/07/2018 7:25 AM", "12/07/2018 7:26 AM" );
-        PhoneCall bill2_call5 = new PhoneCall("503-867-5309", "503-730-5753", "12/09/2018 9:09 AM", "12/09/2018 9:17 PM" );
+        PhoneCall bill2_call1 = new PhoneCall("503-867-5309", "318-467-8383", "12/01/2018 1:11 AM", "12/01/2018 1:21 AM");
+        PhoneCall bill2_call2 = new PhoneCall("503-867-5309", "503-730-5753", "12/03/2018 3:33 AM", "12/03/2018 3:38 AM");
+        PhoneCall bill2_call3 = new PhoneCall("503-867-5309", "503-555-1212", "12/05/2018 5:05 AM", "12/05/2018 5:13 AM");
+        PhoneCall bill2_call4 = new PhoneCall("503-867-5309", "503-555-1212", "12/07/2018 7:25 AM", "12/07/2018 7:26 AM");
+        PhoneCall bill2_call5 = new PhoneCall("503-867-5309", "503-730-5753", "12/09/2018 9:09 AM", "12/09/2018 9:17 PM");
 
         bill2.addPhoneCall(bill2_call1);
         bill2.addPhoneCall(bill2_call2);
@@ -388,13 +364,13 @@ public class PhoneBillGwt implements EntryPoint
         // 3rd Bill: Lando
         PhoneBill bill3 = new PhoneBill("Lando Calrissian");
 
-        PhoneCall bill3_call1 = new PhoneCall("408-555-1234", "503-867-5309", "11/28/2018 6:19 PM", "12/09/2018 6:37 PM" );
-        PhoneCall bill3_call2 = new PhoneCall("408-555-1234", "503-555-1212", "12/02/2018 2:22 AM", "12/02/2018 2:27 AM" );
-        PhoneCall bill3_call3 = new PhoneCall("408-555-1234", "503-867-5309", "12/04/2018 4:44 PM", "12/05/2018 4:54 PM" );
-        PhoneCall bill3_call4 = new PhoneCall("408-555-1234", "503-867-5309", "12/19/2018 5:29 AM", "12/09/2018 5:38 AM" );
-        PhoneCall bill3_call5 = new PhoneCall("408-555-1234", "503-730-5753", "12/21/2018 6:05 PM", "12/09/2018 6:17 PM" );
-        PhoneCall bill3_call6 = new PhoneCall("408-555-1234", "503-730-5753", "12/22/2018 12:33 AM", "12/06/2018 12:37 AM" );
-        PhoneCall bill3_call7 = new PhoneCall("408-555-1234", "503-555-1212", "12/24/2018 6:25 PM", "12/07/2018 6:26 PM" );
+        PhoneCall bill3_call1 = new PhoneCall("408-555-1234", "503-867-5309", "11/28/2018 6:19 PM", "12/09/2018 6:37 PM");
+        PhoneCall bill3_call2 = new PhoneCall("408-555-1234", "503-555-1212", "12/02/2018 2:22 AM", "12/02/2018 2:27 AM");
+        PhoneCall bill3_call3 = new PhoneCall("408-555-1234", "503-867-5309", "12/04/2018 4:44 PM", "12/05/2018 4:54 PM");
+        PhoneCall bill3_call4 = new PhoneCall("408-555-1234", "503-867-5309", "12/19/2018 5:29 AM", "12/09/2018 5:38 AM");
+        PhoneCall bill3_call5 = new PhoneCall("408-555-1234", "503-730-5753", "12/21/2018 6:05 PM", "12/09/2018 6:17 PM");
+        PhoneCall bill3_call6 = new PhoneCall("408-555-1234", "503-730-5753", "12/22/2018 12:33 AM", "12/06/2018 12:37 AM");
+        PhoneCall bill3_call7 = new PhoneCall("408-555-1234", "503-555-1212", "12/24/2018 6:25 PM", "12/07/2018 6:26 PM");
 
         bill3.addPhoneCall(bill3_call1);
         bill3.addPhoneCall(bill3_call2);
@@ -407,12 +383,12 @@ public class PhoneBillGwt implements EntryPoint
         // 4th Bill: Han Solo
         PhoneBill bill4 = new PhoneBill("Han Solo");
 
-        PhoneCall bill4_call1 = new PhoneCall("999-999-9999", "503-555-1212", "12/05/2018 5:55 AM", "12/05/2018 5:59 AM" );
-        PhoneCall bill4_call2 = new PhoneCall("999-999-9999", "503-555-1212", "12/07/2018 7:27 PM", "12/07/2018 7:36 PM" );
-        PhoneCall bill4_call3 = new PhoneCall("999-999-9999", "503-867-5309", "12/09/2018 9:29 PM", "12/09/2018 9:38 PM" );
-        PhoneCall bill4_call4 = new PhoneCall("999-999-9999", "503-730-5753", "12/11/2018 11:11 PM", "12/11/2018 11:22 PM" );
-        PhoneCall bill4_call5 = new PhoneCall("999-999-9999", "503-867-5309", "12/13/2018 1:13 PM", "12/13/2018 1:27 PM" );
-        PhoneCall bill4_call6 = new PhoneCall("999-999-9999", "503-867-5309", "12/15/2018 3:15 PM", "12/15/2018 3:17 PM" );
+        PhoneCall bill4_call1 = new PhoneCall("999-999-9999", "503-555-1212", "12/05/2018 5:55 AM", "12/05/2018 5:59 AM");
+        PhoneCall bill4_call2 = new PhoneCall("999-999-9999", "503-555-1212", "12/07/2018 7:27 PM", "12/07/2018 7:36 PM");
+        PhoneCall bill4_call3 = new PhoneCall("999-999-9999", "503-867-5309", "12/09/2018 9:29 PM", "12/09/2018 9:38 PM");
+        PhoneCall bill4_call4 = new PhoneCall("999-999-9999", "503-730-5753", "12/11/2018 11:11 PM", "12/11/2018 11:22 PM");
+        PhoneCall bill4_call5 = new PhoneCall("999-999-9999", "503-867-5309", "12/13/2018 1:13 PM", "12/13/2018 1:27 PM");
+        PhoneCall bill4_call6 = new PhoneCall("999-999-9999", "503-867-5309", "12/15/2018 3:15 PM", "12/15/2018 3:17 PM");
 
         bill4.addPhoneCall(bill4_call1);
         bill4.addPhoneCall(bill4_call2);
@@ -424,16 +400,16 @@ public class PhoneBillGwt implements EntryPoint
         // 5th Bill: Princess Leia
         PhoneBill bill5 = new PhoneBill("Princess Leia");
 
-        PhoneCall bill5_call1 = new PhoneCall("503-555-2187", "503-867-5309", "12/01/2018 3:34 PM", "12/01/2018 3:37 PM" );
-        PhoneCall bill5_call2 = new PhoneCall("503-555-2187", "503-555-1212", "12/02/2018 1:12 PM", "12/02/2018 1:17 PM" );
-        PhoneCall bill5_call3 = new PhoneCall("503-555-2187", "503-730-5753", "12/03/2018 10:46 PM", "12/03/2018 10:55 PM" );
-        PhoneCall bill5_call4 = new PhoneCall("503-555-2187", "503-867-5309", "12/04/2018 11:03 PM", "12/05/2018 11:28 PM" );
-        PhoneCall bill5_call5 = new PhoneCall("503-555-2187", "503-555-1212", "12/05/2018 9:07 AM", "12/05/2018 9:08 AM" );
-        PhoneCall bill5_call6 = new PhoneCall("503-555-2187", "503-730-5753", "12/06/2018 12:33 PM", "12/06/2018 12:37 PM" );
-        PhoneCall bill5_call7 = new PhoneCall("503-555-2187", "503-555-1212", "12/07/2018 6:25 PM", "12/07/2018 6:26 PM" );
-        PhoneCall bill5_call8 = new PhoneCall("503-555-2187", "503-867-5309", "12/09/2018 5:29 PM", "12/09/2018 5:38 PM" );
-        PhoneCall bill5_call9 = new PhoneCall("503-555-2187", "503-730-5753", "12/09/2018 6:05 PM", "12/09/2018 6:17 PM" );
-        PhoneCall bill5_call10 = new PhoneCall("503-555-2187", "503-867-5309", "12/09/2018 6:19 PM", "12/09/2018 6:37 PM" );
+        PhoneCall bill5_call1 = new PhoneCall("503-555-2187", "503-867-5309", "12/01/2018 3:34 PM", "12/01/2018 3:37 PM");
+        PhoneCall bill5_call2 = new PhoneCall("503-555-2187", "503-555-1212", "12/02/2018 1:12 PM", "12/02/2018 1:17 PM");
+        PhoneCall bill5_call3 = new PhoneCall("503-555-2187", "503-730-5753", "12/03/2018 10:46 PM", "12/03/2018 10:55 PM");
+        PhoneCall bill5_call4 = new PhoneCall("503-555-2187", "503-867-5309", "12/04/2018 11:03 PM", "12/05/2018 11:28 PM");
+        PhoneCall bill5_call5 = new PhoneCall("503-555-2187", "503-555-1212", "12/05/2018 9:07 AM", "12/05/2018 9:08 AM");
+        PhoneCall bill5_call6 = new PhoneCall("503-555-2187", "503-730-5753", "12/06/2018 12:33 PM", "12/06/2018 12:37 PM");
+        PhoneCall bill5_call7 = new PhoneCall("503-555-2187", "503-555-1212", "12/07/2018 6:25 PM", "12/07/2018 6:26 PM");
+        PhoneCall bill5_call8 = new PhoneCall("503-555-2187", "503-867-5309", "12/09/2018 5:29 PM", "12/09/2018 5:38 PM");
+        PhoneCall bill5_call9 = new PhoneCall("503-555-2187", "503-730-5753", "12/09/2018 6:05 PM", "12/09/2018 6:17 PM");
+        PhoneCall bill5_call10 = new PhoneCall("503-555-2187", "503-867-5309", "12/09/2018 6:19 PM", "12/09/2018 6:37 PM");
 
         bill5.addPhoneCall(bill5_call1);
         bill5.addPhoneCall(bill5_call2);
@@ -470,10 +446,39 @@ public class PhoneBillGwt implements EntryPoint
             @Override
             public void onSuccess(Void v)
             {
-                // don't do shit
                 loadBillsListBox();
             }
         });
+    }
+
+    private void customerListbox_onchange(String customer)
+    {
+        phoneBillService.getPhoneBill(customer, new AsyncCallback<PhoneBill>()
+        {
+            @Override
+            public void onFailure(Throwable throwable)
+            {
+                String msg = throwable.toString();
+                alerter.alert("phoneBillService.getPhoneBill FAILED: " + msg);
+            }
+
+            @Override
+            public void onSuccess(PhoneBill selectedBill)
+            {
+                //alerter.alert("selectedBill.customer: (" + selectedBill.customer + ")");
+
+                // Set the total row count. This isn't strictly necessary, but it affects
+                // paging calculations, so its good habit to keep the row count up to date.
+                callsTable.setRowCount(selectedBill.getPhoneCalls().size(), true);
+
+                List<PhoneCall> calls = new ArrayList<>(selectedBill.calls);
+
+                // Push the data into the widget.
+                callsTable.setRowData(0, calls);
+            }
+        });
+
+        //return bill;
     }
 
     private void setupUI()
@@ -489,8 +494,22 @@ public class PhoneBillGwt implements EntryPoint
         rootPanel.add(hPanel);
 
         //////////////////////////////////////
+
+        // Add ChangeHandler to dropDownList
+        billsListBox.addChangeHandler(new ChangeHandler()
+        {
+            @Override
+            public void onChange(ChangeEvent event)
+            {
+                String customer = billsListBox.getSelectedItemText();
+
+                //alerter.alert("billsListBox.getSelectedItemText(): (" + customer + ")");
+                // Show the initial Bill in the PhoneCalls grid
+                customerListbox_onchange(customer);
+            }
+        });
+
         loadTestData();
-        //loadBillsListBox();
 
         // Make enough room for all five items (setting this value to 1 turns it
         // into a drop-down list).
@@ -500,25 +519,24 @@ public class PhoneBillGwt implements EntryPoint
         lPanel.add(billsListBox);
 
         // Right Panel
-        CellTable<PhoneCall> table = showGrid();
-
+        callsTable = showGrid();
 
         // Show the initial Bill in the PhoneCalls grid
         PhoneBill initialBill = (PhoneBill) this.bills.get(0);
 
         // Set the total row count. This isn't strictly necessary, but it affects
         // paging calculations, so its good habit to keep the row count up to date.
-        table.setRowCount(initialBill.getPhoneCalls().size(), true);
+        callsTable.setRowCount(initialBill.getPhoneCalls().size(), true);
 
         List<PhoneCall> initialCalls = new ArrayList<>(initialBill.calls);
 
         // Push the data into the widget.
-        table.setRowData(0, initialCalls);
+        callsTable.setRowData(0, initialCalls);
 
-        rPanel.add(table);
+        rPanel.add(callsTable);
     }
 
-    private void setUpUncaughtExceptionHandler ()
+    private void setUpUncaughtExceptionHandler()
     {
         GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler()
         {
