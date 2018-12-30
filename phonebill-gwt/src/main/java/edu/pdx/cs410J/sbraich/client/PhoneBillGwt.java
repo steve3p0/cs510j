@@ -524,12 +524,14 @@ public class PhoneBillGwt implements EntryPoint
         leftVerticalPanel.add(leftFlowPanel);
 
         // Right Panels
-        FlowPanel rightFlowPanel = new FlowPanel();
+        FlowPanel rightFlowPanel1 = new FlowPanel();
+        FlowPanel rightFlowPanel2 = new FlowPanel();
         VerticalPanel rightVerticalPanel = new VerticalPanel();
         ScrollPanel scrollPanel = new ScrollPanel();
         //scrollPanel.setHeight("300px");
         //scrollPanel.setAlwaysShowScrollBars(true);
-        rightVerticalPanel.add(rightFlowPanel);
+        rightVerticalPanel.add(rightFlowPanel1);
+        rightVerticalPanel.add(rightFlowPanel2);
         rightVerticalPanel.add(scrollPanel);
 
         // Root Panel
@@ -584,9 +586,9 @@ public class PhoneBillGwt implements EntryPoint
 
         // Right Panel
         TextBox callerTexBox = new TextBox();
-        callerTexBox.setWidth("125px");
+        callerTexBox.setWidth("100px");
         TextBox calleeTexBox = new TextBox();
-        calleeTexBox.setWidth("125px");
+        calleeTexBox.setWidth("100px");
 
         TextBox startTimeTexBox = new TextBox();
         startTimeTexBox.setWidth("125px");
@@ -613,11 +615,31 @@ public class PhoneBillGwt implements EntryPoint
             }
         });
 
-        rightFlowPanel.add(callerTexBox);
-        rightFlowPanel.add(calleeTexBox);
-        rightFlowPanel.add(startTimeTexBox);
-        rightFlowPanel.add(endTimeTexBox);
-        rightFlowPanel.add(addPhoneCallButton);
+        rightFlowPanel1.add(callerTexBox);
+        rightFlowPanel1.add(calleeTexBox);
+        rightFlowPanel1.add(startTimeTexBox);
+        rightFlowPanel1.add(endTimeTexBox);
+        rightFlowPanel1.add(addPhoneCallButton);
+
+        // Search Fields
+        TextBox searchCallerTexBox = new TextBox();
+        searchCallerTexBox.setWidth("100px");
+        TextBox searchCalleeTexBox = new TextBox();
+        searchCalleeTexBox.setWidth("100px");
+
+        TextBox searchStartTimeTexBox = new TextBox();
+        searchStartTimeTexBox.setWidth("125px");
+        TextBox searchEndTimeTexBox = new TextBox();
+        searchEndTimeTexBox.setWidth("125px");
+
+        Button searchButton = new Button();
+        searchButton.setText("Search");
+
+        rightFlowPanel2.add(searchCallerTexBox);
+        rightFlowPanel2.add(searchCalleeTexBox);
+        rightFlowPanel2.add(searchStartTimeTexBox);
+        rightFlowPanel2.add(searchEndTimeTexBox);
+        rightFlowPanel2.add(searchButton);
 
         callsTable = showGrid();
 
