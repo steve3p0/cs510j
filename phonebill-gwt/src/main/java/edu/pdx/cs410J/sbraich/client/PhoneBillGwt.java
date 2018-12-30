@@ -464,6 +464,25 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    private void addPhoneCall_onclick(String customer, PhoneCall call)
+    {
+        phoneBillService.addPhoneCall(customer, call, new AsyncCallback<Void>()
+        {
+            @Override
+            public void onFailure(Throwable throwable)
+            {
+                String msg = throwable.toString();
+                alerter.alert("phoneBillService.addPhoneCall FAILED: " + msg);
+            }
+
+            @Override
+            public void onSuccess(Void v)
+            {
+                customerListbox_onchange(customer);
+            }
+        });
+    }
+
     private void customerListbox_onchange(String customer)
     {
         phoneBillService.getPhoneBill(customer, new AsyncCallback<PhoneBill>()
@@ -540,7 +559,6 @@ public class PhoneBillGwt implements EntryPoint
             }
         });
 
-
         //////////////////////////////////////
 
         // Add ChangeHandler to dropDownList
@@ -576,7 +594,24 @@ public class PhoneBillGwt implements EntryPoint
         endTimeTexBox.setWidth("125px");
 
         Button addPhoneCallButton = new Button();
-        addPhoneCallButton.setText("Add Bill");
+        addPhoneCallButton.setText("Add Call");
+
+        addPhoneCallButton.addClickHandler(new ClickHandler()
+        {
+            @Override
+            public void onClick(ClickEvent clickEvent)
+            {
+                String customer = billsListBox.getSelectedItemText();
+                String caller = callerTexBox.getText();
+                String callee = calleeTexBox.getText();
+                String start = startTimeTexBox.getText();
+                String end = endTimeTexBox.getText();
+
+                PhoneCall call = new PhoneCall(caller, callee, start, end);
+
+                addPhoneCall_onclick(customer, call);
+            }
+        });
 
         rightFlowPanel.add(callerTexBox);
         rightFlowPanel.add(calleeTexBox);

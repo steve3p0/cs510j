@@ -63,6 +63,13 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
     }
 
     @Override
+    public void addPhoneCall(String customer, PhoneCall call)
+    {
+        PhoneBill bill = getPhoneBill(customer);
+        bill.addPhoneCall(call);
+    }
+
+    @Override
     public void throwUndeclaredException()
     {
         throw new IllegalStateException("Expected undeclared exception");
