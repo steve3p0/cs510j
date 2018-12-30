@@ -28,6 +28,7 @@ public interface PhoneBillService extends RemoteService
 
     public List<PhoneBill> getPhoneBills();
 
+    public void addPhoneBill(String customer);
     /**
      * Always throws an undeclared exception so that we can see GWT handles it.
      */

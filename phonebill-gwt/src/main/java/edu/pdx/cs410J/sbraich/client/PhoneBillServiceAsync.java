@@ -23,6 +23,8 @@ public interface PhoneBillServiceAsync
      */
     void getPhoneBill(String customer, AsyncCallback<PhoneBill> async);
 
+    void addPhoneBill(String customer, AsyncCallback<Void> async);
+
     /**
      * Always throws an exception so that we can see how to handle uncaught
      * exceptions in GWT.

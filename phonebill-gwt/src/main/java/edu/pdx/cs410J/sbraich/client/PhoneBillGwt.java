@@ -6,12 +6,14 @@ import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.BRElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
@@ -443,6 +445,25 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    private void addCustomer_onclick(String customer)
+    {
+        phoneBillService.addPhoneBill(customer, new AsyncCallback<Void>()
+        {
+            @Override
+            public void onFailure(Throwable throwable)
+            {
+                String msg = throwable.toString();
+                alerter.alert("phoneBillService.addPhoneBill FAILED: " + msg);
+            }
+
+            @Override
+            public void onSuccess(Void v)
+            {
+                loadBillsListBox();
+            }
+        });
+    }
+
     private void customerListbox_onchange(String customer)
     {
         phoneBillService.getPhoneBill(customer, new AsyncCallback<PhoneBill>()
@@ -476,28 +497,49 @@ public class PhoneBillGwt implements EntryPoint
     private void setupUI()
     {
         RootPanel rootPanel = RootPanel.get();
-        HorizontalPanel leftHorizontalPanel = new HorizontalPanel();
         HorizontalPanel horizontalPanel = new HorizontalPanel();
-        VerticalPanel lPanel = new VerticalPanel();
-        VerticalPanel rPanel = new VerticalPanel();
+
+        // Left Panels
+        FlowPanel leftFlowPanel = new FlowPanel();
+        VerticalPanel leftVerticalPanel = new VerticalPanel();
+        leftVerticalPanel.add(leftFlowPanel);
+
+        // Right Panels
+        FlowPanel rightFlowPanel = new FlowPanel();
+        VerticalPanel rightVerticalPanel = new VerticalPanel();
         ScrollPanel scrollPanel = new ScrollPanel();
         //scrollPanel.setHeight("300px");
         //scrollPanel.setAlwaysShowScrollBars(true);
-        //scrollPanel.
+        rightVerticalPanel.add(rightFlowPanel);
+        rightVerticalPanel.add(scrollPanel);
 
-        lPanel.add(leftHorizontalPanel);
-        rPanel.add(scrollPanel);
-        horizontalPanel.add(lPanel);
-        horizontalPanel.add(rPanel);
+        // Root Panel
+        horizontalPanel.add(leftVerticalPanel);
+        horizontalPanel.add(rightVerticalPanel);
         rootPanel.add(horizontalPanel);
 
         //////////////////////////////////////
         TextBox customerTexBox = new TextBox();
-        customerTexBox.setWidth("100px");
+        customerTexBox.setWidth("125px");
         Button addCustomerButton = new Button();
         addCustomerButton.setText("Add Bill");
-        leftHorizontalPanel.add(customerTexBox);
-        leftHorizontalPanel.add(addCustomerButton);
+        leftFlowPanel.add(customerTexBox);
+        leftFlowPanel.add(new InlineHTML(" "));
+        leftFlowPanel.add(addCustomerButton);
+        leftFlowPanel.add(new InlineHTML(" "));
+        leftFlowPanel.add(new InlineHTML("<br>"));
+
+        addCustomerButton.addClickHandler(new ClickHandler()
+        {
+            @Override
+            public void onClick(ClickEvent clickEvent)
+            {
+                String customer = customerTexBox.getText();
+
+                addCustomer_onclick(customer);
+            }
+        });
+
 
         //////////////////////////////////////
 
@@ -517,11 +559,31 @@ public class PhoneBillGwt implements EntryPoint
 
         loadTestData();
 
-
         billsListBox.setVisibleItemCount(15);
-        lPanel.add(billsListBox);
+        billsListBox.setWidth("200px");
+        leftVerticalPanel.getElement().appendChild(DOM.createElement(BRElement.TAG));
+        leftVerticalPanel.add(billsListBox);
 
         // Right Panel
+        TextBox callerTexBox = new TextBox();
+        callerTexBox.setWidth("125px");
+        TextBox calleeTexBox = new TextBox();
+        calleeTexBox.setWidth("125px");
+
+        TextBox startTimeTexBox = new TextBox();
+        startTimeTexBox.setWidth("125px");
+        TextBox endTimeTexBox = new TextBox();
+        endTimeTexBox.setWidth("125px");
+
+        Button addPhoneCallButton = new Button();
+        addPhoneCallButton.setText("Add Bill");
+
+        rightFlowPanel.add(callerTexBox);
+        rightFlowPanel.add(calleeTexBox);
+        rightFlowPanel.add(startTimeTexBox);
+        rightFlowPanel.add(endTimeTexBox);
+        rightFlowPanel.add(addPhoneCallButton);
+
         callsTable = showGrid();
 
         // Show the initial Bill in the PhoneCalls grid
