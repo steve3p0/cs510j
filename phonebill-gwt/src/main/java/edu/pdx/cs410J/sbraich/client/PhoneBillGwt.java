@@ -30,6 +30,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import org.gwtbootstrap3.client.ui.*;
+import org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker;
 import org.gwtbootstrap3.extras.datetimepicker.client.ui.DateTimePicker;
 
 import java.text.ParseException;
@@ -272,8 +273,6 @@ public class PhoneBillGwt implements EntryPoint
                     PhoneBill bill = (PhoneBill) b;
                     billsListBox.addItem(bill.customer);
                 }
-
-                billsListBox.setSelectedIndex(0);
             }
         });
     }
@@ -580,22 +579,20 @@ public class PhoneBillGwt implements EntryPoint
         leftVerticalPanel.getElement().appendChild(DOM.createElement(BRElement.TAG));
         leftVerticalPanel.add(billsListBox);
 
+        billsListBox.setSelectedIndex(0);
+
         // Right Panel
         TextBox callerTexBox = new TextBox();
         callerTexBox.setWidth("100px");
         TextBox calleeTexBox = new TextBox();
         calleeTexBox.setWidth("100px");
 
-        //////////////////////////////////////////////////////////////////
         // Date and Times
-//        TextBox startTimeTexBox = new TextBox();
-//        startTimeTexBox.setWidth("125px");
-//        TextBox endTimeTexBox = new TextBox();
-//        endTimeTexBox.setWidth("125px");
-
         DateTimePicker startTimePicker = new DateTimePicker();
+        startTimePicker.setFormat("mm/dd/yyyy HH:ii P");
         startTimePicker.setWidth("150px");
         DateTimePicker endTimePicker = new DateTimePicker();
+        endTimePicker.setFormat("mm/dd/yyyy HH:ii P");
         endTimePicker.setWidth("150px");
 
         ///////////////////////////////////////
@@ -622,9 +619,6 @@ public class PhoneBillGwt implements EntryPoint
 
         rightFlowPanel1.add(callerTexBox);
         rightFlowPanel1.add(calleeTexBox);
-        //rightFlowPanel1.add(startTimeTexBox);
-        //rightFlowPanel1.add(endTimeTexBox);
-
         rightFlowPanel1.add(startTimePicker);
         rightFlowPanel1.add(endTimePicker);
 
@@ -636,18 +630,26 @@ public class PhoneBillGwt implements EntryPoint
         TextBox searchCalleeTexBox = new TextBox();
         searchCalleeTexBox.setWidth("100px");
 
-        TextBox searchStartTimeTexBox = new TextBox();
-        searchStartTimeTexBox.setWidth("125px");
-        TextBox searchEndTimeTexBox = new TextBox();
-        searchEndTimeTexBox.setWidth("125px");
+//        TextBox searchStartTimeTexBox = new TextBox();
+//        searchStartTimeTexBox.setWidth("125px");
+//        TextBox searchEndTimeTexBox = new TextBox();
+//        searchEndTimeTexBox.setWidth("125px");
+
+        // Search Date and Times
+        DatePicker searchStartDatePicker = new DatePicker();
+        searchStartDatePicker.setFormat("m/d/yyyy");
+        searchStartDatePicker.setWidth("150px");
+        DatePicker searchEndDatePicker = new DatePicker();
+        searchEndDatePicker.setFormat("m/d/yyyy");
+        searchEndDatePicker.setWidth("150px");
 
         Button searchButton = new Button();
         searchButton.setText("Search");
 
         rightFlowPanel2.add(searchCallerTexBox);
         rightFlowPanel2.add(searchCalleeTexBox);
-        rightFlowPanel2.add(searchStartTimeTexBox);
-        rightFlowPanel2.add(searchEndTimeTexBox);
+        rightFlowPanel2.add(searchStartDatePicker);
+        rightFlowPanel2.add(searchEndDatePicker);
         rightFlowPanel2.add(searchButton);
 
         searchButton.addClickHandler(new ClickHandler()
@@ -658,46 +660,15 @@ public class PhoneBillGwt implements EntryPoint
                 String customer = billsListBox.getSelectedItemText();
                 String caller = searchCallerTexBox.getText();
                 String callee = searchCalleeTexBox.getText();
-                String startS = searchStartTimeTexBox.getText();
-                String endS = searchEndTimeTexBox.getText();
+                Date start = searchStartDatePicker.getValue();
+                Date end = searchEndDatePicker.getValue();
 
-                startS.replaceAll("\\s","");
-                endS.replaceAll("\\s","");
-
-                if (startS == "")
-                {
-                    startS = null;
-                }
-
-                if (endS == "")
-                {
-                    endS = null;
-                }
-
-                if ((startS == null && endS != null) ||
-                    (startS != null && endS == null))
+                if ((start == null && end != null) ||
+                    (start != null && end == null))
                 {
                     throw new PhoneBillException("Search by date requires both start and end dates.");
                 }
 
-                PhoneBill bill = new PhoneBill();
-
-                Date start = null;
-                Date end = null;
-
-                if (startS != null && endS != null)
-                {
-                    try
-                    {
-                        start = bill.parseDate(startS);
-                        end = bill.parseDate(endS);
-                    }
-                    catch (ParseException e)
-                    {
-                        String msg = e.toString();
-                        alerter.alert("Dates are invalid: " + msg);
-                    }
-                }
                 searchButton_onclick(customer, caller, callee, start, end);
             }
         });
