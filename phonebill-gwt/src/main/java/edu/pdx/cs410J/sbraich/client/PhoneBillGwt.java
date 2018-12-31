@@ -1,7 +1,7 @@
 package edu.pdx.cs410J.sbraich.client;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Iterables;
+//import com.google.common.collect.Iterables;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -25,9 +25,13 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.*;
+
+//import static com.google.gwt.thirdparty.guava.common.base.Strings.isNullOrEmpty;
+//import static com.google.common.base.Strings.isNullOrEmpty;
 
 
 /**
@@ -483,6 +487,34 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    private void searchButton_onclick(String customer, String caller, String callee, Date start, Date end)
+    {
+        loadTestPhoneBills();
+
+        phoneBillService.filterPhoneCalls(customer, caller, callee, start, end, new AsyncCallback<List<PhoneCall>>()
+        {
+            @Override
+            public void onFailure(Throwable throwable)
+            {
+                String msg = throwable.toString();
+                alerter.alert("phoneBillService.filterPhoneCalls FAILED: " + msg);
+            }
+
+            @Override
+            public void onSuccess(List<PhoneCall> list)
+            {
+                //alerter.alert("selectedBill.customer: (" + selectedBill.customer + ")");
+
+                // Set the total row count. This isn't strictly necessary, but it affects
+                // paging calculations, so its good habit to keep the row count up to date.
+                callsTable.setRowCount(list.size(), true);
+
+                // Push the data into the widget.
+                callsTable.setRowData(0, list);
+            }
+        });
+    }
+
     private void customerListbox_onchange(String customer)
     {
         phoneBillService.getPhoneBill(customer, new AsyncCallback<PhoneBill>()
@@ -640,6 +672,58 @@ public class PhoneBillGwt implements EntryPoint
         rightFlowPanel2.add(searchStartTimeTexBox);
         rightFlowPanel2.add(searchEndTimeTexBox);
         rightFlowPanel2.add(searchButton);
+
+        searchButton.addClickHandler(new ClickHandler()
+        {
+            @Override
+            public void onClick(ClickEvent clickEvent)
+            {
+                String customer = billsListBox.getSelectedItemText();
+                String caller = searchCallerTexBox.getText();
+                String callee = searchCalleeTexBox.getText();
+                String startS = searchStartTimeTexBox.getText();
+                String endS = searchEndTimeTexBox.getText();
+
+                startS.replaceAll("\\s","");
+                endS.replaceAll("\\s","");
+
+                if (startS == "")
+                {
+                    startS = null;
+                }
+
+                if (endS == "")
+                {
+                    endS = null;
+                }
+
+                if ((startS == null && endS != null) ||
+                    (startS != null && endS == null))
+                {
+                    throw new PhoneBillException("Search by date requires both start and end dates.");
+                }
+
+                PhoneBill bill = new PhoneBill();
+
+                Date start = null;
+                Date end = null;
+
+                if (startS != null && endS != null)
+                {
+                    try
+                    {
+                        start = bill.parseDate(startS);
+                        end = bill.parseDate(endS);
+                    }
+                    catch (ParseException e)
+                    {
+                        String msg = e.toString();
+                        alerter.alert("Dates are invalid: " + msg);
+                    }
+                }
+                searchButton_onclick(customer, caller, callee, start, end);
+            }
+        });
 
         callsTable = showGrid();
 

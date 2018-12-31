@@ -6,7 +6,10 @@ import edu.pdx.cs410J.sbraich.client.PhoneCall;
 import edu.pdx.cs410J.sbraich.client.PhoneBillService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * The server-side implementation of the Phone Bill service
@@ -46,6 +49,82 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
         }
 
         throw new IllegalStateException("Customer Not Found: " + customer);
+    }
+
+    @Override
+    public List<PhoneCall> filterPhoneCalls(String customer, String caller, String callee, Date start, Date end)
+    {
+        PhoneBill bill = getPhoneBill(customer);
+        List<PhoneCall> filteredCalls = new ArrayList(bill.calls);
+
+        if (!isNullOrEmpty(caller))
+        {
+            filteredCalls = filterPhoneCalls_ByCaller(filteredCalls, caller);
+        }
+
+        if (!isNullOrEmpty(callee))
+        {
+            filteredCalls = filterPhoneCalls_ByCallee(filteredCalls, callee);
+        }
+
+        if ((start == null && end != null) || (start != null && end == null))
+        {
+            throw new IllegalStateException("Search by date requires both start and end dates.");
+        }
+        else if (start != null && end != null)
+        {
+            filteredCalls = filterPhoneCalls_ByDate(filteredCalls, start, end);
+        }
+
+        return filteredCalls;
+    }
+
+    private List<PhoneCall> filterPhoneCalls_ByCaller(List<PhoneCall> calls, String caller)
+    {
+        List<PhoneCall> filteredCalls = new ArrayList<PhoneCall>();
+
+        for (PhoneCall call : calls)
+        {
+            if (caller.equals(call.callerNumber))
+            {
+                filteredCalls.add(call);
+            }
+        }
+
+        return filteredCalls;
+    }
+
+    private List<PhoneCall> filterPhoneCalls_ByCallee(List<PhoneCall> calls, String callee)
+    {
+        List<PhoneCall> filteredCalls = new ArrayList<PhoneCall>();
+
+        for (PhoneCall call : calls)
+        {
+            if (callee.equals(call.calleeNumber))
+            {
+                filteredCalls.add(call);
+            }
+        }
+
+        return filteredCalls;
+    }
+
+    private List<PhoneCall>filterPhoneCalls_ByDate(List<PhoneCall> calls, Date start, Date end)
+    {
+        List<PhoneCall> filteredCalls = new ArrayList<PhoneCall>();
+
+        for (PhoneCall call : calls)
+        {
+            // NOTE: Criteria for search:
+            // if start date falls within search start and end,
+            // it will be returned, regardless of end date
+            if (call.getStartTime().after(start) && call.getStartTime().before(end))
+            {
+                filteredCalls.add(call);
+            }
+        }
+
+        return filteredCalls;
     }
 
     @Override

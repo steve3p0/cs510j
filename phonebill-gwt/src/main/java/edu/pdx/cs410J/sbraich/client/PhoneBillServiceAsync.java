@@ -2,6 +2,7 @@ package edu.pdx.cs410J.sbraich.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,6 +27,8 @@ public interface PhoneBillServiceAsync
     void addPhoneBill(String customer, AsyncCallback<Void> async);
 
     void addPhoneCall(String customer, PhoneCall call, AsyncCallback<Void> async);
+
+    void filterPhoneCalls(String customer, String caller, String callee, Date start, Date end, AsyncCallback<List<PhoneCall>> async);
 
     /**
      * Always throws an exception so that we can see how to handle uncaught

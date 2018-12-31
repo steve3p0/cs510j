@@ -3,6 +3,8 @@ package edu.pdx.cs410J.sbraich.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +33,8 @@ public interface PhoneBillService extends RemoteService
     public void addPhoneBill(String customer);
 
     public void addPhoneCall(String customer, PhoneCall call);
+
+    public List<PhoneCall> filterPhoneCalls(String customer, String caller, String callee, Date start, Date end);
 
     /**
      * Always throws an undeclared exception so that we can see GWT handles it.

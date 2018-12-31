@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 /**
  * The class that manages a phone bill
  */
@@ -56,43 +58,6 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
     public Collection<PhoneCall> getPhoneCalls()
     {
         return this.calls;
-    }
-
-    /**
-     * Gets all phonecalls between startTime and endTime
-     * @param startTime
-     * @param endTime
-     * @return
-     */
-    public Collection<PhoneCall> getPhoneCallsByDate(String startTime, String endTime)
-    {
-        try
-        {
-            Date start = parseDate(startTime);
-            Date end = parseDate(endTime);
-
-            Collection<PhoneCall> calls = this.calls;
-            //Collection<PhoneCall> filteredCalls;
-            List filteredCalls = new ArrayList<PhoneCall>();
-
-            for (PhoneCall call : calls)
-            {
-                // NOTE: Criteria for search:
-                // if start date falls within search start and end,
-                // it will be returned, regardless of end date
-                if (call.getStartTime().after(start) &&
-                        call.getStartTime().before(end))
-                {
-                    filteredCalls.add(call);
-                }
-            }
-
-            return filteredCalls;
-        }
-        catch (ParseException e)
-        {
-            throw new PhoneBillException(e.getMessage());
-        }
     }
 
     /**
@@ -148,7 +113,7 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
      * @return Date object
      * @throws ParseException thrown if the date can't be parsed
      */
-    private Date parseDate(String s) throws ParseException
+    public Date parseDate(String s) throws ParseException
     {
         String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
         DateTimeFormat fmt = DateTimeFormat.getFormat(DATE_TIME_FORMAT);
