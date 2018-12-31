@@ -51,6 +51,16 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         this.validate();
     }
 
+    public PhoneCall(String callerNum, String calleeNum, Date start, Date end)
+    {
+        this.callerNumber = callerNum;
+        this.calleeNumber = calleeNum;
+        this.startTime = start;
+        this.endTime = end;
+
+        this.validate();
+    }
+
     /**
      * This method is used by my Phonebill Sort method to compare phonecalls
      * Implements compareTo interface java.lang.Comparable

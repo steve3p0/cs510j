@@ -13,17 +13,24 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+
+import org.gwtbootstrap3.client.ui.*;
+import org.gwtbootstrap3.extras.datetimepicker.client.ui.DateTimePicker;
 
 import java.text.ParseException;
 import java.util.logging.Level;
@@ -111,54 +118,6 @@ public class PhoneBillGwt implements EntryPoint
         }
 
         return throwable;
-    }
-
-    private void addWidgets(VerticalPanel panel)
-    {
-//        showPhoneBillButton = new Button("Show Phone Bill");
-//        showPhoneBillButton.addClickHandler(new ClickHandler()
-//        {
-//            @Override
-//            public void onClick(ClickEvent clickEvent)
-//            {
-//                showPhoneBill();
-//            }
-//        });
-
-        showUndeclaredExceptionButton = new Button("Show undeclared exception");
-        showUndeclaredExceptionButton.addClickHandler(new ClickHandler()
-        {
-            @Override
-            public void onClick(ClickEvent clickEvent)
-            {
-                showUndeclaredException();
-            }
-        });
-
-        showDeclaredExceptionButton = new Button("Show declared exception");
-        showDeclaredExceptionButton.addClickHandler(new ClickHandler()
-        {
-            @Override
-            public void onClick(ClickEvent clickEvent)
-            {
-                showDeclaredException();
-            }
-        });
-
-        showClientSideExceptionButton = new Button("Show client-side exception");
-        showClientSideExceptionButton.addClickHandler(new ClickHandler()
-        {
-            @Override
-            public void onClick(ClickEvent clickEvent)
-            {
-                throwClientSideException();
-            }
-        });
-
-        panel.add(showPhoneBillButton);
-        panel.add(showUndeclaredExceptionButton);
-        panel.add(showDeclaredExceptionButton);
-        panel.add(showClientSideExceptionButton);
     }
 
     private void throwClientSideException()
@@ -313,6 +272,8 @@ public class PhoneBillGwt implements EntryPoint
                     PhoneBill bill = (PhoneBill) b;
                     billsListBox.addItem(bill.customer);
                 }
+
+                billsListBox.setSelectedIndex(0);
             }
         });
     }
@@ -464,6 +425,9 @@ public class PhoneBillGwt implements EntryPoint
             public void onSuccess(Void v)
             {
                 loadBillsListBox();
+
+                int size = billsListBox.getItemCount();
+                billsListBox.setSelectedIndex(size - 1);
             }
         });
     }
@@ -622,10 +586,19 @@ public class PhoneBillGwt implements EntryPoint
         TextBox calleeTexBox = new TextBox();
         calleeTexBox.setWidth("100px");
 
-        TextBox startTimeTexBox = new TextBox();
-        startTimeTexBox.setWidth("125px");
-        TextBox endTimeTexBox = new TextBox();
-        endTimeTexBox.setWidth("125px");
+        //////////////////////////////////////////////////////////////////
+        // Date and Times
+//        TextBox startTimeTexBox = new TextBox();
+//        startTimeTexBox.setWidth("125px");
+//        TextBox endTimeTexBox = new TextBox();
+//        endTimeTexBox.setWidth("125px");
+
+        DateTimePicker startTimePicker = new DateTimePicker();
+        startTimePicker.setWidth("150px");
+        DateTimePicker endTimePicker = new DateTimePicker();
+        endTimePicker.setWidth("150px");
+
+        ///////////////////////////////////////
 
         Button addPhoneCallButton = new Button();
         addPhoneCallButton.setText("Add Call");
@@ -638,8 +611,8 @@ public class PhoneBillGwt implements EntryPoint
                 String customer = billsListBox.getSelectedItemText();
                 String caller = callerTexBox.getText();
                 String callee = calleeTexBox.getText();
-                String start = startTimeTexBox.getText();
-                String end = endTimeTexBox.getText();
+                Date start = startTimePicker.getValue();
+                Date end = endTimePicker.getValue();
 
                 PhoneCall call = new PhoneCall(caller, callee, start, end);
 
@@ -649,8 +622,12 @@ public class PhoneBillGwt implements EntryPoint
 
         rightFlowPanel1.add(callerTexBox);
         rightFlowPanel1.add(calleeTexBox);
-        rightFlowPanel1.add(startTimeTexBox);
-        rightFlowPanel1.add(endTimeTexBox);
+        //rightFlowPanel1.add(startTimeTexBox);
+        //rightFlowPanel1.add(endTimeTexBox);
+
+        rightFlowPanel1.add(startTimePicker);
+        rightFlowPanel1.add(endTimePicker);
+
         rightFlowPanel1.add(addPhoneCallButton);
 
         // Search Fields
@@ -740,6 +717,16 @@ public class PhoneBillGwt implements EntryPoint
         callsTable.setRowData(0, initialCalls);
 
         scrollPanel.add(callsTable);
+    }
+
+    private Date parseDate(String s)
+    {
+
+        String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
+        DateTimeFormat fmt = DateTimeFormat.getFormat(DATE_TIME_FORMAT);
+        Date date = fmt.parse(s);
+
+        return date;
     }
 
     private void setUpUncaughtExceptionHandler()
