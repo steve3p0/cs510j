@@ -51,6 +51,13 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
         this.validate();
     }
 
+    /**
+     * Constructor for PhoneCall: This one uses Date types
+     * @param callerNum
+     * @param calleeNum
+     * @param start
+     * @param end
+     */
     public PhoneCall(String callerNum, String calleeNum, Date start, Date end)
     {
         this.callerNumber = callerNum;

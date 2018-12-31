@@ -10,6 +10,10 @@ import java.util.List;
  */
 public interface PhoneBillServiceAsync
 {
+    /**
+     * Test function
+     * @param async
+     */
     void getDummyPhoneBill(AsyncCallback<PhoneBill> async);
 
     /**
@@ -17,6 +21,10 @@ public interface PhoneBillServiceAsync
      */
     void loadTestData(List<PhoneBill> testdata, AsyncCallback<Void> async);
 
+    /**
+     * Gets all phone bills from the server
+     * @param async
+     */
     void getPhoneBills(AsyncCallback<List<PhoneBill>> async);
 
     /**
@@ -24,10 +32,30 @@ public interface PhoneBillServiceAsync
      */
     void getPhoneBill(String customer, AsyncCallback<PhoneBill> async);
 
+    /**
+     * Adds a Phone Bill to the server
+     * @param customer
+     * @param async
+     */
     void addPhoneBill(String customer, AsyncCallback<Void> async);
 
+    /**
+     * Adds a Phonel CAll to the server
+     * @param customer
+     * @param call
+     * @param async
+     */
     void addPhoneCall(String customer, PhoneCall call, AsyncCallback<Void> async);
 
+    /**
+     * Filters PhoneCalls based on parameter criteria
+     * @param customer
+     * @param caller
+     * @param callee
+     * @param start
+     * @param end
+     * @param async
+     */
     void filterPhoneCalls(String customer, String caller, String callee, Date start, Date end, AsyncCallback<List<PhoneCall>> async);
 
     /**

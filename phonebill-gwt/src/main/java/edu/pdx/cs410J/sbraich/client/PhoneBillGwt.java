@@ -52,10 +52,9 @@ public class PhoneBillGwt implements EntryPoint
 
     private ListBox billsListBox = new ListBox();
     private CellTable<PhoneCall> callsTable = new CellTable<PhoneCall>();
-    //private DataGrid<PhoneCall> callsTable = new DataGrid<PhoneCall>();
     private List bills = new ArrayList<PhoneBill>();
 
-    //@VisibleForTesting
+    @VisibleForTesting
     Button showPhoneBillButton;
 
     @VisibleForTesting
@@ -67,6 +66,9 @@ public class PhoneBillGwt implements EntryPoint
     @VisibleForTesting
     Button showClientSideExceptionButton;
 
+    /**
+     * Constructor for PhoneBillGwt
+     */
     public PhoneBillGwt()
     {
         this(new Alerter()
@@ -79,6 +81,10 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    /**
+     * Testing constructor for PhoneBillGwt
+     * @param alerter
+     */
     @VisibleForTesting
     PhoneBillGwt(Alerter alerter)
     {
@@ -88,6 +94,10 @@ public class PhoneBillGwt implements EntryPoint
         Logger.getLogger("").setLevel(Level.INFO);  // Quiet down the default logging
     }
 
+    /**
+     * Function for displaying exceptions
+     * @param throwable
+     */
     private void alertOnException(Throwable throwable)
     {
         Throwable unwrapped = unwrapUmbrellaException(throwable);
@@ -105,6 +115,11 @@ public class PhoneBillGwt implements EntryPoint
         this.alerter.alert(sb.toString());
     }
 
+    /**
+     * Function for unwrapping umbrella exceptions
+     * @param throwable
+     * @return
+     */
     private Throwable unwrapUmbrellaException(Throwable throwable)
     {
         if (throwable instanceof UmbrellaException)
@@ -120,12 +135,18 @@ public class PhoneBillGwt implements EntryPoint
         return throwable;
     }
 
+    /**
+     * Functions for testing
+     */
     private void throwClientSideException()
     {
         logger.info("About to throw a client-side exception");
         throw new IllegalStateException("Expected exception on the client side");
     }
 
+    /**
+     * Function for showing undeclared exceptions
+     */
     private void showUndeclaredException()
     {
         logger.info("Calling throwUndeclaredException");
@@ -145,6 +166,9 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    /**
+     * Function for showing declared exceptions
+     */
     private void showDeclaredException()
     {
         logger.info("Calling throwDeclaredException");
@@ -164,6 +188,10 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    /**
+     * Create the Calls Data Grid
+     * @return
+     */
     private CellTable<PhoneCall> showGrid()
     {
         CellTable<PhoneCall> table = new CellTable<PhoneCall>();
@@ -217,23 +245,13 @@ public class PhoneBillGwt implements EntryPoint
         // Add a selection model to handle user selection.
         final SingleSelectionModel<PhoneCall> selectionModel = new SingleSelectionModel<PhoneCall>();
         table.setSelectionModel(selectionModel);
-        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler()
-        {
-            public void onSelectionChange(SelectionChangeEvent event)
-            {
-                PhoneCall selected = selectionModel.getSelectedObject();
-                if (selected != null)
-                {
-                    Window.alert("You selected: " + selected.callerNumber);
-                }
-            }
-        });
-
-        //table.setHeight("350px");
 
         return table;
     }
 
+    /**
+     * Module Load Function
+     */
     @Override
     public void onModuleLoad()
     {
@@ -251,6 +269,9 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    /**
+     * This function loads the Bills List Box with existing customers
+     */
     private void loadBillsListBox()
     {
         phoneBillService.getPhoneBills(new AsyncCallback<List<PhoneBill>>()
@@ -264,6 +285,12 @@ public class PhoneBillGwt implements EntryPoint
             @Override
             public void onSuccess(List<PhoneBill> list)
             {
+                int index = billsListBox.getSelectedIndex();
+                if (index == -1)
+                {
+                    index = 0;
+                }
+
                 billsListBox.clear();
 
                 bills = list;
@@ -272,10 +299,15 @@ public class PhoneBillGwt implements EntryPoint
                     PhoneBill bill = (PhoneBill) b;
                     billsListBox.addItem(bill.customer);
                 }
+
+                billsListBox.setSelectedIndex(index);
             }
         });
     }
 
+    /**
+     * Test function that loads test data into the app
+     */
     private void loadTestPhoneBills()
     {
         // First Bill: Luke Skywalker
@@ -387,6 +419,9 @@ public class PhoneBillGwt implements EntryPoint
         this.bills.add(bill5);
     }
 
+    /**
+     * Sends the test data over to the server
+     */
     private void loadTestData()
     {
         loadTestPhoneBills();
@@ -408,15 +443,32 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    /**
+     * Event handler for addCustomer button click
+     * @param customer
+     */
     private void addCustomer_onclick(String customer)
     {
         phoneBillService.addPhoneBill(customer, new AsyncCallback<Void>()
         {
             @Override
-            public void onFailure(Throwable throwable)
+            public void onFailure(Throwable caught)
             {
-                String msg = throwable.toString();
-                alerter.alert("phoneBillService.addPhoneBill FAILED: " + msg);
+                try
+                {
+                    throw caught;
+                }
+                catch (PhoneBillException ex)
+                {
+                    alertOnException(ex);
+                    //String msg = ex.toString();
+                    //alerter.alert("phoneBillService.addPhoneBill FAILED: " + msg);
+                }
+                catch (Throwable ex)
+                {
+                    String msg  = ex.getMessage();
+                    alerter.alert("Unhandled Exception: phoneBillService.addPhoneBill FAILED: " + msg);
+                }
             }
 
             @Override
@@ -426,10 +478,17 @@ public class PhoneBillGwt implements EntryPoint
 
                 int size = billsListBox.getItemCount();
                 billsListBox.setSelectedIndex(size - 1);
+
+                customerListbox_onchange(customer);
             }
         });
     }
 
+    /**
+     * Envent handler for addPhoneCall button click
+     * @param customer
+     * @param call
+     */
     private void addPhoneCall_onclick(String customer, PhoneCall call)
     {
         phoneBillService.addPhoneCall(customer, call, new AsyncCallback<Void>()
@@ -449,6 +508,14 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    /**
+     * Event handler for searchButton click
+     * @param customer
+     * @param caller
+     * @param callee
+     * @param start
+     * @param end
+     */
     private void searchButton_onclick(String customer, String caller, String callee, Date start, Date end)
     {
         loadTestPhoneBills();
@@ -477,6 +544,10 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    /**
+     * Event Handler for customerListbox onchange event
+     * @param customer
+     */
     private void customerListbox_onchange(String customer)
     {
         phoneBillService.getPhoneBill(customer, new AsyncCallback<PhoneBill>()
@@ -507,30 +578,29 @@ public class PhoneBillGwt implements EntryPoint
         //return bill;
     }
 
+    /**
+     * Where all the widgets are dynamically added to the HTML page
+     */
     private void setupUI()
     {
+        billsListBox.setSelectedIndex(0);
+
         RootPanel rootPanel = RootPanel.get();
         HorizontalPanel horizontalPanel = new HorizontalPanel();
 
         // Left Panels
         FlowPanel leftFlowPanel = new FlowPanel();
         VerticalPanel leftVerticalPanel = new VerticalPanel();
+        FlexTable leftTable = new FlexTable();
+        leftVerticalPanel.add(leftTable);
         leftVerticalPanel.add(leftFlowPanel);
 
         // Right Panels
-        FlexTable rightTable1 = new FlexTable();
-        FlexTable rightTable2 = new FlexTable();
-        //HorizontalPanel rightHorizontalPanel1 = new HorizontalPanel();
-        //HorizontalPanel rightHorizontalPanel2 = new HorizontalPanel();
+        FlexTable rightTable = new FlexTable();
+        rightTable.setCellPadding(10);
         VerticalPanel rightVerticalPanel = new VerticalPanel();
         ScrollPanel scrollPanel = new ScrollPanel();
-        //scrollPanel.setHeight("300px");
-        //scrollPanel.setAlwaysShowScrollBars(true);
-
-        rightVerticalPanel.add(rightTable1);
-        rightVerticalPanel.add(rightTable2);
-        //rightVerticalPanel.add(rightHorizontalPanel1);
-        //rightVerticalPanel.add(rightHorizontalPanel2);
+        rightVerticalPanel.add(rightTable);
         rightVerticalPanel.add(scrollPanel);
 
         // Root Panel
@@ -543,6 +613,8 @@ public class PhoneBillGwt implements EntryPoint
         customerTexBox.setWidth("125px");
         Button addCustomerButton = new Button();
         addCustomerButton.setText("Add Bill");
+
+
         leftFlowPanel.add(customerTexBox);
         leftFlowPanel.add(new InlineHTML(" "));
         leftFlowPanel.add(addCustomerButton);
@@ -554,15 +626,20 @@ public class PhoneBillGwt implements EntryPoint
             @Override
             public void onClick(ClickEvent clickEvent)
             {
-                String customer = customerTexBox.getText();
+                String customer = customerTexBox.getText().trim();
 
-                addCustomer_onclick(customer);
+                if (customer != "")
+                {
+                    addCustomer_onclick(customer);
+                }
             }
         });
 
-        //////////////////////////////////////
+        leftTable.setText(0, 0, "Customer");
+        leftTable.setWidget(1,0, customerTexBox);
+        leftTable.setWidget(1,1, addCustomerButton);
 
-        // Add ChangeHandler to dropDownList
+        //////////////////////////////////////
         billsListBox.addChangeHandler(new ChangeHandler()
         {
             @Override
@@ -583,8 +660,7 @@ public class PhoneBillGwt implements EntryPoint
         leftVerticalPanel.getElement().appendChild(DOM.createElement(BRElement.TAG));
         leftVerticalPanel.add(billsListBox);
 
-        billsListBox.setSelectedIndex(0);
-
+        ///////////////////////////////////////////////////////
         // Right Panel
         TextBox callerTexBox = new TextBox();
         callerTexBox.setWidth("100px");
@@ -616,36 +692,43 @@ public class PhoneBillGwt implements EntryPoint
                 Date start = startTimePicker.getValue();
                 Date end = endTimePicker.getValue();
 
-                PhoneCall call = new PhoneCall(caller, callee, start, end);
+                try
+                {
+                    PhoneCall call = new PhoneCall(caller, callee, start, end);
 
-                addPhoneCall_onclick(customer, call);
+                    addPhoneCall_onclick(customer, call);
 
-                callerTexBox.setText("");
-                calleeTexBox.setText("");
-                startTimePicker.setValue(null);
-                endTimePicker.setValue(null);
-
+                    callerTexBox.setText("");
+                    calleeTexBox.setText("");
+                    startTimePicker.setValue(null);
+                    endTimePicker.setValue(null);
+                }
+                catch (PhoneBillException ex)
+                {
+                    String msg = ex.getMessage();
+                    alerter.alert("phoneBillService.addPhoneBill FAILED: " + msg);
+                }
             }
         });
 
-        rightTable1.setText(0, 0, "Caller");
-        rightTable1.setWidget(1,0, callerTexBox);
-        rightTable1.setText(0, 1, "Callee");
-        rightTable1.setWidget(1,1, calleeTexBox);
-        rightTable1.setText(0, 2, "Start Time");
-        rightTable1.setWidget(1,2, startTimePicker);
-        rightTable1.setText(0, 3, "End Time");
-        rightTable1.setWidget(1,3, endTimePicker);
+        rightTable.setText(0, 0, "Caller");
+        rightTable.setWidget(1,0, callerTexBox);
+        rightTable.setText(0, 1, "Callee");
+        rightTable.setWidget(1,1, calleeTexBox);
+        rightTable.setText(0, 2, "Start Time");
+        rightTable.setWidget(1,2, startTimePicker);
+        rightTable.setText(0, 3, "End Time");
+        rightTable.setWidget(1,3, endTimePicker);
 
-        //rightTable1.getFlexCellFormatter().setRowSpan(0, 4, 2);
-        rightTable1.setWidget(1,4, addPhoneCallButton);
+        //rightTable.getFlexCellFormatter().setRowSpan(0, 4, 2);
+        rightTable.setWidget(1,4, addPhoneCallButton);
 
         ///////////////////////////////////////////////////////////////
         // Search Fields
-        TextBox searchCallerTexBox = new TextBox();
-        searchCallerTexBox.setWidth("100px");
-        TextBox searchCalleeTexBox = new TextBox();
-        searchCalleeTexBox.setWidth("100px");
+        TextBox searchCallerTextBox = new TextBox();
+        searchCallerTextBox.setWidth("100px");
+        TextBox searchCalleeTextBox = new TextBox();
+        searchCalleeTextBox.setWidth("100px");
 
         // Search Date and Times
         DatePicker searchStartDatePicker = new DatePicker();
@@ -660,6 +743,8 @@ public class PhoneBillGwt implements EntryPoint
 
         Button searchButton = new Button();
         searchButton.setText("Search");
+        Button clearSearchButton = new Button();
+        clearSearchButton.setText("Clear");
 
         searchButton.addClickHandler(new ClickHandler()
         {
@@ -667,8 +752,8 @@ public class PhoneBillGwt implements EntryPoint
             public void onClick(ClickEvent clickEvent)
             {
                 String customer = billsListBox.getSelectedItemText();
-                String caller = searchCallerTexBox.getText();
-                String callee = searchCalleeTexBox.getText();
+                String caller = searchCallerTextBox.getText();
+                String callee = searchCalleeTextBox.getText();
                 Date start = searchStartDatePicker.getValue();
                 Date end = searchEndDatePicker.getValue();
 
@@ -682,17 +767,32 @@ public class PhoneBillGwt implements EntryPoint
             }
         });
 
-        rightTable2.setText(0, 0, "Caller");
-        rightTable2.setWidget(1,0, searchCallerTexBox);
-        rightTable2.setText(0, 1, "Callee");
-        rightTable2.setWidget(1,1, searchCalleeTexBox);
-        rightTable2.setText(0, 2, "Start Time");
-        rightTable2.setWidget(1,2, searchStartDatePicker);
-        rightTable2.setText(0, 3, "End Time");
-        rightTable2.setWidget(1,3, searchEndDatePicker);
+        clearSearchButton.addClickHandler(new ClickHandler()
+        {
+            @Override
+            public void onClick(ClickEvent clickEvent)
+            {
+                String customer = billsListBox.getSelectedItemText();
 
-        //rightTable2.getFlexCellFormatter().setRowSpan(0, 4, 2);
-        rightTable2.setWidget(1,4, searchButton);
+                searchCallerTextBox.setText("");
+                searchCalleeTextBox.setText("");
+                searchStartDatePicker.setValue(null);
+                searchStartDatePicker.setValue(null);
+
+                customerListbox_onchange(customer);
+            }
+        });
+
+        rightTable.setText(2, 0, "Caller");
+        rightTable.setWidget(3,0, searchCallerTextBox);
+        rightTable.setText(2, 1, "Callee");
+        rightTable.setWidget(3,1, searchCalleeTextBox);
+        rightTable.setText(2, 2, "Start Time");
+        rightTable.setWidget(3,2, searchStartDatePicker);
+        rightTable.setText(2, 3, "End Time");
+        rightTable.setWidget(3,3, searchEndDatePicker);
+        rightTable.setWidget(3,4, searchButton);
+        rightTable.setWidget(3,5, clearSearchButton);
 
         /////////////////////////////////////////
 
@@ -713,6 +813,9 @@ public class PhoneBillGwt implements EntryPoint
         scrollPanel.add(callsTable);
     }
 
+    /**
+     * Functions for handling exceptions
+     */
     private void setUpUncaughtExceptionHandler()
     {
         GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler()
@@ -725,6 +828,9 @@ public class PhoneBillGwt implements EntryPoint
         });
     }
 
+    /**
+     * Test function
+     */
     @VisibleForTesting
     interface Alerter
     {

@@ -84,6 +84,10 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall>
         return this.customer;
     }
 
+    /**
+     * Set's the customer property
+     * @param customer
+     */
     public void setCustomer(String customer)
     {
         this.customer = customer;

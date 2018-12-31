@@ -2,6 +2,7 @@ package edu.pdx.cs410J.sbraich.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.pdx.cs410J.sbraich.client.PhoneBill;
+import edu.pdx.cs410J.sbraich.client.PhoneBillException;
 import edu.pdx.cs410J.sbraich.client.PhoneCall;
 import edu.pdx.cs410J.sbraich.client.PhoneBillService;
 
@@ -18,6 +19,10 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
 {
     private List bills = new ArrayList<PhoneBill>();
 
+    /**
+     * A dummy server side function call - for testing
+     * @return
+     */
     @Override
     public PhoneBill getDummyPhoneBill()
     {
@@ -36,6 +41,12 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
         this.bills = testdata;
     }
 
+    /**
+     * Get the PhoneBill object based on customer name
+     * @param customer
+     * @return
+     * @throws IllegalStateException
+     */
     @Override
     public PhoneBill getPhoneBill(String customer) throws IllegalStateException
     {
@@ -51,6 +62,15 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
         throw new IllegalStateException("Customer Not Found: " + customer);
     }
 
+    /**
+     * The main search (filter) function call
+     * @param customer
+     * @param caller
+     * @param callee
+     * @param start
+     * @param end
+     * @return
+     */
     @Override
     public List<PhoneCall> filterPhoneCalls(String customer, String caller, String callee, Date start, Date end)
     {
@@ -79,6 +99,12 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
         return filteredCalls;
     }
 
+    /**
+     * Caller Filter
+     * @param calls
+     * @param caller
+     * @return
+     */
     private List<PhoneCall> filterPhoneCalls_ByCaller(List<PhoneCall> calls, String caller)
     {
         List<PhoneCall> filteredCalls = new ArrayList<PhoneCall>();
@@ -94,6 +120,12 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
         return filteredCalls;
     }
 
+    /**
+     * Callee filter
+     * @param calls
+     * @param callee
+     * @return
+     */
     private List<PhoneCall> filterPhoneCalls_ByCallee(List<PhoneCall> calls, String callee)
     {
         List<PhoneCall> filteredCalls = new ArrayList<PhoneCall>();
@@ -109,6 +141,13 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
         return filteredCalls;
     }
 
+    /**
+     * Date Filter
+     * @param calls
+     * @param start
+     * @param end
+     * @return
+     */
     private List<PhoneCall>filterPhoneCalls_ByDate(List<PhoneCall> calls, Date start, Date end)
     {
         List<PhoneCall> filteredCalls = new ArrayList<PhoneCall>();
@@ -127,20 +166,44 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
         return filteredCalls;
     }
 
+    /**
+     * Returns all Phone Bills
+     * @return
+     */
     @Override
     public List<PhoneBill> getPhoneBills()
     {
         return this.bills;
     }
 
+    /**
+     * Adds a PhoneBill
+     * @param customer
+     * @throws IllegalStateException
+     */
     @Override
-    public void addPhoneBill(String customer)
+    public void addPhoneBill(String customer) throws IllegalStateException
     {
+        for (Object b : this.bills)
+        {
+            PhoneBill bill = (PhoneBill)b;
+            if (bill.customer.equals(customer))
+            {
+                throw new PhoneBillException("Customer already exists");
+            }
+        }
+
         PhoneBill bill = new PhoneBill(customer);
+
 
         bills.add(bill);
     }
 
+    /**
+     * Adds a PhoneCall
+     * @param customer
+     * @param call
+     */
     @Override
     public void addPhoneCall(String customer, PhoneCall call)
     {
@@ -148,12 +211,19 @@ public class PhoneBillServiceImpl extends RemoteServiceServlet implements PhoneB
         bill.addPhoneCall(call);
     }
 
+    /**
+     * Test function to throw undeclared Exception
+     */
     @Override
     public void throwUndeclaredException()
     {
         throw new IllegalStateException("Expected undeclared exception");
     }
 
+    /**
+     * Test function to throw Illegal State Exception
+     * @throws IllegalStateException
+     */
     @Override
     public void throwDeclaredException() throws IllegalStateException
     {

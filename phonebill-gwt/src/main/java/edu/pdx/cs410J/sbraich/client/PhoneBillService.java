@@ -28,12 +28,34 @@ public interface PhoneBillService extends RemoteService
      */
     public PhoneBill getPhoneBill(String customer);
 
+    /**
+     * Gets all phone bills from the server
+     * @return
+     */
     public List<PhoneBill> getPhoneBills();
 
+    /**
+     * Adds a phone bill to the server
+     * @param customer
+     */
     public void addPhoneBill(String customer);
 
+    /**
+     * Adds a phone call to the server
+     * @param customer
+     * @param call
+     */
     public void addPhoneCall(String customer, PhoneCall call);
 
+    /**
+     * Filters Phone Calls
+     * @param customer
+     * @param caller
+     * @param callee
+     * @param start
+     * @param end
+     * @return
+     */
     public List<PhoneCall> filterPhoneCalls(String customer, String caller, String callee, Date start, Date end);
 
     /**
