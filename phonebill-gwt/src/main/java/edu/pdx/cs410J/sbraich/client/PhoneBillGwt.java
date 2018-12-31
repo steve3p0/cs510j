@@ -19,27 +19,26 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
-import com.google.gwt.user.client.ui.Button;
+//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 
 import com.google.gwt.user.cellview.client.*;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.TextBox;
+//import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.user.client.ui.Label;
 
 import org.gwtbootstrap3.client.ui.*;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker;
 import org.gwtbootstrap3.extras.datetimepicker.client.ui.DateTimePicker;
 
-import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.*;
-
-//import static com.google.gwt.thirdparty.guava.common.base.Strings.isNullOrEmpty;
-//import static com.google.common.base.Strings.isNullOrEmpty;
 
 
 /**
@@ -519,14 +518,19 @@ public class PhoneBillGwt implements EntryPoint
         leftVerticalPanel.add(leftFlowPanel);
 
         // Right Panels
-        FlowPanel rightFlowPanel1 = new FlowPanel();
-        FlowPanel rightFlowPanel2 = new FlowPanel();
+        FlexTable rightTable1 = new FlexTable();
+        FlexTable rightTable2 = new FlexTable();
+        //HorizontalPanel rightHorizontalPanel1 = new HorizontalPanel();
+        //HorizontalPanel rightHorizontalPanel2 = new HorizontalPanel();
         VerticalPanel rightVerticalPanel = new VerticalPanel();
         ScrollPanel scrollPanel = new ScrollPanel();
         //scrollPanel.setHeight("300px");
         //scrollPanel.setAlwaysShowScrollBars(true);
-        rightVerticalPanel.add(rightFlowPanel1);
-        rightVerticalPanel.add(rightFlowPanel2);
+
+        rightVerticalPanel.add(rightTable1);
+        rightVerticalPanel.add(rightTable2);
+        //rightVerticalPanel.add(rightHorizontalPanel1);
+        //rightVerticalPanel.add(rightHorizontalPanel2);
         rightVerticalPanel.add(scrollPanel);
 
         // Root Panel
@@ -591,6 +595,7 @@ public class PhoneBillGwt implements EntryPoint
         DateTimePicker startTimePicker = new DateTimePicker();
         startTimePicker.setFormat("mm/dd/yyyy HH:ii P");
         startTimePicker.setWidth("150px");
+
         DateTimePicker endTimePicker = new DateTimePicker();
         endTimePicker.setFormat("mm/dd/yyyy HH:ii P");
         endTimePicker.setWidth("150px");
@@ -614,43 +619,47 @@ public class PhoneBillGwt implements EntryPoint
                 PhoneCall call = new PhoneCall(caller, callee, start, end);
 
                 addPhoneCall_onclick(customer, call);
+
+                callerTexBox.setText("");
+                calleeTexBox.setText("");
+                startTimePicker.setValue(null);
+                endTimePicker.setValue(null);
+
             }
         });
 
-        rightFlowPanel1.add(callerTexBox);
-        rightFlowPanel1.add(calleeTexBox);
-        rightFlowPanel1.add(startTimePicker);
-        rightFlowPanel1.add(endTimePicker);
+        rightTable1.setText(0, 0, "Caller");
+        rightTable1.setWidget(1,0, callerTexBox);
+        rightTable1.setText(0, 1, "Callee");
+        rightTable1.setWidget(1,1, calleeTexBox);
+        rightTable1.setText(0, 2, "Start Time");
+        rightTable1.setWidget(1,2, startTimePicker);
+        rightTable1.setText(0, 3, "End Time");
+        rightTable1.setWidget(1,3, endTimePicker);
 
-        rightFlowPanel1.add(addPhoneCallButton);
+        //rightTable1.getFlexCellFormatter().setRowSpan(0, 4, 2);
+        rightTable1.setWidget(1,4, addPhoneCallButton);
 
+        ///////////////////////////////////////////////////////////////
         // Search Fields
         TextBox searchCallerTexBox = new TextBox();
         searchCallerTexBox.setWidth("100px");
         TextBox searchCalleeTexBox = new TextBox();
         searchCalleeTexBox.setWidth("100px");
 
-//        TextBox searchStartTimeTexBox = new TextBox();
-//        searchStartTimeTexBox.setWidth("125px");
-//        TextBox searchEndTimeTexBox = new TextBox();
-//        searchEndTimeTexBox.setWidth("125px");
-
         // Search Date and Times
         DatePicker searchStartDatePicker = new DatePicker();
         searchStartDatePicker.setFormat("m/d/yyyy");
         searchStartDatePicker.setWidth("150px");
+        searchStartDatePicker.setAutoClose(true);
+
         DatePicker searchEndDatePicker = new DatePicker();
         searchEndDatePicker.setFormat("m/d/yyyy");
         searchEndDatePicker.setWidth("150px");
+        searchEndDatePicker.setAutoClose(true);
 
         Button searchButton = new Button();
         searchButton.setText("Search");
-
-        rightFlowPanel2.add(searchCallerTexBox);
-        rightFlowPanel2.add(searchCalleeTexBox);
-        rightFlowPanel2.add(searchStartDatePicker);
-        rightFlowPanel2.add(searchEndDatePicker);
-        rightFlowPanel2.add(searchButton);
 
         searchButton.addClickHandler(new ClickHandler()
         {
@@ -673,6 +682,20 @@ public class PhoneBillGwt implements EntryPoint
             }
         });
 
+        rightTable2.setText(0, 0, "Caller");
+        rightTable2.setWidget(1,0, searchCallerTexBox);
+        rightTable2.setText(0, 1, "Callee");
+        rightTable2.setWidget(1,1, searchCalleeTexBox);
+        rightTable2.setText(0, 2, "Start Time");
+        rightTable2.setWidget(1,2, searchStartDatePicker);
+        rightTable2.setText(0, 3, "End Time");
+        rightTable2.setWidget(1,3, searchEndDatePicker);
+
+        //rightTable2.getFlexCellFormatter().setRowSpan(0, 4, 2);
+        rightTable2.setWidget(1,4, searchButton);
+
+        /////////////////////////////////////////
+
         callsTable = showGrid();
 
         // Show the initial Bill in the PhoneCalls grid
@@ -688,16 +711,6 @@ public class PhoneBillGwt implements EntryPoint
         callsTable.setRowData(0, initialCalls);
 
         scrollPanel.add(callsTable);
-    }
-
-    private Date parseDate(String s)
-    {
-
-        String DATE_TIME_FORMAT = "M/d/yyyy h:mm a";
-        DateTimeFormat fmt = DateTimeFormat.getFormat(DATE_TIME_FORMAT);
-        Date date = fmt.parse(s);
-
-        return date;
     }
 
     private void setUpUncaughtExceptionHandler()

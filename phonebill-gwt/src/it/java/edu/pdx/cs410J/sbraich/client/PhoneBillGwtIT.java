@@ -6,8 +6,10 @@ import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
+//import com.google.gwt.user.client.ui.Button;
 import org.junit.Test;
+
+import org.gwtbootstrap3.client.ui.Button;
 
 /**
  * An integration test for the PhoneBill GWT UI.  Remember that GWTTestCase is JUnit 3 style.
