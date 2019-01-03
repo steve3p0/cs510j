@@ -28,10 +28,11 @@ public class AboutLambdas {
     Caps toStringLambdaField = s -> toString();
 
     @Koan
-    public void verySimpleLambda() throws InterruptedException {
+    public void verySimpleLambda() throws InterruptedException
+    {
         Runnable r8 = () -> str = "changed in lambda";
         r8.run();
-        assertEquals(str, __);
+        assertEquals(str, "changed in lambda");
     }
 
     @Koan
@@ -40,7 +41,7 @@ public class AboutLambdas {
             return n.toUpperCase();
         };
         String capitalized = caps.capitalize("James");
-        assertEquals(capitalized, __);
+        assertEquals(capitalized, "JAMES");
     }
 
     @Koan
@@ -50,17 +51,17 @@ public class AboutLambdas {
         //parameter parenthesis can be omitted for single parameter lambda
         Caps caps = s -> s.toUpperCase();
         String capitalized = caps.capitalize("Arthur");
-        assertEquals(capitalized, __);
+        assertEquals(capitalized, "ARTHUR");
     }
 
     @Koan
     public void lambdaField() {
-        assertEquals(thisLambdaField.capitalize(""), __);
+        assertEquals(thisLambdaField.capitalize(""), "CAPS");
     }
 
     @Koan
     public void lambdaField2() {
-        assertEquals(toStringLambdaField.capitalize(""), __);
+        assertEquals(toStringLambdaField.capitalize(""), "CAPS");
     }
 
     @Koan
@@ -69,21 +70,21 @@ public class AboutLambdas {
         /* final */
         String effectivelyFinal = "I'm effectively final";
         Caps caps = s -> effectivelyFinal.toUpperCase();
-        assertEquals(caps.capitalize(effectivelyFinal), __);
+        assertEquals(caps.capitalize(effectivelyFinal), "I'M EFFECTIVELY FINAL");
     }
 
     @Koan
     public void methodReference() {
         Caps caps = String::toUpperCase;
         String capitalized = caps.capitalize("Gosling");
-        assertEquals(capitalized, __);
+        assertEquals(capitalized, "GOSLING");
     }
 
     @Koan
     public void thisIsSurroundingClass() {
         //"this" in lambda points to surrounding class
         Function<String, String> foo = s -> s + this.fieldFoo + s;
-        assertEquals(foo.apply("|"), __);
+        assertEquals(foo.apply("|"), "|Lambdas|");
     }
 
 }
